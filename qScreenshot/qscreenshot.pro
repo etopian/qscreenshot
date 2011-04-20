@@ -10,3 +10,6 @@ DESTDIR = release/
 MOC_DIR = tmp/
 OBJECTS_DIR = tmp/
 
+target.path += /usr/bin/
+INSTALLS += target
+
