@@ -42,7 +42,7 @@ Controller::Controller()
 	QVariant vServers = o->getOption(constServerList);
 
 	if(!vServers.isValid()) { //приложение запущено впервые
-		o->setOption(constShortCut, QVariant("Alt+Shift+S"));
+		o->setOption(constShortCut, QVariant("Ctrl+Shift+S"));
 		o->setOption(constFormat, QVariant("png"));
 		o->setOption(constFileName, QVariant("pic-yyyyMMdd-hhmmss"));
 		o->setOption(constDelay, QVariant(0));
