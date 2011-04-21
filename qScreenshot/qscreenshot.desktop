@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=qScreenshot
+Encoding=UTF-8
+Comment=Create, modify and upload screenshots
+Type=Application
+Categories=Qt;Graphics;2DGraphics;Viewer;
+Exec=qScreenshot
+Terminal=false
+Icon=screenshot
+

@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>icons/draw.png</file>
+        <file>icons/screenshot.png</file>
+        <file>icons/browse.png</file>
+        <file>icons/cancel.png</file>
+        <file>icons/copy.png</file>
+        <file>icons/crop.png</file>
+        <file>icons/download.png</file>
+        <file>icons/drawing.png</file>
+        <file>icons/frame.png</file>
+        <file>icons/palette.png</file>
+        <file>icons/print.png</file>
+        <file>icons/rotate.png</file>
+        <file>icons/text.png</file>
+        <file>icons/undo.png</file>
+        <file>icons/upload.png</file>
+    </qresource>
+</RCC>

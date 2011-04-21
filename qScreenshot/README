@@ -1,0 +1,15 @@
+Build:
+
+Make sure qmake is in your PATH
+
+linux:
+
+./configure && make && make install
+
+windows:
+
+configure.exe
+mingw32-make
+
+
+
