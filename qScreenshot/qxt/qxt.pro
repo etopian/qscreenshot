@@ -1,5 +1,5 @@
 TEMPLATE = lib
-
+CONFIG += -debug release
 INCLUDEPATH += src/gui/ \
 		src/core/
 
