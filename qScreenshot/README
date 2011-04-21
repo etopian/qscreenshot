@@ -1,7 +1,0 @@
-Build:
-
-Make sure qmake is in your PATH 
-
-$ qmake && make
-
-Than you can find binary in directory  release/
