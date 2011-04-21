@@ -55,6 +55,7 @@ FORMS += $$PWD/optionswidget.ui \
     $$PWD/proxysettingsdlg.ui
 
 RESOURCES += screenshot.qrc
+win32:RC_FILE += screenshot.rc
 
 unix {
 	target.path=$$BINDIR
