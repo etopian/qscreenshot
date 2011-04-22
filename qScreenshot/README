@@ -1,15 +1,16 @@
+Dependences:
+	Qt 4.6.x or higher
+
 Build:
+	linux:
 
-Make sure qmake is in your PATH
+	./configure && make && make install
 
-linux:
+	
+	windows:
 
-./configure && make && make install
-
-windows:
-
-configure.exe
-mingw32-make
+	configure.exe
+	mingw32-make
 
 
 
