@@ -207,8 +207,13 @@ void OptionsWidget::applyOptions()
 {
 	Options* o = Options::instance();
 
-	shortCut = ui_.le_shortcut->text();
-	o->setOption(constShortCut, QVariant(shortCut));
+	if(shortCut != ui_.le_shortcut->text()) {
+		shortCut = ui_.le_shortcut->text();
+		if(!ShortcutManager::instance()->setShortcut(QKeySequence(shortCut))) {
+			QMessageBox::critical(0, tr("Error"), tr("Failed to register shortcut!"), QMessageBox::Ok);
+		}
+		o->setOption(constShortCut, QVariant(shortCut));
+	}
 
 	format = ui_.cb_format->currentText();
 	o->setOption(constFormat, QVariant(format));
@@ -222,11 +227,6 @@ void OptionsWidget::applyOptions()
 		servers.append(s->settingsToString());
 	}
 	o->setOption(constServerList, QVariant(servers));
-
-	ShortcutManager::reset();
-	if(ShortcutManager::instance()->setShortcut(QKeySequence(shortCut))) {
-		QMessageBox::critical(0, tr("Error"), tr("Failed to register shortcut!"), QMessageBox::Ok);
-	}
 }
 
 void OptionsWidget::restoreOptions()
