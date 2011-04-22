@@ -63,8 +63,16 @@ unix {
 
 	dt.path=$$PREFIX/share/applications/
 	dt.files = ../qscreenshot.desktop
-	icon.path=$$PREFIX/share/icons/hicolor/16x16/apps
-	icon.files = icons/screenshot.png
+	icon1.path=$$PREFIX/share/icons/hicolor/16x16/apps
+	icon1.files = icons/logo/screenshot_16.png
+	icon2.path=$$PREFIX/share/icons/hicolor/22x22/apps
+	icon2.files = icons/logo/screenshot_22.png
+	icon3.path=$$PREFIX/share/icons/hicolor/24x24/apps
+	icon3.files = icons/logo/screenshot_24.png
+	icon4.path=$$PREFIX/share/icons/hicolor/32x32/apps
+	icon4.files = icons/logo/screenshot_32.png
+	icon5.path=$$PREFIX/share/icons/hicolor/48x48/apps
+	icon5.files = icons/screenshot.png
 
-	INSTALLS += dt icon
+	INSTALLS += dt icon1 icon2 icon3 icon4 icon5
 }
