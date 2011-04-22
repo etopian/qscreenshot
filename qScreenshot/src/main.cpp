@@ -29,6 +29,8 @@ int main(int argc, char* argv[])
 	app.setApplicationName(APP_NAME);
 	app.setApplicationVersion(APP_VERSION);
 	app.setOrganizationName(APP_NAME);
+	app.setQuitOnLastWindowClosed(false);
+
 	Controller *controller = new Controller();
 	int ret = app.exec();
 	delete controller;

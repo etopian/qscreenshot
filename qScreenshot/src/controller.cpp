@@ -93,11 +93,11 @@ Controller::Controller()
 	if(!ShortcutManager::instance()->setShortcut(QKeySequence(o->getOption(constShortCut).toString()))) {
 		QMessageBox::critical(0, tr("Error"), tr("Failed to register shortcut!"), QMessageBox::Ok);
 	}
-
-	buildTray();
 	
 	screenshot = new Screenshot();
 	connect(ShortcutManager::instance(), SIGNAL(activated()), screenshot, SLOT(shootScreen()));
+
+	buildTray();
 }
 
 Controller::~Controller()
@@ -109,21 +109,6 @@ Controller::~Controller()
 	ShortcutManager::reset();
 }
 
-void Controller::onShortCutActivated()
-{
-	screenshot->shootScreen();
-}
-
-void Controller::newScreenshot()
-{
-	screenshot->newScreenshot();
-}
-
-void Controller::openImage()
-{
-	screenshot->openImage();
-}
-
 void Controller::buildTray()
 {
 	QSystemTrayIcon *tray = new QSystemTrayIcon(this);
@@ -131,9 +116,15 @@ void Controller::buildTray()
 	connect(tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayActivated(QSystemTrayIcon::ActivationReason)));
 
 	trayMenu_ = new QMenu();
-	trayMenu_->addAction(tr("Grab screen"), this, SLOT(onShortCutActivated()));
-	trayMenu_->addAction(tr("New Screenshot"), this, SLOT(newScreenshot()));
-	trayMenu_->addAction(tr("Open Image"), this, SLOT(openImage()));
+	trayMenu_->addAction(tr("Grab screen"), screenshot, SLOT(shootScreen()));
+	trayMenu_->addAction(tr("New Screenshot"), screenshot, SLOT(newScreenshot()));
+	trayMenu_->addAction(tr("Open Image"), screenshot, SLOT(openImage()));
+	trayMenu_->addSeparator();
+
+	QMenu* settingsMenu = trayMenu_->addMenu(tr("Settings"));
+	settingsMenu->addAction(tr("Options"), screenshot, SLOT(doOptions()));
+	settingsMenu->addAction(tr("Proxy settings"), screenshot, SLOT(doProxySettings()));
+
 	trayMenu_->addSeparator();
 	trayMenu_->addAction(tr("Exit"), qApp, SLOT(quit()));
 
@@ -144,7 +135,7 @@ void Controller::buildTray()
 void Controller::trayActivated(QSystemTrayIcon::ActivationReason reason)
 {
 	if(reason == QSystemTrayIcon::DoubleClick) {
-		onShortCutActivated();
+		screenshot->shootScreen();
 	}
 }
 

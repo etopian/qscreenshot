@@ -35,9 +35,6 @@ public:
 	~Controller();
 
 private slots:
-	void onShortCutActivated();
-	void openImage();
-	void newScreenshot();
 	void trayActivated(QSystemTrayIcon::ActivationReason);
 
 private:

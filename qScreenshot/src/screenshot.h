@@ -44,6 +44,9 @@ public slots:
 	void openImage();
 	void newScreenshot();
 
+	void doOptions();
+	void doProxySettings();
+
 private slots:
 	void saveScreenshot();
 	void uploadScreenshot();
@@ -64,8 +67,6 @@ private slots:
 	void aboutQt();
 	void doHomePage();
 	void doHistory();
-	void doOptions();
-	void doProxySettings();
 	void settingsChanged(const QString& option, const QVariant& value);
 
 private:
