@@ -67,6 +67,7 @@ private slots:
 	void aboutQt();
 	void doHomePage();
 	void doHistory();
+	void doAbout();
 	void settingsChanged(const QString& option, const QVariant& value);
 
 private:

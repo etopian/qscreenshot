@@ -32,7 +32,8 @@ HEADERS += $$PWD/screenshot.h \
     $$PWD/controller.h \
     $$PWD/defines.h \
     $$PWD/proxysettingsdlg.h \
-    $$PWD/shortcutmanager.h
+    $$PWD/shortcutmanager.h \
+    $$PWD/aboutdlg.h
 SOURCES += $$PWD/screenshot.cpp \
     $$PWD/server.cpp \
     $$PWD/editserverdlg.cpp \
@@ -46,13 +47,15 @@ SOURCES += $$PWD/screenshot.cpp \
     $$PWD/controller.cpp \
     $$PWD/proxysettingsdlg.cpp \
     $$PWD/main.cpp \
-    $$PWD/shortcutmanager.cpp
+    $$PWD/shortcutmanager.cpp \
+    $$PWD/aboutdlg.cpp
 FORMS += $$PWD/optionswidget.ui \
     $$PWD/editserverdlg.ui \
     $$PWD/screenshot.ui \
     $$PWD/screenshotoptions.ui \
     $$PWD/optionsdlg.ui \
-    $$PWD/proxysettingsdlg.ui
+    $$PWD/proxysettingsdlg.ui \
+    $$PWD/aboutdlg.ui
 
 RESOURCES += screenshot.qrc
 win32:RC_FILE += screenshot.rc

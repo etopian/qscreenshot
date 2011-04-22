@@ -233,6 +233,7 @@
     <property name="title">
      <string>Help</string>
     </property>
+    <addaction name="actionAbout"/>
     <addaction name="actionHome_page"/>
     <addaction name="separator"/>
     <addaction name="actionAbout_Qt"/>
@@ -294,6 +295,11 @@
   <action name="actionUpload">
    <property name="text">
     <string>Upload</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>

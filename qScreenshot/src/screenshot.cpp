@@ -41,6 +41,7 @@
 #include "iconset.h"
 #include "optionsdlg.h"
 #include "defines.h"
+#include "aboutdlg.h"
 
 #define PROTOCOL_FTP "ftp"
 #define PROTOCOL_HTTP "http"
@@ -274,6 +275,7 @@ void Screenshot::connectMenu()
 	connect(ui_.actionProxy_Settings, SIGNAL(triggered()), SLOT(doProxySettings()));
 	connect(ui_.actionSave, SIGNAL(triggered()), SLOT(saveScreenshot()));
 	connect(ui_.actionUpload, SIGNAL(triggered()), SLOT(uploadScreenshot()));
+	connect(ui_.actionAbout, SIGNAL(triggered()), SLOT(doAbout()));
 }
 
 void Screenshot::aboutQt()
@@ -815,6 +817,11 @@ void Screenshot::doProxySettings()
 		o->setOption(constProxyType, prox.type);
 		setProxy();
 	}
+}
+
+void Screenshot::doAbout()
+{
+	new AboutDlg(this);
 }
 
 void Screenshot::refreshSettings()
