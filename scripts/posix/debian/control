@@ -1,0 +1,13 @@
+Source: qscreenshot
+Section: x11
+Priority: extra
+Maintainer: Vitaly Tonkacheyev <thetvg@gmail.com>
+Build-Depends: debhelper (>= 7), cdbs, libqt4-dev
+Standards-Version: 3.8.3
+Homepage: http://code.google.com/p/qscreenshot/
+
+Package: qscreenshot
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libc6 (>=2.7-1), libgcc1 (>=1:4.1.1), libqtcore4 (>=4.4.3), libqtgui4 (>=4.4.3), libstdc++6 (>=4.1.1), libx11-6, zlib1g (>=1:1.1.4)
+Description: Create and modify screenshots
+ Simple tool written on Qt to create and modify screenshots, with ability to send image to popular image share servers.
