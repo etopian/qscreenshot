@@ -21,6 +21,10 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
+#define APP_NAME "qScreenshot"
+#define APP_VERSION "0.1"
+
+#define constVersionOption "version"
 #define constPenWidth "penwidth"
 #define constColor "color"
 #define constFont "font"

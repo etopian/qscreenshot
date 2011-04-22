@@ -27,11 +27,35 @@
 #include "shortcutmanager.h"
 #include <QMessageBox>
 
-const QString imageShack = "ImageShack.us&split&http://load.imageshack.us/&split&&split&&split&uploadtype=image&split&fileupload&split&(?:<div id=\"safari\" class=\"listbox\">.*)(?:<label><a href=\")(.*imageshack.*)(?:\"\\sonClick.*>.*</a></label>)&split&true";
-const QString radikal = "Radikal.ru&split&http://www.radikal.ru/action.aspx&split&&split&&split&upload=yes&split&F&split&<input\\s+id=\"input_link_1\"\\s+value=\"([^\"]+)\"&split&true";
-const QString pixacadem = "Pix.Academ.org&split&http://pix.academ.org/&split&&split&&split&action=upload_image&split&image&split&<div id='link'><a id=\"original\" href=\"(http[^\"]+)\"&split&true";
-const QString kachalka = "Kachalka.com&split&http://www.kachalka.com/upload.php&split&&split&&split&&split&userfile[]&split&name=\"option\" value=\"(http://www.kachalka.com/[^\"]+)\" /></td>&split&true";
+//static const QString imageShack = "ImageShack.us&split&http://load.imageshack.us/&split&&split&&split&uploadtype=image&split&fileupload&split&(?:<div id=\"safari\" class=\"listbox\">.*)(?:<label><a href=\")(.*imageshack.*)(?:\"\\sonClick.*>.*</a></label>)&split&true";
+static const QString radikal = "Radikal.ru&split&http://www.radikal.ru/action.aspx&split&&split&&split&upload=yes&split&F&split&<input\\s+id=\"input_link_1\"\\s+value=\"([^\"]+)\"&split&true";
+static const QString pixacadem = "Pix.Academ.org&split&http://pix.academ.org/&split&&split&&split&action=upload_image&split&image&split&<div id='link'><a id=\"original\" href=\"(http[^\"]+)\"&split&true";
+static const QString kachalka = "Kachalka.com&split&http://www.kachalka.com/upload.php&split&&split&&split&&split&userfile[]&split&name=\"option\" value=\"(http://www.kachalka.com/[^\"]+)\" /></td>&split&true";
 
+static const QStringList staticHostsList = QStringList() //<< imageShack
+					<< pixacadem << radikal << kachalka;
+
+
+static bool isListContainsServer(const QString& server, const QStringList& servers)
+{
+	foreach(QString serv, servers) {
+		if(serv.split(Server::splitString()).first() == server.split(Server::splitString()).first())
+			return true;
+	}
+	return false;
+}
+
+static void updateServer(QStringList *const servers, const QString& serv)
+{
+	QStringList::iterator it = servers->begin();
+	while(++it != servers->end()) {
+		const QStringList tmpOld = (*it).split(Server::splitString());
+		const QStringList tmpNew = serv.split(Server::splitString());
+		if(tmpOld.first() == tmpNew.first()) {
+			*it = serv;
+		}
+	}
+}
 
 Controller::Controller()
 	: QObject()
@@ -46,15 +70,24 @@ Controller::Controller()
 		o->setOption(constFormat, QVariant("png"));
 		o->setOption(constFileName, QVariant("pic-yyyyMMdd-hhmmss"));
 		o->setOption(constDelay, QVariant(0));
+		o->setOption(constVersionOption, APP_VERSION);
 	}
 
 	QStringList servers = vServers.toStringList();
-	QStringList hostsList = QStringList() << pixacadem << imageShack
-					 << radikal << kachalka;
-	foreach(const QString& host, hostsList) {
+	foreach(const QString& host, staticHostsList) {
 		if(!isListContainsServer(host, servers))
 			servers.append(host);
 	}
+
+	if(o->getOption(constVersionOption).toString() != APP_VERSION) {
+		foreach(const QString& host, staticHostsList) {
+			updateServer(&servers, host);
+		}
+
+		doUpdate();
+		o->setOption(constVersionOption, APP_VERSION);
+	}
+
 	o->setOption(constServerList, servers); //сохраняем обновленный список серверов
 
 	if(!ShortcutManager::instance()->setShortcut(QKeySequence(o->getOption(constShortCut).toString()))) {
@@ -115,11 +148,7 @@ void Controller::trayActivated(QSystemTrayIcon::ActivationReason reason)
 	}
 }
 
-bool Controller::isListContainsServer(const QString& server, const QStringList& servers)
+void Controller::doUpdate()
 {
-	foreach(QString serv, servers) {
-		if(serv.split(Server::splitString()).first() == server.split(Server::splitString()).first())
-			return true;
-	}
-	return false;
+	// do some updates
 }

@@ -41,7 +41,7 @@ private slots:
 	void trayActivated(QSystemTrayIcon::ActivationReason);
 
 private:
-	bool isListContainsServer(const QString& server, const QStringList& serverList);
+	void doUpdate();
 	void buildTray();
 
 	Screenshot* screenshot;

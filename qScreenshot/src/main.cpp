@@ -21,8 +21,7 @@
 #include <QApplication>
 #include "controller.h"
 
-#define APP_NAME "qScreenshot"
-#define APP_VERSION "0.1"
+#include "defines.h"
 
 int main(int argc, char* argv[])
 {
