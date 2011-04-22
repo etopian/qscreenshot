@@ -265,7 +265,7 @@ void Screenshot::connectMenu()
 {
 	connect(ui_.actionAbout_Qt, SIGNAL(triggered()), SLOT(aboutQt()));
 	connect(ui_.actionHome_page, SIGNAL(triggered()), SLOT(doHomePage()));
-	connect(ui_.actionExit, SIGNAL(triggered()), SLOT(close()));
+	connect(ui_.actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
 	connect(ui_.actionHistory, SIGNAL(triggered()), SLOT(doHistory()));
 	connect(ui_.actionNew_Screenshot, SIGNAL(triggered()), SLOT(newScreenshot()));
 	connect(ui_.actionOpen_Image, SIGNAL(triggered()), SLOT(openImage()));
