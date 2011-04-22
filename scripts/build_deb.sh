@@ -12,7 +12,7 @@ echo "Downloading qscreenshot sources"
 svn co http://qscreenshot.googlecode.com/svn/trunk/ ${progdir}
 cd ${progdir}
 mkdir ${builddeb}
-cp -r ${builddir} ${builddeb}
+cp -r ${builddir}/* ${builddeb}
 cp -r ${scripts}/* ${builddeb}
 cd ${builddeb}
 ./configure --prefix=${PREFIX}
