@@ -22,6 +22,7 @@
 #define ICONSET_H
 
 #include <QIcon>
+#include <QStyle>
 
 class Iconset : public QObject
 {
@@ -32,6 +33,7 @@ public:
 	~Iconset();
 
 	QIcon getIcon(const QString& name);
+	QIcon getIcon(QStyle::StandardPixmap);
 
 private:
 	Iconset();

@@ -21,6 +21,7 @@
 #include "iconset.h"
 #include <QFile>
 #include <QDebug>
+#include <QApplication>
 
 Iconset* Iconset::instance_ = 0;
 
@@ -60,4 +61,9 @@ QIcon Iconset::getIcon(const QString& name)
 		qDebug() << QString("Invalid icon name %1").arg(file);
 	}
 	return ico;
+}
+
+QIcon Iconset::getIcon(QStyle::StandardPixmap sp)
+{
+	return qApp->style()->standardIcon(sp);
 }

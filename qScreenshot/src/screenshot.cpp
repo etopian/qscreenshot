@@ -69,13 +69,13 @@ public:
 		QHBoxLayout *bl = new QHBoxLayout();
 		QPushButton *copyButton = new QPushButton(tr("Copy"));
 		copyButton->setToolTip(tr("Copy link to the clipboard"));
-		copyButton->setIcon(style()->standardIcon(QStyle::SP_DialogOpenButton));
+		copyButton->setIcon(Iconset::instance()->getIcon(QStyle::SP_DialogOpenButton));
 		QPushButton *openButton = new QPushButton(tr("Open"));
 		openButton->setToolTip(tr("Open link in browser"));
-		openButton->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
+		openButton->setIcon(Iconset::instance()->getIcon(QStyle::SP_BrowserReload));
 		QPushButton *closeButton = new QPushButton(tr("Close"));
 		closeButton->setToolTip(tr("Close history"));
-		closeButton->setIcon(style()->standardIcon(QStyle::SP_DialogCloseButton));
+		closeButton->setIcon(Iconset::instance()->getIcon(QStyle::SP_DialogCloseButton));
 		bl->addWidget(copyButton);
 		bl->addWidget(openButton);
 		bl->addStretch();

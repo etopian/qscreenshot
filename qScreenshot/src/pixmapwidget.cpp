@@ -23,6 +23,7 @@
 #include "pixmapwidget.h"
 #include "options.h"
 #include "defines.h"
+#include "iconset.h"
 
 #define ACCURACY 5
 
@@ -40,7 +41,7 @@ public:
 		QVBoxLayout *l = new QVBoxLayout(this);
 		QHBoxLayout *boxLayout = new QHBoxLayout;
 		QPushButton *selectFont = new QPushButton(tr("Select Font"));
-		selectFont->setIcon(style()->standardIcon(QStyle::SP_MessageBoxQuestion));
+		selectFont->setIcon(Iconset::instance()->getIcon(QStyle::SP_MessageBoxQuestion));
 		QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
 							     Qt::Horizontal, this);
 
