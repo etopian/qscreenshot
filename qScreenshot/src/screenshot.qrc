@@ -16,4 +16,7 @@
         <file>icons/undo.png</file>
         <file>icons/upload.png</file>
     </qresource>
+    <qresource prefix="/lang">
+        <file>lang/ru.qm</file>
+    </qresource>
 </RCC>

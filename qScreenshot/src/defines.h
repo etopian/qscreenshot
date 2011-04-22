@@ -45,5 +45,6 @@
 #define constProxyUser "proxy.user"
 #define constProxyPass "proxy.pass"
 #define constProxyType "proxy.type"
+#define constCurLang "curlang"
 
 #endif // DEFINES_H

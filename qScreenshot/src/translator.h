@@ -1,5 +1,5 @@
 /*
- * main.cpp
+ * translator.h
  * Copyright (C) 2011  Khryukin Evgeny
  *
  * This program is free software; you can redistribute it and/or
@@ -18,26 +18,25 @@
  *
  */
 
-#include <QApplication>
-#include "controller.h"
-#include "translator.h"
-
-#include "defines.h"
+#ifndef TRANSLATOR_H
+#define TRANSLATOR_H
+#include <QTranslator>
 
 
-int main(int argc, char* argv[])
+class Translator : public QTranslator
 {
-	QApplication app(argc, argv);
-	app.setApplicationName(APP_NAME);
-	app.setApplicationVersion(APP_VERSION);
-	app.setOrganizationName(APP_NAME);
-	app.setQuitOnLastWindowClosed(false);
+	Q_OBJECT
+public:
+	static Translator* instance();
+	static void reset();
+	~Translator();
 
-	//init translator
-	Translator::instance();
+public slots:
+	void retranslate(const QString& fileName);
 
-	Controller *controller = new Controller();
-	int ret = app.exec();
-	delete controller;
-	return ret;
-}
+private:
+	Translator();
+	static Translator* instance_;
+};
+
+#endif // TRANSLATOR_H

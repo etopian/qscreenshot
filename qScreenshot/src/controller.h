@@ -36,6 +36,7 @@ public:
 
 private slots:
 	void trayActivated(QSystemTrayIcon::ActivationReason);
+	void retranslate();
 
 private:
 	void doUpdate();

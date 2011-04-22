@@ -1,5 +1,5 @@
 /*
- * main.cpp
+ * translator.cpp
  * Copyright (C) 2011  Khryukin Evgeny
  *
  * This program is free software; you can redistribute it and/or
@@ -19,25 +19,52 @@
  */
 
 #include <QApplication>
-#include "controller.h"
+#include <QLocale>
 #include "translator.h"
-
+#include "options.h"
 #include "defines.h"
 
+Translator* Translator::instance_ = 0;
 
-int main(int argc, char* argv[])
+Translator* Translator::instance()
 {
-	QApplication app(argc, argv);
-	app.setApplicationName(APP_NAME);
-	app.setApplicationVersion(APP_VERSION);
-	app.setOrganizationName(APP_NAME);
-	app.setQuitOnLastWindowClosed(false);
+	if(!instance_) {
+		instance_ = new Translator();
+	}
 
-	//init translator
-	Translator::instance();
+	return instance_;
+}
 
-	Controller *controller = new Controller();
-	int ret = app.exec();
-	delete controller;
-	return ret;
+Translator::Translator()
+	: QTranslator(qApp)
+{
+	QVariant vCur = Options::instance()->getOption(constCurLang);
+	if(vCur == QVariant::Invalid) {
+		if(QLocale::system().name().contains("ru", Qt::CaseInsensitive)) {
+			vCur = "ru.qm";
+		}
+	}
+	retranslate(vCur.toString());
+}
+
+Translator::~Translator()
+{
+	qApp->removeTranslator(this);
+}
+
+void Translator::reset()
+{
+	delete instance_;
+	instance_ = 0;
+}
+
+void Translator::retranslate(const QString& fileName)
+{
+	if(load(fileName, ":/lang/lang/")) {
+		qApp->installTranslator(this);
+	}
+	else {
+		qApp->removeTranslator(this);
+	}
+	Options::instance()->setOption(constCurLang, fileName);
 }

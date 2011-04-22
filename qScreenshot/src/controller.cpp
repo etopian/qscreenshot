@@ -18,6 +18,9 @@
  *
  */
 
+#include <QMessageBox>
+#include <QDir>
+
 #include "controller.h"
 #include "screenshot.h"
 #include "server.h"
@@ -25,7 +28,8 @@
 #include "iconset.h"
 #include "defines.h"
 #include "shortcutmanager.h"
-#include <QMessageBox>
+#include "translator.h"
+
 
 //static const QString imageShack = "ImageShack.us&split&http://load.imageshack.us/&split&&split&&split&uploadtype=image&split&fileupload&split&(?:<div id=\"safari\" class=\"listbox\">.*)(?:<label><a href=\")(.*imageshack.*)(?:\"\\sonClick.*>.*</a></label>)&split&true";
 static const QString radikal = "Radikal.ru&split&http://www.radikal.ru/action.aspx&split&&split&&split&upload=yes&split&F&split&<input\\s+id=\"input_link_1\"\\s+value=\"([^\"]+)\"&split&true";
@@ -107,6 +111,7 @@ Controller::~Controller()
 	Options::reset();
 	Iconset::reset();
 	ShortcutManager::reset();
+	Translator::reset();
 }
 
 void Controller::buildTray()
@@ -125,6 +130,15 @@ void Controller::buildTray()
 	settingsMenu->addAction(tr("Options"), screenshot, SLOT(doOptions()));
 	settingsMenu->addAction(tr("Proxy settings"), screenshot, SLOT(doProxySettings()));
 
+	QMenu *lang = settingsMenu->addMenu(tr("Language"));
+	lang->addAction(tr("Default"), this, SLOT(retranslate()));
+	QDir langDir(":/lang/lang");
+	foreach(const QString& file, langDir.entryList(QDir::Files)) {
+		if(file.endsWith(".qm", Qt::CaseInsensitive)) {
+			lang->addAction(file, this, SLOT(retranslate()));
+		}
+	}
+
 	trayMenu_->addSeparator();
 	trayMenu_->addAction(tr("Exit"), qApp, SLOT(quit()));
 
@@ -142,4 +156,10 @@ void Controller::trayActivated(QSystemTrayIcon::ActivationReason reason)
 void Controller::doUpdate()
 {
 	// do some updates
+}
+
+void Controller::retranslate()
+{
+	QAction* act = static_cast<QAction*>(sender());
+	Translator::instance()->retranslate(act->text());
 }
