@@ -20,8 +20,8 @@
 
 #ifndef TRANSLATOR_H
 #define TRANSLATOR_H
-#include <QTranslator>
 
+#include <QTranslator>
 
 class Translator : public QTranslator
 {
@@ -30,6 +30,10 @@ public:
 	static Translator* instance();
 	static void reset();
 	~Translator();
+
+	static QStringList availableTranslations();
+
+	QString currentTranslation() const;
 
 public slots:
 	void retranslate(const QString& fileName);

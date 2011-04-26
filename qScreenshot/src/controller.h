@@ -36,7 +36,7 @@ public:
 
 private slots:
 	void trayActivated(QSystemTrayIcon::ActivationReason);
-	void retranslate();
+	void retranslate(const QString& trans);
 
 private:
 	void doUpdate();

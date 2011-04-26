@@ -19,7 +19,6 @@
  */
 
 #include <QMessageBox>
-#include <QDir>
 
 #include "controller.h"
 #include "screenshot.h"
@@ -61,6 +60,59 @@ static void updateServer(QStringList *const servers, const QString& serv)
 	}
 }
 
+
+
+//--------------------------------------
+//------------------LangMenu-------------
+//--------------------------------------
+class LangMenu : public QMenu
+{
+	Q_OBJECT
+public:
+	LangMenu(const QStringList& actions, const QString& curTrans, const QString& title, QWidget* p) : QMenu(title, p)
+	{
+		foreach(const QString& action, actions) {
+			QAction* act = new QAction(action, this);
+			act->setCheckable(true);
+			if(action == curTrans) {
+				act->setChecked(true);
+			}
+			connect(act, SIGNAL(triggered(bool)), SLOT(actionTriggered(bool)));
+			addAction(act);
+
+		}
+	}
+
+	~LangMenu()
+	{
+	}
+
+signals:
+	void newTranslation(const QString&);
+
+private slots:
+	void actionTriggered(bool state)
+	{
+		QAction *action = static_cast<QAction*>(sender());
+		if(!state) {
+			action->setChecked(!state);
+			return;
+		}
+
+		foreach(QAction* act, actions()) {
+			if(act != action) {
+				act->setChecked(false);
+			}
+		}
+
+		emit newTranslation(action->text());
+	}
+};
+
+
+//--------------------------------------
+//------------------Controller----------
+//--------------------------------------
 Controller::Controller()
 	: QObject()
 	, screenshot(0)
@@ -131,14 +183,12 @@ void Controller::buildTray()
 	settingsMenu->addAction(tr("Options"), screenshot, SLOT(doOptions()));
 	settingsMenu->addAction(tr("Proxy settings"), screenshot, SLOT(doProxySettings()));
 
-	QMenu *lang = settingsMenu->addMenu(tr("Language"));
-	lang->addAction(tr("Default"), this, SLOT(retranslate()));
-	QDir langDir(":/lang/lang");
-	foreach(const QString& file, langDir.entryList(QDir::Files)) {
-		if(file.endsWith(".qm", Qt::CaseInsensitive)) {
-			lang->addAction(file, this, SLOT(retranslate()));
-		}
-	}
+	LangMenu *lang = new LangMenu(Translator::availableTranslations(),
+				      Translator::instance()->currentTranslation(),
+				      tr("Language"), settingsMenu);
+
+	connect(lang, SIGNAL(newTranslation(QString)), SLOT(retranslate(QString)));
+	settingsMenu->addMenu(lang);
 
 	trayMenu_->addSeparator();
 	trayMenu_->addAction(tr("Exit"), qApp, SLOT(quit()));
@@ -159,8 +209,10 @@ void Controller::doUpdate()
 	// do some updates
 }
 
-void Controller::retranslate()
+void Controller::retranslate(const QString &trans)
 {
-	QAction* act = static_cast<QAction*>(sender());
-	Translator::instance()->retranslate(act->text());
+	Translator::instance()->retranslate(trans);
+	QMessageBox::information(0, tr("Translate"), tr("Restart application!"), QMessageBox::Ok);
 }
+
+#include "controller.moc"

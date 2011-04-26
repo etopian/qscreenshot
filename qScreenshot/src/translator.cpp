@@ -20,9 +20,14 @@
 
 #include <QApplication>
 #include <QLocale>
+#include <QDir>
+#include <QStringList>
+
 #include "translator.h"
 #include "options.h"
 #include "defines.h"
+
+static const QStringList transDirs = QStringList() << ":/lang/lang/";
 
 Translator* Translator::instance_ = 0;
 
@@ -40,9 +45,7 @@ Translator::Translator()
 {
 	QVariant vCur = Options::instance()->getOption(constCurLang);
 	if(vCur == QVariant::Invalid) {
-		if(QLocale::system().name().contains("ru", Qt::CaseInsensitive)) {
-			vCur = "ru.qm";
-		}
+		vCur = QLocale::system().name().split("_").first();
 	}
 	retranslate(vCur.toString());
 }
@@ -60,11 +63,36 @@ void Translator::reset()
 
 void Translator::retranslate(const QString& fileName)
 {
-	if(load(fileName, ":/lang/lang/")) {
-		qApp->installTranslator(this);
+	bool foundFile = false;
+	foreach(const QString& dir, transDirs) {
+		if(load(fileName+".qm", dir)) {
+			qApp->installTranslator(this);
+			foundFile = true;
+			break;
+		}
 	}
-	else {
+	if(!foundFile) {
 		qApp->removeTranslator(this);
 	}
 	Options::instance()->setOption(constCurLang, fileName);
+}
+
+QStringList Translator::availableTranslations()
+{
+	QStringList translations("en"); // add default translation
+	foreach(const QString& dir, transDirs) {
+		foreach(QString file, QDir(dir).entryList(QDir::Files)) {
+			if(file.endsWith(".qm", Qt::CaseInsensitive)) {
+				file.chop(3);
+				translations.append(file);
+			}
+		}
+	}
+
+	return translations;
+}
+
+QString Translator::currentTranslation() const
+{
+	return Options::instance()->getOption(constCurLang).toString();
 }
