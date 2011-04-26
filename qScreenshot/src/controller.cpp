@@ -118,6 +118,7 @@ void Controller::buildTray()
 {
 	QSystemTrayIcon *tray = new QSystemTrayIcon(this);
 	tray->setIcon(Iconset::instance()->getIcon("screenshot"));
+	tray->setToolTip(QString(APP_NAME) + " " + QString(APP_VERSION));
 	connect(tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayActivated(QSystemTrayIcon::ActivationReason)));
 
 	trayMenu_ = new QMenu();
