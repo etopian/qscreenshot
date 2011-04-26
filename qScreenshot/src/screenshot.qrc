@@ -15,6 +15,7 @@
         <file>icons/text.png</file>
         <file>icons/undo.png</file>
         <file>icons/upload.png</file>
+        <file>icons/insert.png</file>
     </qresource>
     <qresource prefix="/lang">
         <file>lang/ru.qm</file>

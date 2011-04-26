@@ -199,6 +199,9 @@ void PixmapWidget::buttonClicked(ToolBar::ButtonType t)
 	case ToolBar::ButtonCopy:
 		copy();
 		return;
+	case ToolBar::ButtonInsert:
+		insert();
+		return;
 	default:
 		break;
 	}
@@ -213,7 +216,7 @@ void PixmapWidget::newWidth(int w)
 	settingsChanged(constPenWidth, QVariant(w));
 }
 
-void PixmapWidget::setPixmap(QPixmap pix)
+void PixmapWidget::setPixmap(const QPixmap& pix)
 {
 	mainPixmap = QPixmap();
 	mainPixmap = pix;	
@@ -230,6 +233,16 @@ void PixmapWidget::cut()
 	saveUndoPixmap();
 	setPixmap(mainPixmap.copy((QRect)*selectionRect));
 	emit adjusted();
+}
+
+void PixmapWidget::insert()
+{
+	const QPixmap pix = qApp->clipboard()->pixmap();
+	if(!pix.isNull()) {
+		saveUndoPixmap();
+		setPixmap(pix);
+		emit adjusted();
+	}
 }
 
 void PixmapWidget::copy()

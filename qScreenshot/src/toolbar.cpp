@@ -87,6 +87,8 @@ void ToolBar::init()
 
 	buttons_.append(new Button(tr("Copy"), icoHost->getIcon("copy"), ToolBar::ButtonCopy, false,this) );
 	buttons_.last()->setShortcut(QKeySequence("Ctrl+c"));
+	buttons_.append(new Button(tr("Insert"), icoHost->getIcon("insert"), ToolBar::ButtonInsert, false,this) );
+	buttons_.last()->setShortcut(QKeySequence("Ctrl+v"));
 
 	buttons_.append(new Button(tr("Rotate"), icoHost->getIcon("rotate"), ToolBar::ButtonRotate, false,this) );
 	buttons_.append(new Button(tr("Insert Text"), icoHost->getIcon("text"), ToolBar::ButtonText, true,this) );

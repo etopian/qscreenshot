@@ -46,7 +46,7 @@ public:
 	PixmapWidget(QWidget *parent);
 	~PixmapWidget();
 	void setToolBar(ToolBar *bar);
-	void setPixmap(QPixmap pix);
+	void setPixmap(const QPixmap& pix);
 	QPixmap getPixmap() const { return mainPixmap; };
 
 private slots:	
@@ -57,6 +57,7 @@ private slots:
 	void cut();
 	void copy();
 	void selectFont();
+	void insert();
 
 protected:
 	void mousePressEvent(QMouseEvent *e);

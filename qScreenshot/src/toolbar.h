@@ -35,6 +35,7 @@ public:
 		ButtonSelect,
 		ButtonPen,
 		ButtonCut,
+		ButtonInsert,
 		ButtonText,
 		ButtonColor,
 		ButtonUndo,
