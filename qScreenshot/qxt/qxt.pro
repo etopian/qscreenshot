@@ -1,5 +1,5 @@
-TEMPLATE = lib
-CONFIG += -debug release
+#TEMPLATE = lib
+#CONFIG += -debug release staticlib
 INCLUDEPATH += src/gui/ \
 		src/core/
 
@@ -8,8 +8,3 @@ MOC_DIR = tmp/
 OBJECTS_DIR = tmp/
 
 include(src/src.pri)
-
-unix {
-	target.path=/usr/lib
-	INSTALLS += target
-}

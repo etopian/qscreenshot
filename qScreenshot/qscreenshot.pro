@@ -2,12 +2,11 @@ TEMPLATE = subdirs
 
 include(conf.pri)
 
-sub_qxt.subdir = qxt
+#sub_qxt.subdir = qxt
 sub_src.subdir = src
-sub_src.depends = sub_qxt
+#sub_src.depends = sub_qxt
 
-SUBDIRS += sub_qxt \
-	sub_src
+SUBDIRS += sub_src
 
 
 

@@ -12,8 +12,9 @@ DEPENDPATH += ../qxt/release \
     ../qxt/src/core \
     ../qxt/src/gui
 include(../conf.pri)
-LIBS += -L../qxt/release/ \
-    -lqxt
+include(../qxt/qxt.pro)
+#LIBS += -L../qxt/release/ \
+#    -lqxt
 HEADERS += $$PWD/screenshot.h \
     $$PWD/server.h \
     $$PWD/editserverdlg.h \
