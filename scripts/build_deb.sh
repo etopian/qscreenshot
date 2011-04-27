@@ -10,8 +10,7 @@ changelog_template='qscreenshot (VER-1) unstable; urgency=low
 
   * NEW_CHANGES
 
- -- USERNAME <USERNAME@HOSTNAME>  DDD, NN MMM YYYY HH:MM:SS +ZZZZ
-'
+ -- USERNAME <USERNAME@HOSTNAME>  DDD, NN MMM YYYY HH:MM:SS +ZZZZ'
 #
 cd ${home}
 echo "Downloading qscreenshot sources"
@@ -21,7 +20,7 @@ svnver=`svnversion`
 defines=${builddir}/src/defines.h
 ver_s=`grep APP_VERSION $defines`
 ver=`eval echo $(echo $ver_s | cut -d ' ' -f 3)`
-data=`date +'%a, %d %b %Y %T %z'`
+data=`LANG=en date +'%a, %d %b %Y %T %z'`
 user=`echo $USERNAME`
 host=`echo $HOSTNAME`
 builddeb=${progdir}/qscreenshot-${ver}
