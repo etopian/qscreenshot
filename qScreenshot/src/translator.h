@@ -41,6 +41,8 @@ public slots:
 private:
 	Translator();
 	static Translator* instance_;
+
+	QTranslator* qtTrans_;
 };
 
 #endif // TRANSLATOR_H

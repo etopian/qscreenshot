@@ -22,6 +22,7 @@
 #include <QLocale>
 #include <QDir>
 #include <QStringList>
+#include <QLibraryInfo>
 
 #include "translator.h"
 #include "options.h"
@@ -42,6 +43,7 @@ Translator* Translator::instance()
 
 Translator::Translator()
 	: QTranslator(qApp)
+	, qtTrans_(new QTranslator())
 {
 	QVariant vCur = Options::instance()->getOption(constCurLang);
 	if(vCur == QVariant::Invalid) {
@@ -53,6 +55,9 @@ Translator::Translator()
 Translator::~Translator()
 {
 	qApp->removeTranslator(this);
+	qApp->removeTranslator(qtTrans_);
+	delete qtTrans_;
+	qtTrans_ = 0;
 }
 
 void Translator::reset()
@@ -68,11 +73,15 @@ void Translator::retranslate(const QString& fileName)
 		if(load(fileName+".qm", dir)) {
 			qApp->installTranslator(this);
 			foundFile = true;
+			if(qtTrans_->load("qt_"+fileName, QLibraryInfo::location(QLibraryInfo::TranslationsPath))) {
+				qApp->installTranslator(qtTrans_);
+			}
 			break;
 		}
 	}
 	if(!foundFile) {
 		qApp->removeTranslator(this);
+		qApp->removeTranslator(qtTrans_);
 	}
 	Options::instance()->setOption(constCurLang, fileName);
 }
