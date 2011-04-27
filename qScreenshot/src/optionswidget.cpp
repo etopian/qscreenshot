@@ -32,6 +32,8 @@
 
 
 #ifdef Q_WS_WIN
+#include <QSettings>
+
 	static const QString regString = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run";
 #endif
 #ifdef Q_WS_X11
