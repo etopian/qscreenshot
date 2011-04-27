@@ -634,8 +634,8 @@ void Screenshot::uploadHttp()
 	ba.clear();
 	QUrl u;
 
-	QString boundary = "AaB03x";
-	QString filename = tr("%1.").arg(QDateTime::currentDateTime().toString(fileNameFormat)) + format;
+	const QString boundary = "AaB03x";
+	const QString filename = tr("%1.").arg(QDateTime::currentDateTime().toString(fileNameFormat)) + format;
 
 	Server *s = servers.at(ui_.cb_servers->currentIndex());
 	if(!s)
@@ -681,7 +681,7 @@ void Screenshot::uploadHttp()
 	QNetworkRequest netreq;
 	netreq.setUrl(QUrl(s->url()));
 
-	netreq.setRawHeader("User-Agent", "Psi-Plus Screenshot plugin");
+	netreq.setRawHeader("User-Agent", "qScreenshot");
 	netreq.setRawHeader("Content-Type", "multipart/form-data, boundary=" + boundary.toLatin1());
 	netreq.setRawHeader("Cache-Control", "no-cache");
 	netreq.setRawHeader("Accept", "*/*");
