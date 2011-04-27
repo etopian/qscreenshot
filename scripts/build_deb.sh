@@ -35,7 +35,7 @@ sed "s/VER-1/$ver-1/" -i "${changefile}"
 changes="New $svnver release"
 sed "s/NEW_CHANGES/$changes/" -i "${changefile}"
 sed "s/USERNAME/$user/" -i "${changefile}"
-sed "s/<USERNAME@HOSTNAME>/$user@$host/" -i "${changefile}"
+sed "s/<USERNAME@HOSTNAME>/<$user@$host>/" -i "${changefile}"
 sed "s/DDD, NN MMM YYYY HH:MM:SS +ZZZZ/${data}/" -i "${changefile}"
 ./configure --prefix=${PREFIX}
 dpkg-buildpackage -rfakeroot
