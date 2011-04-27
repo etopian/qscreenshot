@@ -21,6 +21,7 @@
 #include <QCloseEvent>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QDir>
 
 #include "optionswidget.h"
 #include "editserverdlg.h"
@@ -28,6 +29,24 @@
 #include "options.h"
 #include "defines.h"
 #include "shortcutmanager.h"
+
+
+#ifdef Q_WS_WIN
+	static const QString regString = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run";
+#endif
+#ifdef Q_WS_X11
+	static const QString autoStart = "/.config/autostart/qscreenshot.desktop";
+	static const QString desktopFile = "[Desktop Entry]\n"
+					   "Name=qScreenshot\n"
+					   "Encoding=UTF-8\n"
+					   "Comment=Create, modify and upload screenshots\n"
+					   "Type=Application\n"
+					   "Categories=Qt;Graphics;2DGraphics;Viewer;\n"
+					   "Exec=qScreenshot\n"
+					   "Terminal=false\n"
+					   "Icon=screenshot";
+#endif
+
 
 //--------------------------------------------------------
 //---GrepShortcutKeyDialog from libpsi with some changes--
@@ -152,6 +171,10 @@ OptionsWidget::OptionsWidget(QWidget* p)
 	fileName = o->getOption(constFileName, QVariant(fileName)).toString();
 	servers = o->getOption(constServerList).toStringList();
 
+#ifdef Q_WS_MAC
+	ui_.cb_autostart->hide();
+#endif
+
 	connect(ui_.pb_add, SIGNAL(clicked()), this, SLOT(addServer()));
 	connect(ui_.pb_del, SIGNAL(clicked()), this, SLOT(delServer()));
 	connect(ui_.pb_edit, SIGNAL(clicked()), this, SLOT(editServer()));
@@ -227,6 +250,27 @@ void OptionsWidget::applyOptions()
 		servers.append(s->settingsToString());
 	}
 	o->setOption(constServerList, QVariant(servers));
+
+#ifdef Q_WS_WIN
+	QSettings set(regString, QSettings::NativeFormat);
+	if(ui_.cb_autostart->isChecked()) {
+		set.setValue(APP_NAME, QDir::toNativeSeparators(qApp->applicationFilePath()));
+	}
+	else {
+		set.remove(APP_NAME);
+	}
+#endif
+#ifdef Q_WS_X11
+	QDir home = QDir::home();
+	if (!home.exists(".config/autostart")) {
+		home.mkpath(".config/autostart");
+	}
+	QFile f(home.absolutePath() + autoStart);
+	if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+		f.write(desktopFile.trimmed().toUtf8());
+		f.write(QString("\nHidden=%1").arg(ui_.cb_autostart->isChecked() ? "false\n" : "true\n").toUtf8());
+	}
+#endif
 }
 
 void OptionsWidget::restoreOptions()
@@ -243,6 +287,20 @@ void OptionsWidget::restoreOptions()
 		s->setFromString(settings);
 		s->setText(s->displayName());
 	}
+
+#ifdef Q_WS_WIN
+	QSettings set(regString, QSettings::NativeFormat);
+	const QString path = set.value(APP_NAME).toString();
+	ui_.cb_autostart->setChecked( (path == QDir::toNativeSeparators(qApp->applicationFilePath())) );
+#endif
+#ifdef Q_WS_X11
+	QFile desktop(QDir::homePath() + autoStart);
+	if (desktop.open(QIODevice::ReadOnly)
+		&& QString(desktop.readAll()).contains(QRegExp("\\bhidden\\s*=\\s*false", Qt::CaseInsensitive)))
+	{
+		ui_.cb_autostart->setChecked(true);
+	}
+#endif
 }
 
 void OptionsWidget::requstNewShortcut()

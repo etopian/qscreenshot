@@ -173,17 +173,17 @@
 <context>
     <name>GrepShortcutKeyDialog</name>
     <message>
-        <location filename="../optionswidget.cpp" line="45"/>
+        <location filename="../optionswidget.cpp" line="64"/>
         <source>New Shortcut</source>
         <translation type="unfinished">Новая  горячая клавиша</translation>
     </message>
     <message>
-        <location filename="../optionswidget.cpp" line="49"/>
+        <location filename="../optionswidget.cpp" line="68"/>
         <source>Cancel</source>
         <translation type="unfinished">Отмена</translation>
     </message>
     <message>
-        <location filename="../optionswidget.cpp" line="97"/>
+        <location filename="../optionswidget.cpp" line="116"/>
         <source>Set Keys</source>
         <translation type="unfinished">Задайте сочетание клавиш</translation>
     </message>
@@ -242,72 +242,77 @@
         <translation type="unfinished">Form</translation>
     </message>
     <message>
-        <location filename="../optionswidget.ui" line="22"/>
+        <location filename="../optionswidget.ui" line="20"/>
+        <source>Automatically launch application when OS starts</source>
+        <translation type="unfinished">Автоматически запускать приложение при запуске ОС</translation>
+    </message>
+    <message>
+        <location filename="../optionswidget.ui" line="29"/>
         <source>Shortcut:</source>
         <translation type="unfinished">Комбинация клавиш:</translation>
     </message>
     <message>
-        <location filename="../optionswidget.ui" line="36"/>
+        <location filename="../optionswidget.ui" line="43"/>
         <source>Format:</source>
         <translation type="unfinished">Формат:</translation>
     </message>
     <message>
-        <location filename="../optionswidget.ui" line="43"/>
+        <location filename="../optionswidget.ui" line="50"/>
         <source>File Name:</source>
         <translation type="unfinished">Имя файла:</translation>
     </message>
     <message>
-        <location filename="../optionswidget.ui" line="56"/>
+        <location filename="../optionswidget.ui" line="63"/>
         <source>Modify hotkey</source>
         <translation type="unfinished">Изменить сочетание клавиш</translation>
     </message>
     <message>
-        <location filename="../optionswidget.ui" line="59"/>
+        <location filename="../optionswidget.ui" line="66"/>
         <source>Modify</source>
         <translation type="unfinished">Изменить</translation>
     </message>
     <message>
-        <location filename="../optionswidget.ui" line="70"/>
+        <location filename="../optionswidget.ui" line="77"/>
         <source>Servers:</source>
         <translation type="unfinished">Серверы:</translation>
     </message>
     <message>
-        <location filename="../optionswidget.ui" line="119"/>
+        <location filename="../optionswidget.ui" line="126"/>
         <source>Add new server</source>
         <translation type="unfinished">Добавить новый сервер</translation>
     </message>
     <message>
-        <location filename="../optionswidget.ui" line="122"/>
+        <location filename="../optionswidget.ui" line="129"/>
         <source>Add</source>
         <translation type="unfinished">Добавить</translation>
     </message>
     <message>
-        <location filename="../optionswidget.ui" line="129"/>
+        <location filename="../optionswidget.ui" line="136"/>
         <source>Delete current server</source>
         <translation type="unfinished">Удалить выбранный сервер</translation>
     </message>
     <message>
-        <location filename="../optionswidget.ui" line="132"/>
+        <location filename="../optionswidget.ui" line="139"/>
         <source>Delete</source>
         <translation type="unfinished">Удалить</translation>
     </message>
     <message>
-        <location filename="../optionswidget.ui" line="139"/>
+        <location filename="../optionswidget.ui" line="146"/>
         <source>Edit current server</source>
         <translation type="unfinished">Редактировать выделенный сервер</translation>
     </message>
     <message>
-        <location filename="../optionswidget.ui" line="142"/>
+        <location filename="../optionswidget.ui" line="149"/>
         <source>Edit</source>
         <translation type="unfinished">Изменить</translation>
     </message>
     <message>
-        <location filename="../optionswidget.cpp" line="213"/>
+        <location filename="../optionswidget.cpp" line="236"/>
         <source>Error</source>
         <translation type="unfinished">Ошибка</translation>
     </message>
     <message>
-        <location filename="../optionswidget.cpp" line="213"/>
+        <location filename="../optionswidget.cpp" line="236"/>
         <source>Failed to register shortcut!</source>
         <translation type="unfinished">Не удалось зарегистрировать горячую клавишу!</translation>
     </message>
