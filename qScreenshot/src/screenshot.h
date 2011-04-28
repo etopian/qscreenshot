@@ -82,6 +82,7 @@ private:
 	void refreshSettings();
 	void saveGeometry();
 	void setProxy();
+	void shoot(WId id);
 
 	bool modified;
 	QPixmap originalPixmap;

@@ -485,17 +485,7 @@ void Screenshot::captureWindow(int delay)
 
 void Screenshot::shootWindow()
 {	
-	WId id = QxtWindowSystem::activeWindow();
-
-	qApp->beep();
-	originalPixmap = QPixmap();
-	originalPixmap = QPixmap::grabWindow(id);
-
-	ui_.pb_new_screenshot->setEnabled(true);
-	ui_.lb_url->setVisible(false);
-	updateScreenshotLabel();
-	bringToFront();
-	setModified(false);
+	shoot(QxtWindowSystem::activeWindow());
 }
 
 void Screenshot::captureDesktop(int delay)
@@ -506,9 +496,14 @@ void Screenshot::captureDesktop(int delay)
 
 void Screenshot::shootScreen()
 {
+	shoot(QApplication::desktop()->winId());
+}
+
+void Screenshot::shoot(WId id)
+{
 	qApp->beep();
 	originalPixmap = QPixmap();
-	originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
+	originalPixmap = QPixmap::grabWindow(id);
 
 	ui_.pb_new_screenshot->setEnabled(true);
 	ui_.lb_url->setVisible(false);
