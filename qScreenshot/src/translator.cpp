@@ -22,7 +22,6 @@
 #include <QLocale>
 #include <QDir>
 #include <QStringList>
-#include <QLibraryInfo>
 
 #include "translator.h"
 #include "options.h"
@@ -70,10 +69,10 @@ void Translator::retranslate(const QString& fileName)
 {
 	bool foundFile = false;
 	foreach(const QString& dir, transDirs) {
-		if(load(fileName+".qm", dir)) {
+		if(load(fileName, dir)) {
 			qApp->installTranslator(this);
 			foundFile = true;
-			if(qtTrans_->load("qt_"+fileName, QLibraryInfo::location(QLibraryInfo::TranslationsPath))) {
+			if(qtTrans_->load("qt_"+fileName, dir)) {
 				qApp->installTranslator(qtTrans_);
 			}
 			break;
@@ -92,6 +91,9 @@ QStringList Translator::availableTranslations()
 	foreach(const QString& dir, transDirs) {
 		foreach(QString file, QDir(dir).entryList(QDir::Files)) {
 			if(file.endsWith(".qm", Qt::CaseInsensitive)) {
+				if(file.startsWith("qt_", Qt::CaseInsensitive)) {
+					continue;
+				}
 				file.chop(3);
 				translations.append(file);
 			}

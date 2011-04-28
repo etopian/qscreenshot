@@ -19,5 +19,6 @@
     </qresource>
     <qresource prefix="/lang">
         <file>lang/ru.qm</file>
+        <file>lang/qt_ru.qm</file>
     </qresource>
 </RCC>
