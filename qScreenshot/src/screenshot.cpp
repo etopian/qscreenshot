@@ -43,6 +43,8 @@
 #include "defines.h"
 #include "aboutdlg.h"
 
+#include "qxtwindowsystem.h"
+
 #define PROTOCOL_FTP "ftp"
 #define PROTOCOL_HTTP "http"
 #define MAX_HISTORY_SIZE 10
@@ -429,7 +431,7 @@ void Screenshot::newScreenshot()
 {
 	ScreenshotOptions *so = new ScreenshotOptions(Options::instance()->getOption(constDelay).toInt(), this);
 	connect(so, SIGNAL(captureArea(int)), SLOT(captureArea(int)));
-	//connect(so, SIGNAL(captureWindow(int)), this, SLOT(captureWindow(int)));
+	connect(so, SIGNAL(captureWindow(int)), this, SLOT(captureWindow(int)));
 	connect(so, SIGNAL(captureDesktop(int)), SLOT(captureDesktop(int)));
 	connect(so, SIGNAL(screenshotCanceled()), SLOT(screenshotCanceled()));
 	saveGeometry();
@@ -475,30 +477,26 @@ void Screenshot::shootArea(const QRect& rect)
 	setModified(false);
 }
 
-/*void Screenshot::captureWindow(int delay)
+void Screenshot::captureWindow(int delay)
 {
+	Options::instance()->setOption(constDelay, delay);
 	QTimer::singleShot(delay*1000, this, SLOT(shootWindow()));
 }
 
 void Screenshot::shootWindow()
 {	
-
-	Window *w = reinterpret_cast<ulong *>(property(QX11Info::appRootWindow(),
-						       NET_ACTIVE_WINDOW, XA_WINDOW));
-
-	if(!w) {
-		shootScreen();
-		return;
-	}
+	WId id = QxtWindowSystem::activeWindow();
 
 	qApp->beep();
 	originalPixmap = QPixmap();
-	originalPixmap = QPixmap::grabWindow(w);
-	updateScreenshotLabel();
+	originalPixmap = QPixmap::grabWindow(id);
 
 	ui_.pb_new_screenshot->setEnabled(true);
+	ui_.lb_url->setVisible(false);
+	updateScreenshotLabel();
 	bringToFront();
-}*/
+	setModified(false);
+}
 
 void Screenshot::captureDesktop(int delay)
 {
@@ -509,8 +507,7 @@ void Screenshot::captureDesktop(int delay)
 void Screenshot::shootScreen()
 {
 	qApp->beep();
-	originalPixmap = QPixmap(); // clear image for low memory situations
-				// on embedded devices.
+	originalPixmap = QPixmap();
 	originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
 
 	ui_.pb_new_screenshot->setEnabled(true);

@@ -3,7 +3,7 @@
 INCLUDEPATH += src/gui/ \
 		src/core/
 
-DESTDIR = release/
+#DESTDIR = release/
 MOC_DIR = tmp/
 OBJECTS_DIR = tmp/
 

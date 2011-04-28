@@ -1,16 +1,24 @@
 HEADERS  += $$PWD/core/qxtglobal.h
 SOURCES  += $$PWD/core/qxtglobal.cpp
 
-HEADERS  += $$PWD/gui/qxtglobalshortcut.h
-HEADERS  += $$PWD/gui/qxtglobalshortcut_p.h
-SOURCES += $$PWD/gui/qxtglobalshortcut.cpp
+HEADERS  += $$PWD/gui/qxtglobalshortcut.h \
+	$$PWD/gui/qxtglobalshortcut_p.h \
+	$$PWD/gui/qxtwindowsystem.h
+
+SOURCES += $$PWD/gui/qxtglobalshortcut.cpp \
+	$$PWD/gui/qxtwindowsystem.cpp
 
 unix:!macx {
-	SOURCES += $$PWD/gui/qxtglobalshortcut_x11.cpp
+	SOURCES += $$PWD/gui/qxtglobalshortcut_x11.cpp \
+		$$PWD/gui/qxtwindowsystem_x11.cpp
 }
 macx {
-	SOURCES += $$PWD/gui/qxtglobalshortcut_mac.cpp
+	SOURCES += $$PWD/gui/qxtglobalshortcut_mac.cpp \
+		$$PWD/gui/qxtwindowsystem_mac.cpp
+
+	HEADERS  += $$PWD/gui/qxtwindowsystem_mac.h
 }
 win32 {
-	SOURCES += $$PWD/gui/qxtglobalshortcut_win.cpp
+	SOURCES += $$PWD/gui/qxtglobalshortcut_win.cpp \
+		$$PWD/gui/qxtwindowsystem_win.cpp
 }

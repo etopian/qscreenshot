@@ -56,9 +56,9 @@ private slots:
 	void ftpReplyFinished();
 	void httpReplyFinished();
 	void captureDesktop(int);
-	//void captureWindow(int);
+	void captureWindow(int);
 	void captureArea(int);	
-	//void shootWindow();
+	void shootWindow();
 	void shootArea(const QRect& rect);
 	void screenshotCanceled();
 	void pixmapAdjusted();
