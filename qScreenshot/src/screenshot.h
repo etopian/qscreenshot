@@ -21,12 +21,16 @@
 #ifndef SCREENSHOT_H
 #define SCREENSHOT_H
 
-#include "ui_screenshot.h"
-#include "toolbar.h"
-#include "proxysettingsdlg.h"
+#include <QMainWindow>
+#include <QPointer>
 
+struct Proxy;
 class Server;
 class QNetworkAccessManager;
+
+namespace Ui {
+	class Screenshot;
+}
 
 class Screenshot : public QMainWindow
 {
@@ -92,10 +96,10 @@ private:
 	QList<Server*> servers;
 	QPointer<QNetworkAccessManager> manager;
 	QByteArray ba;
-	Proxy proxy_;
+	Proxy *proxy_;
 	QStringList history_;
 
-	Ui::Screenshot ui_;
+	Ui::Screenshot *ui_;
 };
 
 

@@ -32,6 +32,7 @@
 #include <QCloseEvent>
 #include <QDesktopServices>
 #include <QClipboard>
+#include <QPushButton>
 
 
 #include "screenshot.h"
@@ -42,6 +43,8 @@
 #include "optionsdlg.h"
 #include "defines.h"
 #include "aboutdlg.h"
+#include "proxysettingsdlg.h"
+#include "ui_screenshot.h"
 
 #include "qxtwindowsystem.h"
 
@@ -215,44 +218,46 @@ Screenshot::Screenshot()
 	: QMainWindow()
 	, modified(false)
 	, lastFolder(QDir::home().absolutePath())
+	, proxy_(new Proxy())
+	, ui_(new Ui::Screenshot)
 {
 	setAttribute(Qt::WA_DeleteOnClose);
-	ui_.setupUi(this);
+	ui_->setupUi(this);
 
 	updateWidgets(false);
-	ui_.lb_url->setVisible(false);
+	ui_->lb_url->setVisible(false);
 
 	refreshSettings();
 	setProxy();
 	history_ = Options::instance()->getOption(constHistory).toStringList();
 
-	ui_.lb_pixmap->setToolBar(ui_.tb_bar);
+	ui_->lb_pixmap->setToolBar(ui_->tb_bar);
 
 	Iconset* icoHost = Iconset::instance();
-	ui_.pb_upload->setIcon(icoHost->getIcon("upload"));
-	ui_.pb_cancel->setIcon(icoHost->getIcon("cancel"));
-	ui_.pb_open->setIcon(icoHost->getIcon("browse"));
-	ui_.pb_save->setIcon(icoHost->getIcon("download"));
-	ui_.pb_print->setIcon(icoHost->getIcon("print"));
-	ui_.pb_new_screenshot->setIcon(icoHost->getIcon("screenshot"));
+	ui_->pb_upload->setIcon(icoHost->getIcon("upload"));
+	ui_->pb_cancel->setIcon(icoHost->getIcon("cancel"));
+	ui_->pb_open->setIcon(icoHost->getIcon("browse"));
+	ui_->pb_save->setIcon(icoHost->getIcon("download"));
+	ui_->pb_print->setIcon(icoHost->getIcon("print"));
+	ui_->pb_new_screenshot->setIcon(icoHost->getIcon("screenshot"));
 
-	ui_.pb_save->setShortcut(QKeySequence("Ctrl+s"));
-	ui_.pb_upload->setShortcut(QKeySequence("Ctrl+u"));
-	ui_.pb_open->setShortcut(QKeySequence("Ctrl+o"));
-	ui_.pb_print->setShortcut(QKeySequence("Ctrl+p"));
-	ui_.pb_new_screenshot->setShortcut(QKeySequence("Ctrl+n"));
+	ui_->pb_save->setShortcut(QKeySequence("Ctrl+s"));
+	ui_->pb_upload->setShortcut(QKeySequence("Ctrl+u"));
+	ui_->pb_open->setShortcut(QKeySequence("Ctrl+o"));
+	ui_->pb_print->setShortcut(QKeySequence("Ctrl+p"));
+	ui_->pb_new_screenshot->setShortcut(QKeySequence("Ctrl+n"));
 
 	connectMenu();
 
-	connect(ui_.pb_save, SIGNAL(clicked()), this, SLOT(saveScreenshot()));
-	connect(ui_.pb_upload, SIGNAL(clicked()), this, SLOT(uploadScreenshot()));
-	connect(ui_.pb_print, SIGNAL(clicked()), this, SLOT(printScreenshot()));
-	connect(ui_.pb_new_screenshot, SIGNAL(clicked()), this, SLOT(newScreenshot()));
-	connect(ui_.pb_cancel,SIGNAL(clicked()),this,SLOT(cancelUpload()));
-	connect(ui_.pb_open, SIGNAL(clicked()), this, SLOT(openImage()));
-	connect(ui_.lb_pixmap, SIGNAL(adjusted()), this, SLOT(pixmapAdjusted()));
-	connect(ui_.lb_pixmap, SIGNAL(settingsChanged(QString,QVariant)), SLOT(settingsChanged(QString, QVariant)));
-	connect(ui_.lb_pixmap, SIGNAL(modified(bool)), this, SLOT(setModified(bool)));
+	connect(ui_->pb_save, SIGNAL(clicked()), this, SLOT(saveScreenshot()));
+	connect(ui_->pb_upload, SIGNAL(clicked()), this, SLOT(uploadScreenshot()));
+	connect(ui_->pb_print, SIGNAL(clicked()), this, SLOT(printScreenshot()));
+	connect(ui_->pb_new_screenshot, SIGNAL(clicked()), this, SLOT(newScreenshot()));
+	connect(ui_->pb_cancel,SIGNAL(clicked()),this,SLOT(cancelUpload()));
+	connect(ui_->pb_open, SIGNAL(clicked()), this, SLOT(openImage()));
+	connect(ui_->lb_pixmap, SIGNAL(adjusted()), this, SLOT(pixmapAdjusted()));
+	connect(ui_->lb_pixmap, SIGNAL(settingsChanged(QString,QVariant)), SLOT(settingsChanged(QString, QVariant)));
+	connect(ui_->lb_pixmap, SIGNAL(modified(bool)), this, SLOT(setModified(bool)));
 
 	setWindowIcon(icoHost->getIcon("screenshot"));
 }
@@ -262,22 +267,24 @@ Screenshot::~Screenshot()
 	qDeleteAll(servers);
 	servers.clear();
 	saveGeometry();
+	delete ui_;
+	delete proxy_;
 }
 
 void Screenshot::connectMenu()
 {
-	connect(ui_.actionAbout_Qt, SIGNAL(triggered()), SLOT(aboutQt()));
-	connect(ui_.actionHome_page, SIGNAL(triggered()), SLOT(doHomePage()));
-	connect(ui_.actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
-	connect(ui_.actionHistory, SIGNAL(triggered()), SLOT(doHistory()));
-	connect(ui_.actionNew_Screenshot, SIGNAL(triggered()), SLOT(newScreenshot()));
-	connect(ui_.actionOpen_Image, SIGNAL(triggered()), SLOT(openImage()));
-	connect(ui_.actionOptions, SIGNAL(triggered()), SLOT(doOptions()));
-	connect(ui_.actionPrint, SIGNAL(triggered()), SLOT(printScreenshot()));
-	connect(ui_.actionProxy_Settings, SIGNAL(triggered()), SLOT(doProxySettings()));
-	connect(ui_.actionSave, SIGNAL(triggered()), SLOT(saveScreenshot()));
-	connect(ui_.actionUpload, SIGNAL(triggered()), SLOT(uploadScreenshot()));
-	connect(ui_.actionAbout, SIGNAL(triggered()), SLOT(doAbout()));
+	connect(ui_->actionAbout_Qt, SIGNAL(triggered()), SLOT(aboutQt()));
+	connect(ui_->actionHome_page, SIGNAL(triggered()), SLOT(doHomePage()));
+	connect(ui_->actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
+	connect(ui_->actionHistory, SIGNAL(triggered()), SLOT(doHistory()));
+	connect(ui_->actionNew_Screenshot, SIGNAL(triggered()), SLOT(newScreenshot()));
+	connect(ui_->actionOpen_Image, SIGNAL(triggered()), SLOT(openImage()));
+	connect(ui_->actionOptions, SIGNAL(triggered()), SLOT(doOptions()));
+	connect(ui_->actionPrint, SIGNAL(triggered()), SLOT(printScreenshot()));
+	connect(ui_->actionProxy_Settings, SIGNAL(triggered()), SLOT(doProxySettings()));
+	connect(ui_->actionSave, SIGNAL(triggered()), SLOT(saveScreenshot()));
+	connect(ui_->actionUpload, SIGNAL(triggered()), SLOT(uploadScreenshot()));
+	connect(ui_->actionAbout, SIGNAL(triggered()), SLOT(doAbout()));
 }
 
 void Screenshot::aboutQt()
@@ -292,19 +299,19 @@ void Screenshot::doHomePage()
 
 void Screenshot::updateWidgets(bool vis)
 {
-	ui_.progressBar->setVisible(vis);
-	ui_.pb_cancel->setVisible(vis);
-	ui_.cb_servers->setEnabled(!vis);
-	ui_.pb_upload->setEnabled(!vis);
+	ui_->progressBar->setVisible(vis);
+	ui_->pb_cancel->setVisible(vis);
+	ui_->cb_servers->setEnabled(!vis);
+	ui_->pb_upload->setEnabled(!vis);
 }
 
 void Screenshot::setServersList(const QStringList& l)
 {
-	ui_.cb_servers->clear();
+	ui_->cb_servers->clear();
 	qDeleteAll(servers);
 	servers.clear();
-	ui_.cb_servers->setEnabled(false);
-	ui_.pb_upload->setEnabled(false);
+	ui_->cb_servers->setEnabled(false);
+	ui_->pb_upload->setEnabled(false);
 	foreach(QString settings, l) {
 		if(settings.isEmpty()) {
 			continue;
@@ -312,22 +319,22 @@ void Screenshot::setServersList(const QStringList& l)
 		Server *s = new Server();
 		s->setFromString(settings);
 		servers.append(s);
-		ui_.cb_servers->addItem(s->displayName());
+		ui_->cb_servers->addItem(s->displayName());
 	}
 	if(servers.size() > 0) {
-		ui_.cb_servers->setEnabled(true);
-		ui_.pb_upload->setEnabled(true);
+		ui_->cb_servers->setEnabled(true);
+		ui_->pb_upload->setEnabled(true);
 	}
 }
 
 void Screenshot::setProxy()
 {
 	Options *o = Options::instance();
-	proxy_.host = o->getOption(constProxyHost).toString();
-	proxy_.port = o->getOption(constProxyPort).toInt();
-	proxy_.user = o->getOption(constProxyUser).toString();
-	proxy_.pass = o->getOption(constProxyPass).toString();
-	proxy_.type = o->getOption(constProxyType).toString();
+	proxy_->host = o->getOption(constProxyHost).toString();
+	proxy_->port = o->getOption(constProxyPort).toInt();
+	proxy_->user = o->getOption(constProxyUser).toString();
+	proxy_->pass = o->getOption(constProxyPass).toString();
+	proxy_->type = o->getOption(constProxyType).toString();
 }
 
 void Screenshot::openImage()
@@ -352,7 +359,7 @@ void Screenshot::setImagePath(const QString& path)
 
 void Screenshot::updateScreenshotLabel()
 {
-	ui_.lb_pixmap->setPixmap(originalPixmap);
+	ui_->lb_pixmap->setPixmap(originalPixmap);
 }
 
 void Screenshot::pixmapAdjusted()
@@ -360,11 +367,11 @@ void Screenshot::pixmapAdjusted()
 	if(windowState() == Qt::WindowMaximized)
 		return;
 
-	QSize s = ui_.lb_pixmap->size();
+	QSize s = ui_->lb_pixmap->size();
 	if(s.height() > 600 || s.width() > 800)
 		resize(800,600);
 	else {
-		ui_.scrollArea->setMinimumSize(s + QSize(15,20)); //хак, для красивого уменьшения размера главного окна
+		ui_->scrollArea->setMinimumSize(s + QSize(15,20)); //хак, для красивого уменьшения размера главного окна
 		adjustSize();
 		QTimer::singleShot(100, this, SLOT(fixSizes())); // необходимо время, чтобы ресайзить главное окно
 	}
@@ -372,7 +379,7 @@ void Screenshot::pixmapAdjusted()
 
 void Screenshot::fixSizes()
 {
-	ui_.scrollArea->setMinimumSize(0,0);
+	ui_->scrollArea->setMinimumSize(0,0);
 }
 
 void Screenshot::setModified(bool m)
@@ -387,7 +394,7 @@ void Screenshot::printScreenshot()
 	if(pd->exec() == QDialog::Accepted && p.isValid()) {
 		QPainter painter;
 		painter.begin(&p); 
-		QPixmap pix = ui_.lb_pixmap->getPixmap();
+		QPixmap pix = ui_->lb_pixmap->getPixmap();
 		const QSize size = p.pageRect().size();
 		if(pix.size().height() > size.height() || pix.size().width() > size.width()) {
 			pix = pix.scaled(size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -436,13 +443,13 @@ void Screenshot::newScreenshot()
 	connect(so, SIGNAL(screenshotCanceled()), SLOT(screenshotCanceled()));
 	saveGeometry();
 	setWindowState(Qt::WindowMinimized);
-	ui_.pb_new_screenshot->setEnabled(false);
+	ui_->pb_new_screenshot->setEnabled(false);
 	so->show();
 }
 
 void Screenshot::screenshotCanceled()
 {
-	ui_.pb_new_screenshot->setEnabled(true);
+	ui_->pb_new_screenshot->setEnabled(true);
 	bringToFront();
 }
 
@@ -470,8 +477,8 @@ void Screenshot::shootArea(const QRect& rect)
 		originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId(), rect.x(), rect.y(), rect.width(), rect.height());
 	}
 
-	ui_.pb_new_screenshot->setEnabled(true);
-	ui_.lb_url->setVisible(false);
+	ui_->pb_new_screenshot->setEnabled(true);
+	ui_->lb_url->setVisible(false);
 	updateScreenshotLabel();
 	bringToFront();
 	setModified(false);
@@ -505,8 +512,8 @@ void Screenshot::shoot(WId id)
 	originalPixmap = QPixmap();
 	originalPixmap = QPixmap::grabWindow(id);
 
-	ui_.pb_new_screenshot->setEnabled(true);
-	ui_.lb_url->setVisible(false);
+	ui_->pb_new_screenshot->setEnabled(true);
+	ui_->lb_url->setVisible(false);
 	updateScreenshotLabel();
 	bringToFront();
 	setModified(false);
@@ -514,8 +521,8 @@ void Screenshot::shoot(WId id)
 
 void Screenshot::saveScreenshot()
 {
-	ui_.pb_save->setEnabled(false);
-	originalPixmap = ui_.lb_pixmap->getPixmap();
+	ui_->pb_save->setEnabled(false);
+	originalPixmap = ui_->lb_pixmap->getPixmap();
 	QString initialPath = lastFolder + tr("/%1.").arg(QDateTime::currentDateTime().toString(fileNameFormat)) + format;
 
 	QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"),
@@ -529,22 +536,22 @@ void Screenshot::saveScreenshot()
 		lastFolder = fi.absoluteDir().path();
 		settingsChanged(constLastFolder, lastFolder);
 	}
-	ui_.pb_save->setEnabled(true);
+	ui_->pb_save->setEnabled(true);
 	modified = false;
 }
 
 void Screenshot::dataTransferProgress(qint64 done, qint64 total)
 {
-	ui_.progressBar->setMaximum(total);
-	ui_.progressBar->setValue(done);
+	ui_->progressBar->setMaximum(total);
+	ui_->progressBar->setValue(done);
 }
 
 void Screenshot::uploadScreenshot()
 {
-	if(!ui_.cb_servers->isEnabled())
+	if(!ui_->cb_servers->isEnabled())
 		return;
 
-	int index = ui_.cb_servers->currentIndex();
+	int index = ui_->cb_servers->currentIndex();
 	if(index == -1 || servers.size() <= index)
 		return;
 
@@ -553,11 +560,11 @@ void Screenshot::uploadScreenshot()
 		return;
 
 	QString scheme = QUrl(s->url()).scheme();
-	ui_.pb_upload->setEnabled(false);
-	ui_.pb_cancel->setVisible(true);
-	ui_.cb_servers->setEnabled(false);
+	ui_->pb_upload->setEnabled(false);
+	ui_->pb_cancel->setVisible(true);
+	ui_->cb_servers->setEnabled(false);
 
-	originalPixmap = ui_.lb_pixmap->getPixmap();
+	originalPixmap = ui_->lb_pixmap->getPixmap();
 
 	if (scheme.toLower() == QLatin1String(PROTOCOL_FTP)) {
 		uploadFtp();
@@ -581,7 +588,7 @@ void Screenshot::uploadFtp()
 	QFileInfo fi(fileName);
 	fileName = fi.fileName();
 
-	Server *s = servers.at(ui_.cb_servers->currentIndex());
+	Server *s = servers.at(ui_->cb_servers->currentIndex());
 	if(!s)
 		cancelUpload();
 
@@ -596,9 +603,9 @@ void Screenshot::uploadFtp()
 	}
 
 	manager = new QNetworkAccessManager(this);
-	if(s->useProxy() && !proxy_.host.isEmpty()) {
-		QNetworkProxy p = QNetworkProxy(QNetworkProxy::HttpCachingProxy, proxy_.host, proxy_.port, proxy_.user, proxy_.pass);
-		if(proxy_.type == "socks")
+	if(s->useProxy() && !proxy_->host.isEmpty()) {
+		QNetworkProxy p = QNetworkProxy(QNetworkProxy::HttpCachingProxy, proxy_->host, proxy_->port, proxy_->user, proxy_->pass);
+		if(proxy_->type == "socks")
 			p.setType(QNetworkProxy::Socks5Proxy);
 		manager->setProxy(p);
 	}
@@ -608,9 +615,9 @@ void Screenshot::uploadFtp()
 		path += "/";
 	u.setPath(path+fileName);
 
-	ui_.progressBar->setValue(0);
-	ui_.progressBar->show();
-	ui_.lb_url->setVisible(false);
+	ui_->progressBar->setValue(0);
+	ui_->progressBar->show();
+	ui_->lb_url->setVisible(false);
 
 	QNetworkReply *reply = manager->put(QNetworkRequest(u), ba);
 
@@ -629,7 +636,7 @@ void Screenshot::uploadHttp()
 	const QString boundary = "AaB03x";
 	const QString filename = tr("%1.").arg(QDateTime::currentDateTime().toString(fileNameFormat)) + format;
 
-	Server *s = servers.at(ui_.cb_servers->currentIndex());
+	Server *s = servers.at(ui_->cb_servers->currentIndex());
 	if(!s)
 		cancelUpload();
 
@@ -663,9 +670,9 @@ void Screenshot::uploadHttp()
 
 	manager = new QNetworkAccessManager(this);
 
-	if(s->useProxy() && !proxy_.host.isEmpty()) {
-		QNetworkProxy p = QNetworkProxy(QNetworkProxy::HttpCachingProxy, proxy_.host, proxy_.port, proxy_.user, proxy_.pass);
-		if(proxy_.type == "socks")
+	if(s->useProxy() && !proxy_->host.isEmpty()) {
+		QNetworkProxy p = QNetworkProxy(QNetworkProxy::HttpCachingProxy, proxy_->host, proxy_->port, proxy_->user, proxy_->pass);
+		if(proxy_->type == "socks")
 			p.setType(QNetworkProxy::Socks5Proxy);
 		manager->setProxy(p);
 	}
@@ -679,9 +686,9 @@ void Screenshot::uploadHttp()
 	netreq.setRawHeader("Accept", "*/*");
 	netreq.setRawHeader("Content-Length", QString::number(ba.length()).toLatin1());
 
-	ui_.progressBar->setValue(0);
-	ui_.progressBar->show();
-	ui_.lb_url->setVisible(false);
+	ui_->progressBar->setValue(0);
+	ui_->progressBar->show();
+	ui_->lb_url->setVisible(false);
 
 	QNetworkReply* reply = manager->post(netreq, ba);
 	connect(reply, SIGNAL(uploadProgress(qint64 , qint64)), this, SLOT(dataTransferProgress(qint64 , qint64)));
@@ -693,10 +700,10 @@ void Screenshot::uploadHttp()
 void Screenshot::ftpReplyFinished()
 {
 	QNetworkReply *reply = (QNetworkReply*)sender();
-	ui_.lb_url->setVisible(true);
+	ui_->lb_url->setVisible(true);
 	if(reply->error() == QNetworkReply::NoError) {
 		const QString url = reply->url().toString(QUrl::RemoveUserInfo | QUrl::StripTrailingSlash);
-		ui_.lb_url->setText(QString("<a href=\"%1\">%1</a>").arg(url));
+		ui_->lb_url->setText(QString("<a href=\"%1\">%1</a>").arg(url));
 		history_.push_front(url);
 		if(history_.size() > MAX_HISTORY_SIZE) {
 			history_.removeLast();
@@ -704,7 +711,7 @@ void Screenshot::ftpReplyFinished()
 		settingsChanged(constHistory, history_);
 	}
 	else {
-		ui_.lb_url->setText(reply->errorString());
+		ui_->lb_url->setText(reply->errorString());
 	}
 	reply->close();
 	reply->deleteLater();
@@ -715,8 +722,8 @@ void Screenshot::httpReplyFinished()
 {
 	QNetworkReply *reply = (QNetworkReply*)sender();
 	if(reply->error() != QNetworkReply::NoError) {
-		ui_.lb_url->setVisible(true);
-		ui_.lb_url->setText(reply->errorString());
+		ui_->lb_url->setVisible(true);
+		ui_->lb_url->setText(reply->errorString());
 		updateWidgets(false);
 		reply->close();
 		reply->deleteLater();
@@ -731,7 +738,7 @@ void Screenshot::httpReplyFinished()
 		manager->get(netreq);
 	}
 	else {
-		Server *s = servers.at(ui_.cb_servers->currentIndex());
+		Server *s = servers.at(ui_->cb_servers->currentIndex());
 		QString page = reply->readAll();
 
 		/*
@@ -744,10 +751,10 @@ void Screenshot::httpReplyFinished()
 		*/
 
 		QRegExp rx(s->servRegexp());
-		ui_.lb_url->setVisible(true);
+		ui_->lb_url->setVisible(true);
 		if (rx.indexIn(page) != -1) {
 			QString imageurl = rx.cap(1);
-			ui_.lb_url->setText(QString("<a href=\"%1\">%1</a>").arg(imageurl));
+			ui_->lb_url->setText(QString("<a href=\"%1\">%1</a>").arg(imageurl));
 			history_.push_front(imageurl);
 			if(history_.size() > MAX_HISTORY_SIZE) {
 				history_.removeLast();
@@ -755,7 +762,7 @@ void Screenshot::httpReplyFinished()
 			settingsChanged(constHistory, history_);
 		}
 		else
-			ui_.lb_url->setText(tr("Can't parse URL (Reply URL: <a href=\"%1\">%1</a>)").arg(reply->url().toString()));
+			ui_->lb_url->setText(tr("Can't parse URL (Reply URL: <a href=\"%1\">%1</a>)").arg(reply->url().toString()));
 
 		updateWidgets(false);
 		reply->close();
@@ -798,7 +805,7 @@ void Screenshot::doHistory()
 void Screenshot::doProxySettings()
 {
 	ProxySettingsDlg ps(this);
-	ps.setProxySettings(proxy_);
+	ps.setProxySettings(*proxy_);
 	if(ps.exec() == QDialog::Accepted) {
 		Options *o = Options::instance();
 		Proxy prox = ps.getSettings();

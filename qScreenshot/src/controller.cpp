@@ -19,6 +19,8 @@
  */
 
 #include <QMessageBox>
+#include <QMenu>
+#include <QApplication>
 
 #include "controller.h"
 #include "screenshot.h"

@@ -29,6 +29,7 @@
 #include "options.h"
 #include "defines.h"
 #include "shortcutmanager.h"
+#include "ui_optionswidget.h"
 
 
 #ifdef Q_WS_WIN
@@ -163,9 +164,10 @@ private:
 //---------------------------------------------------
 OptionsWidget::OptionsWidget(QWidget* p)
 	: QWidget(p)
+	, ui_(new Ui::OptionsWidget)
 {
-	ui_.setupUi(this);
-	ui_.cb_hack->setVisible(false);
+	ui_->setupUi(this);
+	ui_->cb_hack->setVisible(false);
 
 	Options* o = Options::instance();
 	shortCut = o->getOption(constShortCut, QVariant(shortCut)).toString();
@@ -174,17 +176,21 @@ OptionsWidget::OptionsWidget(QWidget* p)
 	servers = o->getOption(constServerList).toStringList();
 
 #ifdef Q_WS_MAC
-	ui_.cb_autostart->hide();
+	ui_->cb_autostart->hide();
 #endif
 
-	connect(ui_.pb_add, SIGNAL(clicked()), this, SLOT(addServer()));
-	connect(ui_.pb_del, SIGNAL(clicked()), this, SLOT(delServer()));
-	connect(ui_.pb_edit, SIGNAL(clicked()), this, SLOT(editServer()));
-	connect(ui_.lw_servers, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editServer()));
-	connect(ui_.lw_servers, SIGNAL(currentRowChanged(int)), this, SLOT(applyButtonActivate()));
-	connect(ui_.pb_modify, SIGNAL(clicked()), this, SLOT(requstNewShortcut()));
+	connect(ui_->pb_add, SIGNAL(clicked()), this, SLOT(addServer()));
+	connect(ui_->pb_del, SIGNAL(clicked()), this, SLOT(delServer()));
+	connect(ui_->pb_edit, SIGNAL(clicked()), this, SLOT(editServer()));
+	connect(ui_->lw_servers, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editServer()));
+	connect(ui_->lw_servers, SIGNAL(currentRowChanged(int)), this, SLOT(applyButtonActivate()));
+	connect(ui_->pb_modify, SIGNAL(clicked()), this, SLOT(requstNewShortcut()));
 }
 
+OptionsWidget::~OptionsWidget()
+{
+	delete ui_;
+}
 
 void OptionsWidget::addServer()
 {
@@ -195,17 +201,17 @@ void OptionsWidget::addServer()
 
 void OptionsWidget::delServer()
 {
-	Server *s = (Server*)ui_.lw_servers->currentItem();
+	Server *s = (Server*)ui_->lw_servers->currentItem();
 	if(!s)
 		return;
-	ui_.lw_servers->removeItemWidget(s);
+	ui_->lw_servers->removeItemWidget(s);
 	delete(s);
 	applyButtonActivate();
 }
 
 void OptionsWidget::editServer()
 {
-	Server *s = (Server*)ui_.lw_servers->currentItem();
+	Server *s = (Server*)ui_->lw_servers->currentItem();
 	if(!s)
 		return;
 	EditServerDlg *esd = new EditServerDlg(this);
@@ -216,7 +222,7 @@ void OptionsWidget::editServer()
 
 void OptionsWidget::addNewServer(const QString& settings)
 {
-	Server *s = new Server(ui_.lw_servers);
+	Server *s = new Server(ui_->lw_servers);
 	s->setFromString(settings);
 	s->setText(s->displayName());
 
@@ -225,37 +231,37 @@ void OptionsWidget::addNewServer(const QString& settings)
 
 void OptionsWidget::applyButtonActivate()
 {
-	ui_.cb_hack->toggle();
+	ui_->cb_hack->toggle();
 }
 
 void OptionsWidget::applyOptions()
 {
 	Options* o = Options::instance();
 
-	if(shortCut != ui_.le_shortcut->text()) {
-		shortCut = ui_.le_shortcut->text();
+	if(shortCut != ui_->le_shortcut->text()) {
+		shortCut = ui_->le_shortcut->text();
 		if(!ShortcutManager::instance()->setShortcut(QKeySequence(shortCut))) {
 			QMessageBox::critical(0, tr("Error"), tr("Failed to register shortcut!"), QMessageBox::Ok);
 		}
 		o->setOption(constShortCut, QVariant(shortCut));
 	}
 
-	format = ui_.cb_format->currentText();
+	format = ui_->cb_format->currentText();
 	o->setOption(constFormat, QVariant(format));
 
-	fileName = ui_.le_filename->text();
+	fileName = ui_->le_filename->text();
 	o->setOption(constFileName, QVariant(fileName));
 
 	servers.clear();
-	for(int i = 0; i < ui_.lw_servers->count(); i++) {
-		Server *s = (Server *)ui_.lw_servers->item(i);
+	for(int i = 0; i < ui_->lw_servers->count(); i++) {
+		Server *s = (Server *)ui_->lw_servers->item(i);
 		servers.append(s->settingsToString());
 	}
 	o->setOption(constServerList, QVariant(servers));
 
 #ifdef Q_WS_WIN
 	QSettings set(regString, QSettings::NativeFormat);
-	if(ui_.cb_autostart->isChecked()) {
+	if(ui_->cb_autostart->isChecked()) {
 		set.setValue(APP_NAME, QDir::toNativeSeparators(qApp->applicationFilePath()));
 	}
 	else {
@@ -270,7 +276,7 @@ void OptionsWidget::applyOptions()
 	QFile f(home.absolutePath() + autoStart);
 	if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
 		f.write(desktopFile.trimmed().toUtf8());
-		f.write(QString("\nHidden=%1").arg(ui_.cb_autostart->isChecked() ? "false\n" : "true\n").toUtf8());
+		f.write(QString("\nHidden=%1").arg(ui_->cb_autostart->isChecked() ? "false\n" : "true\n").toUtf8());
 	}
 #endif
 }
@@ -278,14 +284,14 @@ void OptionsWidget::applyOptions()
 void OptionsWidget::restoreOptions()
 {
 	QStringList l = QStringList() << "jpg" << "png";
-	ui_.cb_format->addItems(l);
-	int index = ui_.cb_format->findText(format);
+	ui_->cb_format->addItems(l);
+	int index = ui_->cb_format->findText(format);
 	if(index != -1)
-		ui_.cb_format->setCurrentIndex(index);
-	ui_.le_filename->setText(fileName);
-	ui_.le_shortcut->setText(shortCut);
+		ui_->cb_format->setCurrentIndex(index);
+	ui_->le_filename->setText(fileName);
+	ui_->le_shortcut->setText(shortCut);
 	foreach(QString settings, servers) {
-		Server *s = new Server(ui_.lw_servers);
+		Server *s = new Server(ui_->lw_servers);
 		s->setFromString(settings);
 		s->setText(s->displayName());
 	}
@@ -293,14 +299,14 @@ void OptionsWidget::restoreOptions()
 #ifdef Q_WS_WIN
 	QSettings set(regString, QSettings::NativeFormat);
 	const QString path = set.value(APP_NAME).toString();
-	ui_.cb_autostart->setChecked( (path == QDir::toNativeSeparators(qApp->applicationFilePath())) );
+	ui_->cb_autostart->setChecked( (path == QDir::toNativeSeparators(qApp->applicationFilePath())) );
 #endif
 #ifdef Q_WS_X11
 	QFile desktop(QDir::homePath() + autoStart);
 	if (desktop.open(QIODevice::ReadOnly)
 		&& QString(desktop.readAll()).contains(QRegExp("\\bhidden\\s*=\\s*false", Qt::CaseInsensitive)))
 	{
-		ui_.cb_autostart->setChecked(true);
+		ui_->cb_autostart->setChecked(true);
 	}
 #endif
 }
@@ -314,7 +320,7 @@ void OptionsWidget::requstNewShortcut()
 
 void OptionsWidget::onNewShortcut(const QKeySequence& ks)
 {
-	ui_.le_shortcut->setText(ks.toString(QKeySequence::NativeText));
+	ui_->le_shortcut->setText(ks.toString(QKeySequence::NativeText));
 }
 
 #include "optionswidget.moc"

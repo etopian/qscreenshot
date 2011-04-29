@@ -20,13 +20,18 @@
 #ifndef OPTIONSWIDGET_H
 #define OPTIONSWIDGET_H
 
-#include "ui_optionswidget.h"
+#include <QWidget>
+
+namespace Ui {
+	class OptionsWidget;
+}
 
 class OptionsWidget : public QWidget
 {
 	Q_OBJECT
 public:
 	OptionsWidget(QWidget* p = 0);
+	~OptionsWidget();
 
 	void applyOptions();
 	void restoreOptions();
@@ -45,7 +50,7 @@ private:
 	QString format;
 	QString fileName;
 	QStringList servers;
-	Ui::OptionsWidget ui_;
+	Ui::OptionsWidget *ui_;
 };
 
 #endif // OPTIONSWIDGET_H

@@ -51,8 +51,6 @@ private:
 	QString url_, userName_, password_;
 	QString servPostdata_, servFileinput_, servRegexp_/*, servFilefilter_*/;
 	bool useProxy_;
-
-	void processOltSettingsString(QStringList l);
 };
 
 #endif // SERVER_H

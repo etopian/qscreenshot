@@ -19,16 +19,23 @@
  */
 
 #include "optionsdlg.h"
+#include "ui_optionsdlg.h"
 
 OptionsDlg::OptionsDlg(QWidget* p)
 	: QDialog(p)
+	, ui_(new Ui::OptionsDlg)
 {
-	ui_.setupUi(this);
-	ui_.options->restoreOptions();
+	ui_->setupUi(this);
+	ui_->options->restoreOptions();
+}
+
+OptionsDlg::~OptionsDlg()
+{
+	delete ui_;
 }
 
 void OptionsDlg::accept()
 {
-	ui_.options->applyOptions();
+	ui_->options->applyOptions();
 	QDialog::accept();
 }

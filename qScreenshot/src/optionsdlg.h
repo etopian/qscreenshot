@@ -21,19 +21,24 @@
 #ifndef OPTIONSDLG_H
 #define OPTIONSDLG_H
 
-#include "ui_optionsdlg.h"
+#include <QDialog>
+
+namespace Ui {
+	class OptionsDlg;
+}
 
 class OptionsDlg : public QDialog
 {
 	Q_OBJECT
 public:
 	OptionsDlg(QWidget* p = 0);
+	~OptionsDlg();
 
 public slots:
 	void accept();
 
 private:
-	Ui::OptionsDlg ui_;
+	Ui::OptionsDlg *ui_;
 };
 
 #endif // OPTIONSDLG_H

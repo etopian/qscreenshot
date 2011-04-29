@@ -22,24 +22,26 @@
 #define EDITSERVERDLG_H
 
 #include <QPointer>
-#include "ui_editserverdlg.h"
+#include <QDialog>
 
 class Server;
+namespace Ui {
+	class EditServerDlg;
+}
 
 class EditServerDlg : public QDialog
 {
 	Q_OBJECT
 public:
 	EditServerDlg(QWidget *parent = 0);
+	~EditServerDlg();
+
 	void setServer(Server *const s);
 
 signals:
 	void okPressed(const QString&);
 
 private:
-	Ui::EditServerDlg ui_;
-
-	void processOldSettingString(QStringList l);
 	void setSettings(const QString& settings);
 
 private slots:
@@ -47,6 +49,7 @@ private slots:
 
 private:
 	QPointer<Server> server_;
+	Ui::EditServerDlg *ui_;
 };
 
 #endif // EDITSERVERDLG_H

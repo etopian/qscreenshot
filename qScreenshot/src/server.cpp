@@ -64,10 +64,7 @@ QString Server::settingsToString() const
 void Server::setFromString(const QString& settings)
 {
 	QStringList l = settings.split(splitString());
-	if(l.size() == 11) {
-		processOltSettingsString(l);
-		return;
-	}
+
 	if(!l.isEmpty())
 		displayName_ = l.takeFirst();
 	if(!l.isEmpty())
@@ -86,24 +83,6 @@ void Server::setFromString(const QString& settings)
 		servFilefilter_ = l.takeFirst();*/
 	if(!l.isEmpty())
 		useProxy_ = (l.takeFirst() == "true");
-}
-
-void Server::processOltSettingsString(QStringList l)
-{
-	displayName_ = l.takeFirst();
-	url_ = l.takeFirst();
-	userName_ = l.takeFirst();
-	password_ = l.takeFirst();
-
-	//remove old useless proxy settings
-	l.takeFirst();
-	l.takeFirst();
-	l.takeFirst();
-	l.takeFirst();
-
-	servPostdata_ = l.takeFirst();
-	servFileinput_ = l.takeFirst();
-	servRegexp_ = l.takeFirst();
 }
 
 QString Server::splitString()

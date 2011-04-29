@@ -19,20 +19,27 @@
  */
 
 #include "screenshotoptions.h"
+#include "ui_screenshotoptions.h"
 #include <QTimer>
 
 ScreenshotOptions::ScreenshotOptions(int delay, QWidget *parent)
 	: QDialog(parent)
+	, ui_(new Ui::ScreenshotOptions)
 {
 	setAttribute(Qt::WA_DeleteOnClose);
-	ui_.setupUi(this);
-	ui_.sb_delay->setValue(delay);
+	ui_->setupUi(this);
+	ui_->sb_delay->setValue(delay);
 
-	connect(ui_.buttonBox, SIGNAL(accepted()), SLOT(okPressed()));
-	connect(ui_.buttonBox,SIGNAL(rejected()), SLOT(cancelPressed()));
+	connect(ui_->buttonBox, SIGNAL(accepted()), SLOT(okPressed()));
+	connect(ui_->buttonBox,SIGNAL(rejected()), SLOT(cancelPressed()));
 
 	adjustSize();
 	setFixedSize(size());
+}
+
+ScreenshotOptions::~ScreenshotOptions()
+{
+	delete ui_;
 }
 
 void ScreenshotOptions::okPressed()
@@ -43,12 +50,12 @@ void ScreenshotOptions::okPressed()
 
 void ScreenshotOptions::hideTimeout()
 {
-	int delay = ui_.sb_delay->value();
-	if(ui_.rb_capture_desktop->isChecked())
+	int delay = ui_->sb_delay->value();
+	if(ui_->rb_capture_desktop->isChecked())
 		emit captureDesktop(delay);
-	else if(ui_.rb_capture_window->isChecked())
+	else if(ui_->rb_capture_window->isChecked())
 		emit captureWindow(delay);
-	else if(ui_.rb_capture_area->isChecked())
+	else if(ui_->rb_capture_area->isChecked())
 		emit captureArea(delay);
 	deleteLater();
 }

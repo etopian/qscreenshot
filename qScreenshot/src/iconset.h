@@ -21,7 +21,6 @@
 #ifndef ICONSET_H
 #define ICONSET_H
 
-#include <QIcon>
 #include <QStyle>
 
 class Iconset : public QObject

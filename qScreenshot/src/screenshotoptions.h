@@ -21,13 +21,18 @@
 #ifndef SCREENSHOTOPTIONS_H
 #define SCREENSHOTOPTIONS_H
 
-#include "ui_screenshotoptions.h"
+#include <QDialog>
+
+namespace Ui {
+	class ScreenshotOptions;
+}
 
 class ScreenshotOptions : public QDialog
 {
 	Q_OBJECT
 public:
 	ScreenshotOptions(int delay, QWidget *parent = 0);
+	~ScreenshotOptions();
 
 signals:
 	void captureDesktop(int);
@@ -41,7 +46,7 @@ private slots:
 	void hideTimeout();
 
 private:
-	Ui::ScreenshotOptions ui_;
+	Ui::ScreenshotOptions *ui_;
 };
 
 #endif // SCREENSHOTOPTIONS_H
