@@ -22,7 +22,7 @@
 #define DEFINES_H
 
 #define APP_NAME "qScreenshot"
-#define APP_VERSION "0.2"
+#define APP_VERSION "0.3"
 
 #define constVersionOption "version"
 #define constPenWidth "penwidth"
