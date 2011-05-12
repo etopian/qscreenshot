@@ -445,10 +445,14 @@ void PixmapWidget::paintToPixmap(QString text)
 
 void PixmapWidget::selectColor()
 {
-	color_ = QColorDialog::getColor(color_, this);
-	pen.setColor(color_);
-	bar_->setColorForColorButton(color_);
-	settingsChanged(constColor, QVariant(color_.name()));
+	QColorDialog cd;
+	cd.setCurrentColor(color_);
+	if(cd.exec() == QDialog::Accepted) {
+		color_ = cd.currentColor();
+		pen.setColor(color_);
+		bar_->setColorForColorButton(color_);
+		settingsChanged(constColor, QVariant(color_.name()));
+	}
 }
 
 void PixmapWidget::selectFont()
