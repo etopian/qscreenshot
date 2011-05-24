@@ -73,6 +73,7 @@ private slots:
 	void doHomePage();
 	void doHistory();
 	void doAbout();
+	void doCheckUpdates();
 	void settingsChanged(const QString& option, const QVariant& value);
 
 private:

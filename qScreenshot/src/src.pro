@@ -13,8 +13,9 @@ DEPENDPATH += ../qxt/release \
     ../qxt/src/gui
 include(../conf.pri)
 include(../qxt/qxt.pro)
-#LIBS += -L../qxt/release/ \
-#    -lqxt
+
+# LIBS += -L../qxt/release/ \
+# -lqxt
 HEADERS += $$PWD/screenshot.h \
     $$PWD/server.h \
     $$PWD/editserverdlg.h \
@@ -30,7 +31,8 @@ HEADERS += $$PWD/screenshot.h \
     $$PWD/proxysettingsdlg.h \
     $$PWD/shortcutmanager.h \
     $$PWD/aboutdlg.h \
-    $$PWD/translator.h
+    $$PWD/translator.h \
+    updateschecker.h
 SOURCES += $$PWD/screenshot.cpp \
     $$PWD/server.cpp \
     $$PWD/editserverdlg.cpp \
@@ -46,7 +48,8 @@ SOURCES += $$PWD/screenshot.cpp \
     $$PWD/main.cpp \
     $$PWD/shortcutmanager.cpp \
     $$PWD/aboutdlg.cpp \
-    $$PWD/translator.cpp
+    $$PWD/translator.cpp \
+    updateschecker.cpp
 FORMS += $$PWD/optionswidget.ui \
     $$PWD/editserverdlg.ui \
     $$PWD/screenshot.ui \

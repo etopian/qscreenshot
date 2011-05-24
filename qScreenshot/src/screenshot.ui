@@ -233,6 +233,8 @@
     <property name="title">
      <string>Help</string>
     </property>
+    <addaction name="actionCheck_for_updates"/>
+    <addaction name="separator"/>
     <addaction name="actionAbout"/>
     <addaction name="actionHome_page"/>
     <addaction name="separator"/>
@@ -300,6 +302,11 @@
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
+   </property>
+  </action>
+  <action name="actionCheck_for_updates">
+   <property name="text">
+    <string>Check for updates</string>
    </property>
   </action>
  </widget>

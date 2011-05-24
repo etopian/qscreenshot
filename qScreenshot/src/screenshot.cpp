@@ -44,6 +44,7 @@
 #include "defines.h"
 #include "aboutdlg.h"
 #include "proxysettingsdlg.h"
+#include "updateschecker.h"
 #include "ui_screenshot.h"
 
 #include "qxtwindowsystem.h"
@@ -285,6 +286,7 @@ void Screenshot::connectMenu()
 	connect(ui_->actionSave, SIGNAL(triggered()), SLOT(saveScreenshot()));
 	connect(ui_->actionUpload, SIGNAL(triggered()), SLOT(uploadScreenshot()));
 	connect(ui_->actionAbout, SIGNAL(triggered()), SLOT(doAbout()));
+	connect(ui_->actionCheck_for_updates, SIGNAL(triggered()), SLOT(doCheckUpdates()));
 }
 
 void Screenshot::aboutQt()
@@ -824,6 +826,11 @@ void Screenshot::doProxySettings()
 void Screenshot::doAbout()
 {
 	new AboutDlg(this);
+}
+
+void Screenshot::doCheckUpdates()
+{
+	new UpdatesChecker(this);
 }
 
 void Screenshot::refreshSettings()
