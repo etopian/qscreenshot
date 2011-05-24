@@ -27,6 +27,7 @@
 struct Proxy;
 class Server;
 class QNetworkAccessManager;
+class QNetworkReply;
 
 namespace Ui {
 	class Screenshot;
@@ -58,7 +59,7 @@ private slots:
 	void cancelUpload();
 	void dataTransferProgress( qint64 done, qint64 total );
 	void ftpReplyFinished();
-	void httpReplyFinished();
+	void httpReplyFinished(QNetworkReply*);
 	void captureDesktop(int);
 	void captureWindow(int);
 	void captureArea(int);	

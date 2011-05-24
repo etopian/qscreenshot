@@ -654,6 +654,9 @@ void Screenshot::uploadHttp()
 	ba.append("--" + boundary + "\r\n");
 	ba.append("Content-Disposition: form-data; name=\"" + s->servFileinput() + "\"; filename=\"" + filename.toUtf8() + "\"\r\n");
 	ba.append("Content-Transfer-Encoding: binary\r\n");
+	ba.append(QString("Content-Type: image/%1\r\n")
+		  .arg(format == "jpg" ? "jpeg" : format) // FIXME!!!!! жуткий костыль, но что поделаешь
+		  .toUtf8());
 	ba.append("\r\n");
 
 	QByteArray a;
@@ -692,8 +695,7 @@ void Screenshot::uploadHttp()
 
 	QNetworkReply* reply = manager->post(netreq, ba);
 	connect(reply, SIGNAL(uploadProgress(qint64 , qint64)), this, SLOT(dataTransferProgress(qint64 , qint64)));
-	//connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(replyError(QNetworkReply::NetworkError)));
-	connect(reply, SIGNAL(finished()), this, SLOT(httpReplyFinished()));
+	connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(httpReplyFinished(QNetworkReply*)));
 	modified = false;
 }
 
@@ -718,9 +720,8 @@ void Screenshot::ftpReplyFinished()
 	updateWidgets(false);
 }
 
-void Screenshot::httpReplyFinished()
+void Screenshot::httpReplyFinished(QNetworkReply *reply)
 {
-	QNetworkReply *reply = (QNetworkReply*)sender();
 	if(reply->error() != QNetworkReply::NoError) {
 		ui_->lb_url->setVisible(true);
 		ui_->lb_url->setText(reply->errorString());
@@ -730,10 +731,11 @@ void Screenshot::httpReplyFinished()
 		return;
 	}
 
-	if (reply->rawHeader("Location").length() > 0) {
-		QUrl netrequrl(reply->rawHeader("Location"));
+	const QString loc = reply->rawHeader("Location");
+	if (!loc.isEmpty()) {
+		QUrl netrequrl(loc);
 		if (netrequrl.host().isEmpty())
-			netrequrl = QUrl("http://"+reply->url().encodedHost()+reply->rawHeader("Location"));
+			netrequrl = QUrl("http://" + reply->url().encodedHost() + loc);
 		QNetworkRequest netreq(netrequrl);
 		manager->get(netreq);
 	}
@@ -741,14 +743,15 @@ void Screenshot::httpReplyFinished()
 		Server *s = servers.at(ui_->cb_servers->currentIndex());
 		QString page = reply->readAll();
 
-		/*
-		Код нужен для анализа html и нахождения ссылки на картинку
-		QFile f("~/page.html");
-		f.open(QIODevice::ReadWrite);
-		QTextStream out(&f);
-		out << page;
-		f.close();
-		*/
+//
+//		//Код нужен для анализа html и нахождения ссылки на картинку
+//		QFile f(QDir::home().absolutePath() + "/page.html");
+//		if(f.open(QIODevice::WriteOnly)) {
+//			QTextStream out(&f);
+//			out << page;
+//			f.close();
+//		}
+//
 
 		QRegExp rx(s->servRegexp());
 		ui_->lb_url->setVisible(true);
@@ -764,10 +767,10 @@ void Screenshot::httpReplyFinished()
 		else
 			ui_->lb_url->setText(tr("Can't parse URL (Reply URL: <a href=\"%1\">%1</a>)").arg(reply->url().toString()));
 
-		updateWidgets(false);
-		reply->close();
-		reply->deleteLater();
+		updateWidgets(false);	
 	}
+	reply->close();
+	reply->deleteLater();
 }
 
 void Screenshot::closeEvent(QCloseEvent *e)
