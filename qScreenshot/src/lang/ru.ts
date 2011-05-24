@@ -27,57 +27,57 @@
 <context>
     <name>Controller</name>
     <message>
-        <location filename="../controller.cpp" line="150"/>
+        <location filename="../controller.cpp" line="153"/>
         <source>Error</source>
         <translation type="unfinished">Ошибка</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="150"/>
+        <location filename="../controller.cpp" line="153"/>
         <source>Failed to register shortcut!</source>
         <translation type="unfinished">Не удалось зарегистрировать горячую клавишу!</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="177"/>
+        <location filename="../controller.cpp" line="180"/>
         <source>Grab screen</source>
         <translation type="unfinished">Захватить экран</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="178"/>
+        <location filename="../controller.cpp" line="181"/>
         <source>New Screenshot</source>
         <translation type="unfinished">Новый снимок</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="179"/>
+        <location filename="../controller.cpp" line="182"/>
         <source>Open Image</source>
         <translation type="unfinished">Открыть изображение</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="182"/>
+        <location filename="../controller.cpp" line="185"/>
         <source>Settings</source>
         <translation type="unfinished">Настройки</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="183"/>
+        <location filename="../controller.cpp" line="186"/>
         <source>Options</source>
         <translation type="unfinished">Параметры</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="184"/>
+        <location filename="../controller.cpp" line="187"/>
         <source>Proxy settings</source>
         <translation type="unfinished">Настройки прокси-сервера</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="188"/>
+        <location filename="../controller.cpp" line="191"/>
         <source>Language</source>
         <translation type="unfinished">Язык</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="215"/>
+        <location filename="../controller.cpp" line="218"/>
         <source>Translate</source>
         <translation type="unfinished">Перевод</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="215"/>
+        <location filename="../controller.cpp" line="218"/>
         <source>Restart application!</source>
         <translation type="unfinished">Перезапустите приложение!</translation>
     </message>
@@ -86,7 +86,7 @@
         <translation type="obsolete">По-умолчанию</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="194"/>
+        <location filename="../controller.cpp" line="197"/>
         <source>Exit</source>
         <translation type="unfinished">Выход</translation>
     </message>
@@ -165,7 +165,7 @@
 <context>
     <name>GrabAreaWidget</name>
     <message>
-        <location filename="../screenshot.cpp" line="132"/>
+        <location filename="../screenshot.cpp" line="138"/>
         <source>Select area</source>
         <translation type="unfinished">Укажите область</translation>
     </message>
@@ -173,17 +173,17 @@
 <context>
     <name>GrepShortcutKeyDialog</name>
     <message>
-        <location filename="../optionswidget.cpp" line="64"/>
+        <location filename="../optionswidget.cpp" line="67"/>
         <source>New Shortcut</source>
         <translation type="unfinished">Новая  горячая клавиша</translation>
     </message>
     <message>
-        <location filename="../optionswidget.cpp" line="68"/>
+        <location filename="../optionswidget.cpp" line="71"/>
         <source>Cancel</source>
         <translation type="unfinished">Отмена</translation>
     </message>
     <message>
-        <location filename="../optionswidget.cpp" line="116"/>
+        <location filename="../optionswidget.cpp" line="119"/>
         <source>Set Keys</source>
         <translation type="unfinished">Задайте сочетание клавиш</translation>
     </message>
@@ -191,37 +191,37 @@
 <context>
     <name>HistoryDlg</name>
     <message>
-        <location filename="../screenshot.cpp" line="64"/>
+        <location filename="../screenshot.cpp" line="70"/>
         <source>History</source>
         <translation type="unfinished">История</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="71"/>
+        <location filename="../screenshot.cpp" line="77"/>
         <source>Copy</source>
         <translation type="unfinished">Копировать</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="72"/>
+        <location filename="../screenshot.cpp" line="78"/>
         <source>Copy link to the clipboard</source>
         <translation type="unfinished">Скопировать ссылку в буфер обмена</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="74"/>
+        <location filename="../screenshot.cpp" line="80"/>
         <source>Open</source>
         <translation type="unfinished">Открыть</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="75"/>
+        <location filename="../screenshot.cpp" line="81"/>
         <source>Open link in browser</source>
         <translation type="unfinished">Открыть ссылку в обозревателе</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="77"/>
+        <location filename="../screenshot.cpp" line="83"/>
         <source>Close</source>
         <translation type="unfinished">Закрыть</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="78"/>
+        <location filename="../screenshot.cpp" line="84"/>
         <source>Close history</source>
         <translation type="unfinished">Закрыть историю</translation>
     </message>
@@ -307,12 +307,12 @@
         <translation type="unfinished">Изменить</translation>
     </message>
     <message>
-        <location filename="../optionswidget.cpp" line="236"/>
+        <location filename="../optionswidget.cpp" line="244"/>
         <source>Error</source>
         <translation type="unfinished">Ошибка</translation>
     </message>
     <message>
-        <location filename="../optionswidget.cpp" line="236"/>
+        <location filename="../optionswidget.cpp" line="244"/>
         <source>Failed to register shortcut!</source>
         <translation type="unfinished">Не удалось зарегистрировать горячую клавишу!</translation>
     </message>
@@ -407,7 +407,7 @@
     </message>
     <message>
         <location filename="../screenshot.ui" line="176"/>
-        <location filename="../screenshot.ui" line="262"/>
+        <location filename="../screenshot.ui" line="264"/>
         <source>New Screenshot</source>
         <translation type="unfinished">Новый снимок</translation>
     </message>
@@ -432,103 +432,108 @@
         <translation type="unfinished">Помощь</translation>
     </message>
     <message>
-        <location filename="../screenshot.ui" line="247"/>
+        <location filename="../screenshot.ui" line="249"/>
         <source>Open</source>
         <translation type="unfinished">Открыть</translation>
     </message>
     <message>
-        <location filename="../screenshot.ui" line="252"/>
+        <location filename="../screenshot.ui" line="254"/>
         <source>Save</source>
         <translation type="unfinished">Сохранить</translation>
     </message>
     <message>
-        <location filename="../screenshot.ui" line="257"/>
+        <location filename="../screenshot.ui" line="259"/>
         <source>Print</source>
         <translation type="unfinished">Печать</translation>
     </message>
     <message>
-        <location filename="../screenshot.ui" line="267"/>
+        <location filename="../screenshot.ui" line="269"/>
         <source>Exit</source>
         <translation type="unfinished">Выход</translation>
     </message>
     <message>
-        <location filename="../screenshot.ui" line="272"/>
+        <location filename="../screenshot.ui" line="274"/>
         <source>Proxy Settings</source>
         <translation type="unfinished">Настройки прокси</translation>
     </message>
     <message>
-        <location filename="../screenshot.ui" line="277"/>
+        <location filename="../screenshot.ui" line="279"/>
         <source>Options</source>
         <translation type="unfinished">Параметры</translation>
     </message>
     <message>
-        <location filename="../screenshot.ui" line="282"/>
+        <location filename="../screenshot.ui" line="284"/>
         <source>History</source>
         <translation type="unfinished">История</translation>
     </message>
     <message>
-        <location filename="../screenshot.ui" line="287"/>
+        <location filename="../screenshot.ui" line="289"/>
         <source>About Qt</source>
         <translation type="unfinished">О Qt</translation>
     </message>
     <message>
-        <location filename="../screenshot.ui" line="292"/>
+        <location filename="../screenshot.ui" line="294"/>
         <source>Home page</source>
         <translation type="unfinished">Домашняя страница</translation>
     </message>
     <message>
-        <location filename="../screenshot.ui" line="297"/>
+        <location filename="../screenshot.ui" line="299"/>
         <source>Upload</source>
         <translation type="unfinished">Загрузить</translation>
     </message>
     <message>
-        <location filename="../screenshot.ui" line="302"/>
+        <location filename="../screenshot.ui" line="304"/>
         <source>About</source>
         <translation type="unfinished">О программе</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="333"/>
+        <location filename="../screenshot.ui" line="309"/>
+        <source>Check for updates</source>
+        <translation type="unfinished">Поиск обновлений</translation>
+    </message>
+    <message>
+        <location filename="../screenshot.cpp" line="344"/>
         <source>Open Image</source>
         <translation type="unfinished">Открыть изображение</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="333"/>
+        <location filename="../screenshot.cpp" line="344"/>
         <source>Images (*.png *.gif *.jpg *.jpeg *.ico)</source>
         <translation type="unfinished">Изображения (*.png *.gif *.jpg *.jpeg *.ico)</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="527"/>
+        <location filename="../screenshot.cpp" line="528"/>
         <source>/%1.</source>
         <translation type="unfinished">/%1.</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="529"/>
+        <location filename="../screenshot.cpp" line="530"/>
         <source>Save As</source>
         <translation type="unfinished">Сохранить как</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="531"/>
+        <location filename="../screenshot.cpp" line="532"/>
         <source>%1 Files (*.%2);;All Files (*)</source>
         <translation type="unfinished">%1 Файлы (*.%2);;Все Файлы (*)</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="587"/>
-        <location filename="../screenshot.cpp" line="638"/>
+        <location filename="../screenshot.cpp" line="588"/>
+        <location filename="../screenshot.cpp" line="639"/>
         <source>%1.</source>
         <translation type="unfinished">%1.</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="766"/>
+        <location filename="../screenshot.cpp" line="770"/>
         <source>Can&apos;t parse URL (Reply URL: &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;)</source>
         <translation type="unfinished">Невозможно разобрать URL (Reply URL: &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;)</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="778"/>
+        <location filename="../screenshot.cpp" line="782"/>
         <source>Close Screenshot</source>
         <translation type="unfinished">Закрыть Скриншот</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="778"/>
+        <location filename="../screenshot.cpp" line="782"/>
         <source>Are your sure?</source>
         <translation type="unfinished">Вы уверены?</translation>
     </message>
@@ -622,6 +627,34 @@
         <location filename="../toolbar.cpp" line="95"/>
         <source>Undo</source>
         <translation type="unfinished">Отмена</translation>
+    </message>
+</context>
+<context>
+    <name>UpdatesChecker</name>
+    <message>
+        <location filename="../updateschecker.cpp" line="81"/>
+        <source>Error while checking for updates: %1</source>
+        <translation type="unfinished">Во время поиска обновлений произошла ошибка: %1</translation>
+    </message>
+    <message>
+        <location filename="../updateschecker.cpp" line="90"/>
+        <source>New version is available</source>
+        <translation type="unfinished">Доступна новая версия</translation>
+    </message>
+    <message>
+        <location filename="../updateschecker.cpp" line="91"/>
+        <source>Do you want to go to the download page?</source>
+        <translation type="unfinished">Перейти на страницу загрузок?</translation>
+    </message>
+    <message>
+        <location filename="../updateschecker.cpp" line="98"/>
+        <source>There is no updates found.</source>
+        <translation type="unfinished">Обновлений не найдено.</translation>
+    </message>
+    <message>
+        <location filename="../updateschecker.cpp" line="102"/>
+        <source>Can&apos;t find information about version.</source>
+        <translation type="unfinished">Невозможно получить информацию о доступной версии.</translation>
     </message>
 </context>
 </TS>
