@@ -734,12 +734,15 @@ void Screenshot::httpReplyFinished(QNetworkReply *reply)
 	}
 
 	const QString loc = reply->rawHeader("Location");
+	const QString refresh = reply->rawHeader("refresh");
 	if (!loc.isEmpty()) {
-		QUrl netrequrl(loc);
-		if (netrequrl.host().isEmpty())
-			netrequrl = QUrl("http://" + reply->url().encodedHost() + loc);
-		QNetworkRequest netreq(netrequrl);
-		manager->get(netreq);
+		newRequest(reply, loc);
+	}
+	else if(!refresh.isEmpty() && refresh.contains("url=", Qt::CaseInsensitive)) {
+		QStringList tmp = refresh.split("=");
+		if(tmp.size() > 1) {
+			newRequest(reply, tmp.last());
+		}
 	}
 	else {
 		Server *s = servers.at(ui_->cb_servers->currentIndex());
@@ -773,6 +776,21 @@ void Screenshot::httpReplyFinished(QNetworkReply *reply)
 	}
 	reply->close();
 	reply->deleteLater();
+}
+
+void Screenshot::newRequest(const QNetworkReply *const old, const QString &link)
+{
+	if(!manager || !old || link.isEmpty())
+		return;
+
+	QUrl netrequrl(link);
+	if (netrequrl.host().isEmpty())
+		netrequrl = QUrl("http://" + old->url().encodedHost() + link);
+	QNetworkRequest netreq(netrequrl);
+
+	ui_->progressBar->setValue(0);
+	QNetworkReply* reply = manager->get(netreq);
+	connect(reply, SIGNAL(uploadProgress(qint64 , qint64)), this, SLOT(dataTransferProgress(qint64 , qint64)));
 }
 
 void Screenshot::closeEvent(QCloseEvent *e)

@@ -89,6 +89,7 @@ private:
 	void saveGeometry();
 	void setProxy();
 	void shoot(WId id);
+	void newRequest(const QNetworkReply *const old, const QString& link);
 
 	bool modified;
 	QPixmap originalPixmap;
