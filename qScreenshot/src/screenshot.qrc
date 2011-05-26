@@ -18,6 +18,8 @@
         <file>icons/insert.png</file>
         <file>icons/ellipses.png</file>
         <file>icons/rectangles.png</file>
+        <file>icons/draw_ellipse.png</file>
+        <file>icons/draw_rect.png</file>
     </qresource>
     <qresource prefix="/lang">
         <file>lang/ru.qm</file>

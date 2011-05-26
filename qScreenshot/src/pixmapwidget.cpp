@@ -513,12 +513,16 @@ void PixmapWidget::checkedButtonChanged(ToolBar::ButtonType type)
 {
 	switch(type) {
 	case(ToolBar::ButtonPen):
-		currentCursor = QCursor(QPixmap(":/icons/icons/draw.png"), 2,15);
+		currentCursor = QCursor(QPixmap(":/icons/icons/draw.png"), 2, 15);
 		break;
-	case(ToolBar::ButtonSelect):
 	case(ToolBar::ButtonEllipse):
+		currentCursor = QCursor(QPixmap(":/icons/icons/draw_ellipse.png"), 3, 0);
+		break;
 	case(ToolBar::ButtonRect):
+		currentCursor = QCursor(QPixmap(":/icons/icons/draw_rect.png"), 3, 0);
+		break;
 	case(ToolBar::ButtonText):
+	case(ToolBar::ButtonSelect):
 		currentCursor = QCursor(Qt::CrossCursor);
 		break;
 	default:
