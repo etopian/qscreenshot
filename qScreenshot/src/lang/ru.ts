@@ -27,57 +27,57 @@
 <context>
     <name>Controller</name>
     <message>
-        <location filename="../controller.cpp" line="153"/>
+        <location filename="../controller.cpp" line="156"/>
         <source>Error</source>
         <translation type="unfinished">Ошибка</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="153"/>
+        <location filename="../controller.cpp" line="156"/>
         <source>Failed to register shortcut!</source>
         <translation type="unfinished">Не удалось зарегистрировать горячую клавишу!</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="180"/>
+        <location filename="../controller.cpp" line="183"/>
         <source>Grab screen</source>
         <translation type="unfinished">Захватить экран</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="181"/>
+        <location filename="../controller.cpp" line="184"/>
         <source>New Screenshot</source>
         <translation type="unfinished">Новый снимок</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="182"/>
+        <location filename="../controller.cpp" line="185"/>
         <source>Open Image</source>
         <translation type="unfinished">Открыть изображение</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="185"/>
+        <location filename="../controller.cpp" line="188"/>
         <source>Settings</source>
         <translation type="unfinished">Настройки</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="186"/>
+        <location filename="../controller.cpp" line="189"/>
         <source>Options</source>
         <translation type="unfinished">Параметры</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="187"/>
+        <location filename="../controller.cpp" line="190"/>
         <source>Proxy settings</source>
         <translation type="unfinished">Настройки прокси-сервера</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="191"/>
+        <location filename="../controller.cpp" line="194"/>
         <source>Language</source>
         <translation type="unfinished">Язык</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="218"/>
+        <location filename="../controller.cpp" line="221"/>
         <source>Translate</source>
         <translation type="unfinished">Перевод</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="218"/>
+        <location filename="../controller.cpp" line="221"/>
         <source>Restart application!</source>
         <translation type="unfinished">Перезапустите приложение!</translation>
     </message>
@@ -86,7 +86,7 @@
         <translation type="obsolete">По-умолчанию</translation>
     </message>
     <message>
-        <location filename="../controller.cpp" line="197"/>
+        <location filename="../controller.cpp" line="200"/>
         <source>Exit</source>
         <translation type="unfinished">Выход</translation>
     </message>
@@ -320,12 +320,12 @@
 <context>
     <name>PixmapWidget</name>
     <message>
-        <location filename="../pixmapwidget.cpp" line="317"/>
+        <location filename="../pixmapwidget.cpp" line="327"/>
         <source>Cut</source>
         <translation type="unfinished">Обрезать</translation>
     </message>
     <message>
-        <location filename="../pixmapwidget.cpp" line="318"/>
+        <location filename="../pixmapwidget.cpp" line="328"/>
         <source>Copy</source>
         <translation type="unfinished">Копировать</translation>
     </message>
@@ -492,48 +492,48 @@
         <translation type="unfinished">Поиск обновлений</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="344"/>
+        <location filename="../screenshot.cpp" line="346"/>
         <source>Open Image</source>
         <translation type="unfinished">Открыть изображение</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="344"/>
+        <location filename="../screenshot.cpp" line="346"/>
         <source>Images (*.png *.gif *.jpg *.jpeg *.ico)</source>
         <translation type="unfinished">Изображения (*.png *.gif *.jpg *.jpeg *.ico)</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="528"/>
+        <location filename="../screenshot.cpp" line="538"/>
         <source>/%1.</source>
         <translation type="unfinished">/%1.</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="530"/>
+        <location filename="../screenshot.cpp" line="540"/>
         <source>Save As</source>
         <translation type="unfinished">Сохранить как</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="532"/>
+        <location filename="../screenshot.cpp" line="542"/>
         <source>%1 Files (*.%2);;All Files (*)</source>
         <translation type="unfinished">%1 Файлы (*.%2);;Все Файлы (*)</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="588"/>
-        <location filename="../screenshot.cpp" line="639"/>
+        <location filename="../screenshot.cpp" line="598"/>
+        <location filename="../screenshot.cpp" line="649"/>
         <source>%1.</source>
         <translation type="unfinished">%1.</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="770"/>
+        <location filename="../screenshot.cpp" line="783"/>
         <source>Can&apos;t parse URL (Reply URL: &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;)</source>
         <translation type="unfinished">Невозможно разобрать URL (Reply URL: &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;)</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="782"/>
+        <location filename="../screenshot.cpp" line="810"/>
         <source>Close Screenshot</source>
         <translation type="unfinished">Закрыть Скриншот</translation>
     </message>
     <message>
-        <location filename="../screenshot.cpp" line="782"/>
+        <location filename="../screenshot.cpp" line="810"/>
         <source>Are your sure?</source>
         <translation type="unfinished">Вы уверены?</translation>
     </message>
@@ -584,47 +584,57 @@
         <translation type="unfinished">Тольщина линии</translation>
     </message>
     <message>
-        <location filename="../toolbar.cpp" line="82"/>
+        <location filename="../toolbar.cpp" line="84"/>
         <source>Select Color</source>
         <translation type="unfinished">Выбор цвета</translation>
     </message>
     <message>
-        <location filename="../toolbar.cpp" line="83"/>
+        <location filename="../toolbar.cpp" line="87"/>
         <source>Pen</source>
         <translation type="unfinished">Карандаш</translation>
     </message>
     <message>
-        <location filename="../toolbar.cpp" line="84"/>
+        <location filename="../toolbar.cpp" line="88"/>
+        <source>Ellipse</source>
+        <translation type="unfinished">Эллипс</translation>
+    </message>
+    <message>
+        <location filename="../toolbar.cpp" line="89"/>
+        <source>Rectangle</source>
+        <translation type="unfinished">Прямоугольник</translation>
+    </message>
+    <message>
+        <location filename="../toolbar.cpp" line="92"/>
         <source>Select</source>
         <translation type="unfinished">Выделение</translation>
     </message>
     <message>
-        <location filename="../toolbar.cpp" line="85"/>
+        <location filename="../toolbar.cpp" line="93"/>
         <source>Cut</source>
         <translation type="unfinished">Обрезать</translation>
     </message>
     <message>
-        <location filename="../toolbar.cpp" line="88"/>
+        <location filename="../toolbar.cpp" line="98"/>
         <source>Copy</source>
         <translation type="unfinished">Копировать</translation>
     </message>
     <message>
-        <location filename="../toolbar.cpp" line="90"/>
+        <location filename="../toolbar.cpp" line="102"/>
         <source>Insert</source>
         <translation type="unfinished">Вставить</translation>
     </message>
     <message>
-        <location filename="../toolbar.cpp" line="93"/>
+        <location filename="../toolbar.cpp" line="107"/>
         <source>Rotate</source>
         <translation type="unfinished">Повернуть</translation>
     </message>
     <message>
-        <location filename="../toolbar.cpp" line="94"/>
+        <location filename="../toolbar.cpp" line="108"/>
         <source>Insert Text</source>
         <translation type="unfinished">Вставить текст</translation>
     </message>
     <message>
-        <location filename="../toolbar.cpp" line="95"/>
+        <location filename="../toolbar.cpp" line="111"/>
         <source>Undo</source>
         <translation type="unfinished">Отмена</translation>
     </message>
