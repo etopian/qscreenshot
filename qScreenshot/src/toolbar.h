@@ -32,6 +32,7 @@ class ToolBar : public QToolBar
 	Q_OBJECT
 public:
 	enum ButtonType {
+		ButtonNoButton,
 		ButtonSelect,
 		ButtonPen,
 		ButtonCut,
@@ -41,7 +42,8 @@ public:
 		ButtonUndo,
 		ButtonRotate,
 		ButtonCopy,
-		ButtonNoButton
+		ButtonEllipse,
+		ButtonRect
 	};
 
 	ToolBar(QWidget *parent);

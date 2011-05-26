@@ -81,6 +81,8 @@ void ToolBar::init()
 	QIcon ico(pix);
 	buttons_.append(new Button(tr("Select Color"), ico, ToolBar::ButtonColor, false,this) );
 	buttons_.append(new Button(tr("Pen"), icoHost->getIcon("drawing"), ToolBar::ButtonPen, true,this) );
+	buttons_.append(new Button(tr("Ellipse"), icoHost->getIcon("ellipses"), ToolBar::ButtonEllipse, true,this) );
+	buttons_.append(new Button(tr("Rectangle"), icoHost->getIcon("rectangles"), ToolBar::ButtonRect, true,this) );
 	buttons_.append(new Button(tr("Select"), icoHost->getIcon("frame"), ToolBar::ButtonSelect, true,this) );
 	buttons_.append(new Button(tr("Cut"), icoHost->getIcon("crop"), ToolBar::ButtonCut, false,this) );
 	buttons_.last()->setShortcut(QKeySequence("Ctrl+x"));

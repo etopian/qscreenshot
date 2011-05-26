@@ -272,11 +272,21 @@ void PixmapWidget::paintEvent(QPaintEvent *)
 	QPainter p(this);
 	p.setClipRect(rect());
 	p.drawPixmap(QPoint(0, 0), mainPixmap/*.scaled(size(), Qt::KeepAspectRatio, Qt::SmoothTransformation)*/);
-	if((type_ == ToolBar::ButtonSelect || type_ == ToolBar::ButtonText) && p2.x() != -1) {
-		p.setPen(draftPen);
+	if(p2.x() != -1) {
 		int w = (p2.x() - p1.x());
 		int h = (p2.y() - p1.y());
-		p.drawRect(p1.x(), p1.y(), w, h);
+		if(type_ == ToolBar::ButtonSelect || type_ == ToolBar::ButtonText) {
+			p.setPen(draftPen);
+			p.drawRect(p1.x(), p1.y(), w, h);
+		}
+		else if(type_ == ToolBar::ButtonEllipse) {
+			p.setPen(pen);
+			p.drawEllipse(p1.x(), p1.y(), w, h);
+		}
+		else if(type_ == ToolBar::ButtonRect) {
+			p.setPen(pen);
+			p.drawRect(p1.x(), p1.y(), w, h);
+		}
 	}
 }
 
@@ -342,6 +352,9 @@ void PixmapWidget::mouseReleaseEvent(QMouseEvent *e)
 		setAttribute(Qt::WA_OpaquePaintEvent, false);
 		paintToPixmap();
 	}
+	else if(type_ == ToolBar::ButtonEllipse || type_ == ToolBar::ButtonRect) {
+		paintToPixmap();
+	}
 	else if(type_ == ToolBar::ButtonText) {
 		selectionRect->setCoords(qMin(p1.x(), p2.x()), qMin(p1.y(), p2.y()),
 					 qMax(p1.x(), p2.x()), qMax(p1.y(), p2.y()));
@@ -388,7 +401,8 @@ void PixmapWidget::mouseMoveEvent(QMouseEvent *e)
 			}
 			paintToPixmap();
 		}
-		else if(type_ == ToolBar::ButtonSelect || type_ == ToolBar::ButtonText) {
+		else if(type_ == ToolBar::ButtonSelect || type_ == ToolBar::ButtonText
+			|| type_ == ToolBar::ButtonEllipse || type_ == ToolBar::ButtonRect) {
 			if(cornerType == SelectionRect::NoCorner) {
 				if(e->pos().x() >= 0 && e->pos().y() >= 0) {
 					p2 = e->pos();
@@ -438,6 +452,17 @@ void PixmapWidget::paintToPixmap(QString text)
 		painter.drawText((QRect)*selectionRect, text);
 		selectionRect->clear();
 	}
+	else if(p2.x() != -1) {
+		saveUndoPixmap();
+		int w = (p2.x() - p1.x());
+		int h = (p2.y() - p1.y());
+		if(type_ == ToolBar::ButtonEllipse) {
+			painter.drawEllipse(p1.x(), p1.y(), w, h);
+		}
+		else if(type_ == ToolBar::ButtonRect) {
+			painter.drawRect(p1.x(), p1.y(), w, h);
+		}
+	}
 
 	painter.end();
 	update();
@@ -466,7 +491,8 @@ void PixmapWidget::undo()
 {
 	if(!undoList_.isEmpty()) {
 		setPixmap(undoList_.takeLast());
-		emit adjusted();
+		if(type_ == ToolBar::ButtonCut)
+			emit adjusted();
 	}
 	bool hasUndo = !undoList_.isEmpty();
 	if(!hasUndo) {
@@ -489,6 +515,8 @@ void PixmapWidget::checkedButtonChanged(ToolBar::ButtonType type)
 		currentCursor = QCursor(QPixmap(":/icons/icons/draw.png"), 2,15);
 		break;
 	case(ToolBar::ButtonSelect):
+	case(ToolBar::ButtonEllipse):
+	case(ToolBar::ButtonRect):
 	case(ToolBar::ButtonText):
 		currentCursor = QCursor(Qt::CrossCursor);
 		break;
