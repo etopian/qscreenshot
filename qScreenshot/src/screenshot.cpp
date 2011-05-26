@@ -366,14 +366,15 @@ void Screenshot::updateScreenshotLabel()
 
 void Screenshot::pixmapAdjusted()
 {
-	if(windowState() == Qt::WindowMaximized)
+	if(windowState() & Qt::WindowMaximized)
 		return;
 
-	QSize s = ui_->lb_pixmap->size();
-	if(s.height() > 600 || s.width() > 800)
-		resize(800,600);
+	const QSize s = ui_->lb_pixmap->size() + QSize(15,20); //хак, для красивого уменьшения размера главного окна
+	const QSize desktopSize = qApp->desktop()->availableGeometry(this).size();
+	if(s.height() > desktopSize.height() || s.width() > desktopSize.width())
+		resize(desktopSize);
 	else {
-		ui_->scrollArea->setMinimumSize(s + QSize(15,20)); //хак, для красивого уменьшения размера главного окна
+		ui_->scrollArea->setMinimumSize(s);
 		adjustSize();
 		QTimer::singleShot(100, this, SLOT(fixSizes())); // необходимо время, чтобы ресайзить главное окно
 	}
