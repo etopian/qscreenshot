@@ -207,6 +207,7 @@ void PixmapWidget::buttonClicked(ToolBar::ButtonType t)
 	}
 
 	selectionRect->clear();
+	cornerType = SelectionRect::NoCorner;
 	update();
 }
 
