@@ -220,6 +220,7 @@ Screenshot::Screenshot()
 	, modified(false)
 	, lastFolder(QDir::home().absolutePath())
 	, proxy_(new Proxy())
+	, grabAreaWidget_(0)
 	, ui_(new Ui::Screenshot)
 {
 	setAttribute(Qt::WA_DeleteOnClose);
@@ -270,6 +271,7 @@ Screenshot::~Screenshot()
 	saveGeometry();
 	delete ui_;
 	delete proxy_;
+	delete grabAreaWidget_;
 }
 
 void Screenshot::connectMenu()
@@ -435,6 +437,7 @@ void Screenshot::bringToFront()
 
 	raise();
 	activateWindow();
+	update();
 }
 
 void Screenshot::newScreenshot()
@@ -456,35 +459,46 @@ void Screenshot::screenshotCanceled()
 	bringToFront();
 }
 
-void Screenshot::captureArea(int delay)
+void Screenshot::refreshWindow()
 {
-	Options::instance()->setOption(constDelay, delay);
-	GrabAreaWidget* gw = new GrabAreaWidget();
-	QRect rect;
-	if(gw->exec() == QDialog::Accepted) {
-		rect = gw->getRect();
-		QTime t;
-		t.start();
-		while(t.elapsed() < delay*1000) {} //waiting
-	}
-	delete gw;
-	qApp->desktop()->repaint();
-	shootArea(rect);
-}
-
-void Screenshot::shootArea(const QRect& rect)
-{	
-	qApp->beep();
-	if(rect.isValid()) {
-		originalPixmap = QPixmap();
-		originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId(), rect.x(), rect.y(), rect.width(), rect.height());
-	}
-
 	ui_->pb_new_screenshot->setEnabled(true);
 	ui_->lb_url->setVisible(false);
 	updateScreenshotLabel();
 	bringToFront();
 	setModified(false);
+}
+
+void Screenshot::captureArea(int delay)
+{
+	Options::instance()->setOption(constDelay, delay);
+	grabAreaWidget_ = new GrabAreaWidget();
+	if(grabAreaWidget_->exec() == QDialog::Accepted) {
+		QTimer::singleShot(delay*1000, this, SLOT(shootArea()));
+	}
+	else {
+		delete grabAreaWidget_;
+		grabAreaWidget_ = 0;
+		qApp->desktop()->repaint();
+		refreshWindow();
+	}
+}
+
+void Screenshot::shootArea()
+{
+	if(!grabAreaWidget_) {
+		return;
+	}
+	const QRect rect = grabAreaWidget_->getRect();
+	if(rect.isValid()) {
+		qApp->desktop()->repaint();
+		qApp->beep();
+		originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId(), rect.x(), rect.y(), rect.width(), rect.height());
+	}
+
+	delete grabAreaWidget_;
+	grabAreaWidget_ = 0;
+
+	refreshWindow();
 }
 
 void Screenshot::captureWindow(int delay)
@@ -514,11 +528,7 @@ void Screenshot::shoot(WId id)
 	qApp->beep();
 	originalPixmap = QPixmap::grabWindow(id);
 
-	ui_->pb_new_screenshot->setEnabled(true);
-	ui_->lb_url->setVisible(false);
-	updateScreenshotLabel();
-	bringToFront();
-	setModified(false);
+	refreshWindow();
 }
 
 void Screenshot::saveScreenshot()

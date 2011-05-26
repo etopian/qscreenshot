@@ -26,6 +26,7 @@
 
 struct Proxy;
 class Server;
+class GrabAreaWidget;
 class QNetworkAccessManager;
 class QNetworkReply;
 
@@ -64,7 +65,7 @@ private slots:
 	void captureWindow(int);
 	void captureArea(int);	
 	void shootWindow();
-	void shootArea(const QRect& rect);
+	void shootArea();
 	void screenshotCanceled();
 	void pixmapAdjusted();
 	void fixSizes();
@@ -78,6 +79,7 @@ private slots:
 
 private:
 	void updateScreenshotLabel();
+	void refreshWindow();
 	void uploadFtp();
 	void uploadHttp();
 	void bringToFront();
@@ -101,6 +103,7 @@ private:
 	QByteArray ba;
 	Proxy *proxy_;
 	QStringList history_;
+	GrabAreaWidget* grabAreaWidget_;
 
 	Ui::Screenshot *ui_;
 };
