@@ -65,6 +65,9 @@ signals:
 	void newWidth(int);
 
 private:
+	void addButton(Button* button);
+
+private:
 	QList<Button*> buttons_;
 	QSpinBox *sb;
 };

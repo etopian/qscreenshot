@@ -79,31 +79,48 @@ void ToolBar::init()
 	QPixmap pix(16,16);
 	pix.fill(QColor(Qt::black));
 	QIcon ico(pix);
-	buttons_.append(new Button(tr("Select Color"), ico, ToolBar::ButtonColor, false,this) );
-	buttons_.append(new Button(tr("Pen"), icoHost->getIcon("drawing"), ToolBar::ButtonPen, true,this) );
-	buttons_.append(new Button(tr("Ellipse"), icoHost->getIcon("ellipses"), ToolBar::ButtonEllipse, true,this) );
-	buttons_.append(new Button(tr("Rectangle"), icoHost->getIcon("rectangles"), ToolBar::ButtonRect, true,this) );
-	buttons_.append(new Button(tr("Select"), icoHost->getIcon("frame"), ToolBar::ButtonSelect, true,this) );
-	buttons_.append(new Button(tr("Cut"), icoHost->getIcon("crop"), ToolBar::ButtonCut, false,this) );
-	buttons_.last()->setShortcut(QKeySequence("Ctrl+x"));
 
-	buttons_.append(new Button(tr("Copy"), icoHost->getIcon("copy"), ToolBar::ButtonCopy, false,this) );
-	buttons_.last()->setShortcut(QKeySequence("Ctrl+c"));
-	buttons_.append(new Button(tr("Insert"), icoHost->getIcon("insert"), ToolBar::ButtonInsert, false,this) );
-	buttons_.last()->setShortcut(QKeySequence("Ctrl+v"));
+	Button *b;
+	addButton( new Button(tr("Select Color"), ico, ToolBar::ButtonColor, false,this) );
+	addSeparator();
 
-	buttons_.append(new Button(tr("Rotate"), icoHost->getIcon("rotate"), ToolBar::ButtonRotate, false,this) );
-	buttons_.append(new Button(tr("Insert Text"), icoHost->getIcon("text"), ToolBar::ButtonText, true,this) );
-	buttons_.append(new Button(tr("Undo"), icoHost->getIcon("undo"), ToolBar::ButtonUndo, false,this) );
-	buttons_.last()->setShortcut(QKeySequence("Ctrl+z"));
+	addButton( new Button(tr("Pen"), icoHost->getIcon("drawing"), ToolBar::ButtonPen, true,this) );
+	addButton( new Button(tr("Ellipse"), icoHost->getIcon("ellipses"), ToolBar::ButtonEllipse, true,this) );
+	addButton( new Button(tr("Rectangle"), icoHost->getIcon("rectangles"), ToolBar::ButtonRect, true,this) );
+	addSeparator();
 
-	foreach(Button *b, buttons_) {
-		addAction(b);
-		connect(b, SIGNAL(triggered(bool)), SLOT(buttonChecked(bool)));
-		connect(b, SIGNAL(triggered()), SLOT(buttonClicked()));
-	}
+	addButton( new Button(tr("Select"), icoHost->getIcon("frame"), ToolBar::ButtonSelect, true,this) );
+	b = new Button(tr("Cut"), icoHost->getIcon("crop"), ToolBar::ButtonCut, false, this);
+	b->setShortcut(QKeySequence("Ctrl+x"));
+	addButton(b);
+
+	addSeparator();
+	b = new Button(tr("Copy"), icoHost->getIcon("copy"), ToolBar::ButtonCopy, false,this);
+	b->setShortcut(QKeySequence("Ctrl+c"));
+	addButton(b);
+
+	b = new Button(tr("Insert"), icoHost->getIcon("insert"), ToolBar::ButtonInsert, false,this);
+	b->setShortcut(QKeySequence("Ctrl+v"));
+	addButton(b);
+
+	addSeparator();
+	addButton( new Button(tr("Rotate"), icoHost->getIcon("rotate"), ToolBar::ButtonRotate, false,this) );
+	addButton( new Button(tr("Insert Text"), icoHost->getIcon("text"), ToolBar::ButtonText, true,this) );
+
+	addSeparator();
+	b = new Button(tr("Undo"), icoHost->getIcon("undo"), ToolBar::ButtonUndo, false,this);
+	b->setShortcut(QKeySequence("Ctrl+z"));
+	addButton(b);
 
 	enableButton(false, ToolBar::ButtonUndo);
+}
+
+void ToolBar::addButton(Button *b)
+{
+	buttons_.append(b);
+	addAction(b);
+	connect(b, SIGNAL(triggered(bool)), SLOT(buttonChecked(bool)));
+	connect(b, SIGNAL(triggered()), SLOT(buttonClicked()));
 }
 
 void ToolBar::enableButton(bool enable, ToolBar::ButtonType type)
