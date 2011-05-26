@@ -142,7 +142,7 @@ void ToolBar::buttonChecked(bool check)
 	if(check)
 	{
 		foreach(Button *b, buttons_) {
-			if(b != s)
+			if(b != s && b->isCheckable())
 				b->setChecked(false);
 		}
 		emit checkedButtonChanged(s->type());
@@ -165,7 +165,7 @@ void ToolBar::setColorForColorButton(const QColor &color)
 void ToolBar::buttonClicked()
 {
 	Button *s = (Button*)sender();
-	if(s)
+	if(s && !s->isCheckable())
 		emit buttonClicked(s->type());
 }
 

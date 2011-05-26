@@ -512,7 +512,6 @@ void Screenshot::shootScreen()
 void Screenshot::shoot(WId id)
 {
 	qApp->beep();
-	originalPixmap = QPixmap();
 	originalPixmap = QPixmap::grabWindow(id);
 
 	ui_->pb_new_screenshot->setEnabled(true);

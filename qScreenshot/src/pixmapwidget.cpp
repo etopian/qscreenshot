@@ -218,7 +218,6 @@ void PixmapWidget::newWidth(int w)
 
 void PixmapWidget::setPixmap(const QPixmap& pix)
 {
-	mainPixmap = QPixmap();
 	mainPixmap = pix;	
 	setFixedSize(mainPixmap.size());
 	selectionRect->clear();
@@ -490,8 +489,10 @@ void PixmapWidget::selectFont()
 void PixmapWidget::undo()
 {
 	if(!undoList_.isEmpty()) {
-		setPixmap(undoList_.takeLast());
-		if(type_ == ToolBar::ButtonCut)
+		const QPixmap pix = undoList_.takeLast();
+		bool doAdjust = ( pix.size() !=  mainPixmap.size() );
+		setPixmap(pix);
+		if(doAdjust)
 			emit adjusted();
 	}
 	bool hasUndo = !undoList_.isEmpty();
