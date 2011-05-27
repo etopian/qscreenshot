@@ -1,8 +1,8 @@
 ; qscreenshot-install.nsi
 ; http://qscreenshot.googlecode.com/
-; qScreenshot installation script, v0.0.4
+; qScreenshot installation script, v0.0.5
 ; Written by zet <mailto:vladimir.shelukhin@gmail.com>
-; Date: 2011-05-26
+; Date: 2011-05-27
 
 ; -----------------------------------------------------------------------------
 ; Define your application information
@@ -12,15 +12,15 @@
 !define PRODUCT_WEB_SITE "http://qscreenshot.googlecode.com/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\qscreenshot.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
-!define PRODUCT_UNINST_ROOT_KEY "HKLM"
+!define PRODUCT_UNINST_ROOT_KEY "HKCU"
 
 ; -----------------------------------------------------------------------------
 ; Main Install settings
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-InstallDir "$PROGRAMFILES\qScreenshot"
+InstallDir "$APPDATA\qScreenshot"
 
 ;Get installation folder from registry if available
-InstallDirRegKey HKLM "Software\${PRODUCT_NAME}" "InstallDir"
+InstallDirRegKey HKCU "Software\${PRODUCT_NAME}" "InstallDir"
 
 OutFile "setup\qscreenshot-0.4-win32-setup.exe"
 
@@ -37,15 +37,15 @@ VIAddVersionKey  "ProductName"     "${PRODUCT_NAME}"
 VIAddVersionKey  "ProductVersion"  "${PRODUCT_VERSION}"
 VIAddVersionKey  "FileDescription" "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 VIAddVersionKey  "FileVersion"     "${PRODUCT_VERSION}"
-VIProductVersion "0.4.0.0"
+VIProductVersion "0.4.0.3"
 
 ; -----------------------------------------------------------------------------
 ; The installer will perform a CRC on itself before allowing an install
 CRCCheck on
 
 ; -----------------------------------------------------------------------------
-; Request application privileges for Windows Vista
-;RequestExecutionLevel admin
+; Request application privileges for Windows Vista/7
+RequestExecutionLevel user
 
 ; -----------------------------------------------------------------------------
 XPStyle on
@@ -143,6 +143,7 @@ Section "!qScreenshot Core Components" SectionqScreenshotCoreComponents
 
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\"
+	Delete "$INSTDIR\version.txt"
 	File "setup\libgcc_s_dw2-1.dll"
 	File "setup\LICENSE.txt"
 	File "setup\mingwm10.dll"
@@ -153,7 +154,6 @@ Section "!qScreenshot Core Components" SectionqScreenshotCoreComponents
 	File "setup\QtSvg4.dll"
 	File "setup\QtXml4.dll"
 	File "setup\screenshot.ico"
-	File "setup\version.txt"
 	SetOutPath "$INSTDIR\imageformats\"
 	File "setup\imageformats\qgif4.dll"
 	File "setup\imageformats\qico4.dll"
@@ -259,7 +259,6 @@ Section Uninstall
 	Delete "$INSTDIR\QtSvg4.dll"
 	Delete "$INSTDIR\QtXml4.dll"
 	Delete "$INSTDIR\screenshot.ico"
-	Delete "$INSTDIR\version.txt"
 	Delete "$INSTDIR\imageformats\qgif4.dll"
 	Delete "$INSTDIR\imageformats\qico4.dll"
 	Delete "$INSTDIR\imageformats\qjpeg4.dll"
