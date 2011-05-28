@@ -34,6 +34,10 @@ AboutDlg::AboutDlg(QWidget *p)
 	ui_->lbl_icon->setPixmap(pix);
 
 	ui_->lbl_app_name->setText(QString(APP_NAME) + " " + QString(APP_VERSION));
+
+	adjustSize();
+	setFixedSize(size());
+
 	show();
 }
 
