@@ -456,7 +456,8 @@ void Screenshot::newScreenshot()
 void Screenshot::screenshotCanceled()
 {
 	ui_->pb_new_screenshot->setEnabled(true);
-	bringToFront();
+	if(!isHidden())
+		bringToFront();
 }
 
 void Screenshot::refreshWindow()
