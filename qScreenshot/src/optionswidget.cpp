@@ -167,7 +167,6 @@ OptionsWidget::OptionsWidget(QWidget* p)
 	, ui_(new Ui::OptionsWidget)
 {
 	ui_->setupUi(this);
-	ui_->cb_hack->setVisible(false);
 
 	Options* o = Options::instance();
 	shortCut = o->getOption(constShortCut, QVariant(shortCut)).toString();
@@ -179,12 +178,11 @@ OptionsWidget::OptionsWidget(QWidget* p)
 	ui_->cb_autostart->hide();
 #endif
 
-	connect(ui_->pb_add, SIGNAL(clicked()), this, SLOT(addServer()));
-	connect(ui_->pb_del, SIGNAL(clicked()), this, SLOT(delServer()));
-	connect(ui_->pb_edit, SIGNAL(clicked()), this, SLOT(editServer()));
-	connect(ui_->lw_servers, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editServer()));
-	connect(ui_->lw_servers, SIGNAL(currentRowChanged(int)), this, SLOT(applyButtonActivate()));
-	connect(ui_->pb_modify, SIGNAL(clicked()), this, SLOT(requstNewShortcut()));
+	connect(ui_->pb_add, SIGNAL(clicked()), SLOT(addServer()));
+	connect(ui_->pb_del, SIGNAL(clicked()), SLOT(delServer()));
+	connect(ui_->pb_edit, SIGNAL(clicked()), SLOT(editServer()));
+	connect(ui_->lw_servers, SIGNAL(doubleClicked(QModelIndex)), SLOT(editServer()));
+	connect(ui_->pb_modify, SIGNAL(clicked()), SLOT(requstNewShortcut()));
 }
 
 OptionsWidget::~OptionsWidget()
@@ -206,7 +204,6 @@ void OptionsWidget::delServer()
 		return;
 	ui_->lw_servers->removeItemWidget(s);
 	delete(s);
-	applyButtonActivate();
 }
 
 void OptionsWidget::editServer()
@@ -225,13 +222,6 @@ void OptionsWidget::addNewServer(const QString& settings)
 	Server *s = new Server(ui_->lw_servers);
 	s->setFromString(settings);
 	s->setText(s->displayName());
-
-	applyButtonActivate();
-}
-
-void OptionsWidget::applyButtonActivate()
-{
-	ui_->cb_hack->toggle();
 }
 
 void OptionsWidget::applyOptions()

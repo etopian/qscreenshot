@@ -41,7 +41,6 @@ private slots:
 	void delServer();
 	void editServer();
 	void addNewServer(const QString&);
-	void applyButtonActivate();
 	void requstNewShortcut();
 	void onNewShortcut(const QKeySequence&);
 
