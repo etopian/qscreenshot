@@ -212,7 +212,6 @@ void OptionsWidget::editServer()
 	if(!s)
 		return;
 	EditServerDlg *esd = new EditServerDlg(this);
-	connect(esd, SIGNAL(okPressed(QString)), this, SLOT(applyButtonActivate()));
 	esd->setServer(s);
 	esd->show();
 }
