@@ -30,14 +30,15 @@ mkdir ${builddir}
 cp -r -f ${svndir}/* ${builddir}/
 cd ${rpmbuild_dir}
 tar -pczf ${package_name} ${progname}-${ver}
-spec_text='Summary: Simple Screenshot Maker
-Name: PROGNAME
-Version: VERSION
+cat <<END >/usr/src/packages/SPECS/${progname}.spec
+Summary: Simple Screenshot Maker
+Name: $progname
+Version: $ver
 Release: 1
 License: GPL-2
 Group: Productivity/Graphics/Other
 URL: http://code.google.com/p/qscreenshot/
-Source0: PACKAGENAME
+Source0: $package_name
 BuildRequires: gcc-c++, zlib-devel
 %{!?_without_freedesktop:BuildRequires: desktop-file-utils}
 
@@ -51,7 +52,7 @@ Simple screenshot maker tool
 
 %build
 ./configure --prefix="%{_prefix}" --bindir="%{_bindir}" --qtdir=$QTDIR
-%{__make} %{?_smp_mflags}  
+%{__make} %{?_smp_mflags} 
 
 %install
 [ "%{buildroot}" != "/"] && rm -rf %{buildroot}
@@ -78,16 +79,10 @@ mkdir -p %{buildroot}/usr/share/icons/hicolor/48x48/apps
 %{_datadir}/icons/hicolor/24x24/apps/
 %{_datadir}/icons/hicolor/32x32/apps/
 %{_datadir}/icons/hicolor/48x48/apps/
-'
-specfile=/usr/src/packages/SPECS/${progname}.spec
-echo "${spec_text}" > ${specfile}
-sed "s/PROGNAME/$progname/" -i "${specfile}"
-sed "s/VERSION/$ver/" -i "${specfile}"
-sed "s/PACKAGENAME/$package_name/" -i "${specfile}"
+END
 cp -f ${package_name} ${srcpath}
 cd /usr/src/packages/SPECS
-rpmbuild -bb --clean ${progname}.spec
-rpmbuild -bs --clean --rmspec --rmsource ${progname}.spec
+rpmbuild -ba --clean --rmspec --rmsource ${progname}.spec
 echo "Cleaning..."
 rm -r -f ${rpmbuild_dir}
 
