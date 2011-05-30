@@ -451,6 +451,8 @@ void Screenshot::newScreenshot()
 	setWindowState(Qt::WindowMinimized);
 	ui_->pb_new_screenshot->setEnabled(false);
 	so->show();
+	so->raise();
+	so->activateWindow();
 }
 
 void Screenshot::screenshotCanceled()
