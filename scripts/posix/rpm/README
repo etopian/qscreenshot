@@ -1,0 +1,14 @@
+комплект скриптов для сборки qScreenshot
+для Mandriva
+
+ИНСТРУКЦИЯ
+
+1. если вы никогда не собирали пакеты необходимо выполнить скрипт Rpmsetup.sh от текущего пользователя
+в нем предварительно необходимо заполнить переменную "PACKAGER_INFO"
+например так: PACKAGER_INFO="Aleks Matrosov <a_matrosov@gmail.com>"
+2. установить пакеты svn, gcc-c++, zlib-devel, libqt4-devel(lib64qt4-devel), zenity
+3. в скрипте build_qScreenshot_rpm.sh
+заполнить переменные: SOURCE_DIR и RESULT_DIR своими данными
+4. выполнить скрипт build_qScreenshot_rpm.sh
+
+УДАЧИ!!!
