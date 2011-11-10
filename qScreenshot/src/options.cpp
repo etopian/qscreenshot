@@ -49,7 +49,7 @@ Options::~Options()
 
 void Options::reset()
 {
-	delete instance_;
+	instance_->deleteLater();
 	instance_ = 0;
 }
 

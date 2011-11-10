@@ -133,6 +133,7 @@ Controller::Controller()
 		o->setOption(constFileName, QVariant("pic-yyyyMMdd-hhmmss"));
 		o->setOption(constDelay, QVariant(0));
 		o->setOption(constVersionOption, APP_VERSION);
+		o->setOption(constDefaultAction, QVariant(Desktop));
 	}
 
 	QStringList servers = vServers.toStringList();
@@ -157,7 +158,7 @@ Controller::Controller()
 	}
 	
 	screenshot = new Screenshot();
-	connect(ShortcutManager::instance(), SIGNAL(activated()), screenshot, SLOT(shootScreen()));
+	connect(ShortcutManager::instance(), SIGNAL(activated()), screenshot, SLOT(action()));
 
 	buildTray();
 }

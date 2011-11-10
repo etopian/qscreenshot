@@ -292,6 +292,23 @@ void Screenshot::connectMenu()
 	connect(ui_->actionCheck_for_updates, SIGNAL(triggered()), SLOT(doCheckUpdates()));
 }
 
+void Screenshot::action()
+{
+	int action = Options::instance()->getOption(constDefaultAction, Desktop).toInt();
+	switch(action) {
+	case Area:
+		captureArea(Options::instance()->getOption(constDelay).toInt());
+		break;
+	case Window:
+		shootWindow();
+		break;
+	case Desktop:
+	default:
+		shootScreen();
+		break;
+	}
+}
+
 void Screenshot::setupStatusBar()
 {
 	QStatusBar *sb = statusBar();

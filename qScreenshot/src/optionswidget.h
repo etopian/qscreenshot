@@ -49,6 +49,7 @@ private:
 	QString format;
 	QString fileName;
 	QStringList servers;
+	int defaultAction;
 	Ui::OptionsWidget *ui_;
 };
 

@@ -50,6 +50,7 @@ public slots:
 	void shootScreen();
 	void openImage();
 	void newScreenshot();
+	void action();
 
 	void doOptions();
 	void doProxySettings();

@@ -46,5 +46,8 @@
 #define constProxyPass "proxy.pass"
 #define constProxyType "proxy.type"
 #define constCurLang "curlang"
+#define constDefaultAction "default-action"
+
+enum DefaultAction { Desktop, Area, Window };
 
 #endif // DEFINES_H

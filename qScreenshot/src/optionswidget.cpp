@@ -173,6 +173,7 @@ OptionsWidget::OptionsWidget(QWidget* p)
 	format = o->getOption(constFormat, QVariant(format)).toString();
 	fileName = o->getOption(constFileName, QVariant(fileName)).toString();
 	servers = o->getOption(constServerList).toStringList();
+	defaultAction = o->getOption(constDefaultAction, QVariant(Desktop)).toInt();
 
 #ifdef Q_WS_MAC
 	ui_->cb_autostart->hide();
@@ -248,6 +249,15 @@ void OptionsWidget::applyOptions()
 	}
 	o->setOption(constServerList, QVariant(servers));
 
+	if(ui_->rb_desktop->isChecked())
+		defaultAction = Desktop;
+	else if(ui_->rb_area->isChecked())
+		defaultAction = Area;
+	else
+		defaultAction = Window;
+	o->setOption(constDefaultAction, defaultAction);
+
+
 #ifdef Q_WS_WIN
 	QSettings set(regString, QSettings::NativeFormat);
 	if(ui_->cb_autostart->isChecked()) {
@@ -284,6 +294,10 @@ void OptionsWidget::restoreOptions()
 		s->setFromString(settings);
 		s->setText(s->displayName());
 	}
+
+	ui_->rb_desktop->setChecked(defaultAction == Desktop);
+	ui_->rb_area->setChecked(defaultAction == Area);
+	ui_->rb_window->setChecked(defaultAction == Window);
 
 #ifdef Q_WS_WIN
 	QSettings set(regString, QSettings::NativeFormat);
