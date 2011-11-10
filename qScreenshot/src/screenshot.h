@@ -78,6 +78,7 @@ private slots:
 	void doAbout();
 	void doCheckUpdates();
 	void settingsChanged(const QString& option, const QVariant& value);
+	void copyUrl();
 
 private:
 	void updateScreenshotLabel();
