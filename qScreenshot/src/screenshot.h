@@ -27,6 +27,7 @@
 struct Proxy;
 class Server;
 class GrabAreaWidget;
+class ScreenshotOptions;
 class QNetworkAccessManager;
 class QNetworkReply;
 class QLabel;
@@ -110,6 +111,7 @@ private:
 	QStringList history_;
 	GrabAreaWidget* grabAreaWidget_;
 	QLabel *sbLbSize;
+	QPointer<ScreenshotOptions> so_;
 
 	Ui::Screenshot *ui_;
 };

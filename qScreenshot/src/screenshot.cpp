@@ -221,6 +221,7 @@ Screenshot::Screenshot()
 	, lastFolder(QDir::home().absolutePath())
 	, proxy_(new Proxy())
 	, grabAreaWidget_(0)
+	, so_(0)
 	, ui_(new Ui::Screenshot)
 {
 	setAttribute(Qt::WA_DeleteOnClose);
@@ -275,6 +276,7 @@ Screenshot::~Screenshot()
 	delete ui_;
 	delete proxy_;
 	delete grabAreaWidget_;
+	delete so_;
 }
 
 void Screenshot::connectMenu()
@@ -299,7 +301,7 @@ void Screenshot::action()
 	int action = Options::instance()->getOption(constDefaultAction, Desktop).toInt();
 	switch(action) {
 	case Area:
-		captureArea(Options::instance()->getOption(constDelay).toInt());
+		captureArea(0);
 		break;
 	case Window:
 		shootWindow();
@@ -485,17 +487,17 @@ void Screenshot::bringToFront()
 
 void Screenshot::newScreenshot()
 {
-	ScreenshotOptions *so = new ScreenshotOptions(Options::instance()->getOption(constDelay).toInt(), this);
-	connect(so, SIGNAL(captureArea(int)), SLOT(captureArea(int)));
-	connect(so, SIGNAL(captureWindow(int)), this, SLOT(captureWindow(int)));
-	connect(so, SIGNAL(captureDesktop(int)), SLOT(captureDesktop(int)));
-	connect(so, SIGNAL(screenshotCanceled()), SLOT(screenshotCanceled()));
+	so_ = new ScreenshotOptions(Options::instance()->getOption(constDelay).toInt());
+	connect(so_, SIGNAL(captureArea(int)), SLOT(captureArea(int)));
+	connect(so_, SIGNAL(captureWindow(int)), this, SLOT(captureWindow(int)));
+	connect(so_, SIGNAL(captureDesktop(int)), SLOT(captureDesktop(int)));
+	connect(so_, SIGNAL(screenshotCanceled()), SLOT(screenshotCanceled()));
 	saveGeometry();
 	setWindowState(Qt::WindowMinimized);
 	ui_->pb_new_screenshot->setEnabled(false);
-	so->show();
-	so->raise();
-	so->activateWindow();
+	so_->show();
+	so_->raise();
+	so_->activateWindow();
 }
 
 void Screenshot::screenshotCanceled()
@@ -516,7 +518,6 @@ void Screenshot::refreshWindow()
 
 void Screenshot::captureArea(int delay)
 {
-	Options::instance()->setOption(constDelay, delay);
 	grabAreaWidget_ = new GrabAreaWidget();
 	if(grabAreaWidget_->exec() == QDialog::Accepted) {
 		QTimer::singleShot(delay*1000, this, SLOT(shootArea()));
@@ -549,7 +550,6 @@ void Screenshot::shootArea()
 
 void Screenshot::captureWindow(int delay)
 {
-	Options::instance()->setOption(constDelay, delay);
 	QTimer::singleShot(delay*1000, this, SLOT(shootWindow()));
 }
 
@@ -560,7 +560,6 @@ void Screenshot::shootWindow()
 
 void Screenshot::captureDesktop(int delay)
 {
-	Options::instance()->setOption(constDelay, delay);
 	QTimer::singleShot(delay*1000, this, SLOT(shootScreen()));
 }
 
