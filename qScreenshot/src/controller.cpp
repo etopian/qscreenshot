@@ -143,9 +143,9 @@ Controller::Controller()
 	}
 
 	if(o->getOption(constVersionOption).toString() != APP_VERSION) {
-		foreach(const QString& host, staticHostsList) {
-			updateServer(&servers, host);
-		}
+//		foreach(const QString& host, staticHostsList) {
+//			updateServer(&servers, host);
+//		}
 
 		doUpdate();
 		o->setOption(constVersionOption, APP_VERSION);
