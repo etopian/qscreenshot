@@ -1,4 +1,5 @@
 @echo off
+set PATH=C:\QtSDK\Desktop\Qt\4.7.4\mingw\bin;%PATH%
 @echo Creating qScreenshot Project
 svn checkout http://qscreenshot.googlecode.com/svn/trunk/ qscreenshot
 cd qscreenshot\qScreenshot
@@ -13,6 +14,6 @@ pause
 call 7z a -tzip -scsDOS -mx9 qscreenshot-r51-win32.zip "qscreenshot.exe"
 @echo Completed
 @echo Uploading archived qScreenshot Nightly Build to Google Code
-call googlecode_upload.py -p "qscreenshot" -s "qScreenshot Nightly Build || Qt 4.7.2 || For test only!" -l "NightlyBuild,Windows,Archive" "qscreenshot-r51-win32.zip"
+call googlecode_upload.py -p "qscreenshot" -s "qScreenshot Nightly Build || Qt 4.7.4 || For test only!" -l "NightlyBuild,Windows,Archive" "qscreenshot-r92-win32.zip"
 @echo Completed
 pause & pause
