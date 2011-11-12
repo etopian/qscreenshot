@@ -8,7 +8,15 @@ rm -r -f ${rpmbuild_dir}
 fi
 mkdir ${rpmbuild_dir}
 svndir=${rpmbuild_dir}/${progname}
-srcpath=/usr/src/packages/SOURCES
+if [ ! -d ${homedir}/rpmbuild ]
+then
+cd ${homedir}
+mkdir rpmbuild
+cd ${homedir}/rpmbuild
+mkdir SOURCES
+mkdir SPECS
+fi
+srcpath=${homedir}/rpmbuild/SOURCES
 cd $homedir
 svn checkout http://qscreenshot.googlecode.com/svn/trunk/qScreenshot ${homedir}/${progname}
 if [ -d "${svndir}" ]
@@ -30,7 +38,7 @@ mkdir ${builddir}
 cp -r -f ${svndir}/* ${builddir}/
 cd ${rpmbuild_dir}
 tar -pczf ${package_name} ${progname}-${ver}
-cat <<END >/usr/src/packages/SPECS/${progname}.spec
+cat <<END >${homedir}/rpmbuild/SPECS/${progname}.spec
 Summary: Simple Screenshot Maker
 Name: $progname
 Version: $ver
@@ -81,7 +89,7 @@ mkdir -p %{buildroot}/usr/share/icons/hicolor/48x48/apps
 %{_datadir}/icons/hicolor/48x48/apps/
 END
 cp -f ${package_name} ${srcpath}
-cd /usr/src/packages/SPECS
+cd ${homedir}/rpmbuild/SPECS
 rpmbuild -ba --clean --rmspec --rmsource ${progname}.spec
 echo "Cleaning..."
 rm -r -f ${rpmbuild_dir}
