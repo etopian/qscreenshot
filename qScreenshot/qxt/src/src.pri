@@ -9,6 +9,7 @@ SOURCES += $$PWD/gui/qxtglobalshortcut.cpp \
 	$$PWD/gui/qxtwindowsystem.cpp
 
 unix:!macx {
+	CONFIG += X11
 	SOURCES += $$PWD/gui/qxtglobalshortcut_x11.cpp \
 		$$PWD/gui/qxtwindowsystem_x11.cpp
 }
