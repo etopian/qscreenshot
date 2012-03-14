@@ -81,3 +81,6 @@ unix {
         icon4 \
         icon5
 }
+macx {
+   ICON = icons/logo/screenshot.icns
+}
