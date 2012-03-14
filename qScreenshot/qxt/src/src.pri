@@ -18,6 +18,8 @@ macx {
 		$$PWD/gui/qxtwindowsystem_mac.cpp
 
 	HEADERS  += $$PWD/gui/qxtwindowsystem_mac.h
+
+	QMAKE_LFLAGS += -framework Carbon -framework CoreFoundation
 }
 win32 {
 	SOURCES += $$PWD/gui/qxtglobalshortcut_win.cpp \
