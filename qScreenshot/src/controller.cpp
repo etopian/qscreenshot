@@ -202,6 +202,11 @@ void Controller::buildTray()
 
 	tray->setContextMenu(trayMenu_);
 	tray->show();
+    
+#ifdef Q_WS_MAC    
+    extern void qt_mac_set_dock_menu(QMenu *);
+	qt_mac_set_dock_menu(trayMenu_);
+#endif
 }
 
 void Controller::trayActivated(QSystemTrayIcon::ActivationReason reason)

@@ -83,4 +83,5 @@ unix {
 }
 macx {
    ICON = icons/logo/screenshot.icns
+   QMAKE_INFO_PLIST = ../Info.plist
 }

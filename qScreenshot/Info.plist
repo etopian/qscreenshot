@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIconFile</key>
+	<string>screenshot.icns</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleGetInfoString</key>
+	<string>qScreenshot 0.4</string>
+	<key>CFBundleSignature</key>
+	<string>qScreenshot</string>
+	<key>CFBundleExecutable</key>
+	<string>qScreenshot</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.googlecode.qscreenshot</string>
+	<key>NOTE</key>
+	<string>http://code.google.com/p/qscreenshot</string>
+</dict>
+</plist>
