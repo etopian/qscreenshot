@@ -127,8 +127,10 @@ void ToolBar::addButton(Button *b)
 void ToolBar::enableButton(bool enable, ToolBar::ButtonType type)
 {
 	foreach(Button *b, buttons_) {
-		if(b->type() == type)
+		if(b->type() == type) {
 			b->setEnabled(enable);
+			break;
+		}
 	}
 }
 
@@ -137,6 +139,7 @@ void ToolBar::checkButton(ToolBar::ButtonType type)
 	foreach(Button *b, buttons_) {
 		if(b->type() == type && b->isCheckable()) {
 			b->setChecked(true);
+			break;
 		}
 	}
 	emit checkedButtonChanged(type);
@@ -152,9 +155,11 @@ void ToolBar::buttonChecked(bool check)
 
 	if(s->type() == ButtonSelect && check) {
 		enableButton(true, ButtonCut);
+		enableButton(true, ButtonBlur);
 	}
 	else {
 		enableButton(false, ButtonCut);
+		enableButton(false, ButtonBlur);
 	}
 
 	if(check)
@@ -176,6 +181,7 @@ void ToolBar::setColorForColorButton(const QColor &color)
 			QPixmap pix(16,16);
 			pix.fill(color);
 			b->setIcon(QIcon(pix));
+			break;
 		}
 	}
 }
