@@ -46,6 +46,7 @@ public:
 
 protected:
 	void closeEvent(QCloseEvent *);
+	bool eventFilter(QObject *o, QEvent *e);
 
 public slots:
 	void shootScreen();
@@ -79,7 +80,7 @@ private slots:
 	void doAbout();
 	void doCheckUpdates();
 	void settingsChanged(const QString& option, const QVariant& value);
-	void copyUrl();
+	void copyUrl();	
 
 private:
 	void updateScreenshotLabel();
@@ -99,6 +100,7 @@ private:
 	void setupStatusBar();
 	void updateStatusBar();
 
+private:
 	bool modified;
 	QPixmap originalPixmap;
 	QString format;

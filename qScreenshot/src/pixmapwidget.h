@@ -35,7 +35,7 @@ public:
 	SelectionRect(int left, int top, int w, int h);
 	void clear();
 	enum CornerType { NoCorner, TopLeft, BottomLeft, TopRight, BottomRight };
-	CornerType cornerUnderMouse(QPoint pos) const;
+	CornerType cornerUnderMouse(const QPoint& pos) const;
 };
 
 
@@ -47,7 +47,7 @@ public:
 	~PixmapWidget();
 	void setToolBar(ToolBar *bar);
 	void setPixmap(const QPixmap& pix);
-	QPixmap getPixmap() const { return mainPixmap; };
+	QPixmap getPixmap() const { return mainPixmap; }
 
 private slots:	
 	void checkedButtonChanged(ToolBar::ButtonType type);
@@ -58,6 +58,7 @@ private slots:
 	void copy();
 	void selectFont();
 	void insert();
+	void blur();
 
 protected:
 	void mousePressEvent(QMouseEvent *e);
@@ -65,6 +66,13 @@ protected:
 	void mouseReleaseEvent(QMouseEvent *e);
 	void mouseMoveEvent(QMouseEvent *e);
 	void paintEvent(QPaintEvent *);
+
+private:
+	void saveUndoPixmap();
+	void selectColor();
+	void undo();
+	void rotate();
+	void init(int lineWidth, const QString& color, const QString& font);
 
 signals:
 	void adjusted();
@@ -88,12 +96,6 @@ private:
 
 	enum SmoothLineType { None, Horizontal, Vertical };
 	SmoothLineType smoothLineType_;
-
-	void saveUndoPixmap();
-	void selectColor();
-	void undo();	
-	void rotate();
-	void init(int lineWidth, const QString& color, const QString& font);
 };
 
 #endif // PIXMAPWIDGET_H
