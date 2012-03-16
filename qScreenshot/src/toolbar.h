@@ -43,7 +43,8 @@ public:
 		ButtonRotate,
 		ButtonCopy,
 		ButtonEllipse,
-		ButtonRect
+		ButtonRect,
+		ButtonBlur
 	};
 
 	ToolBar(QWidget *parent);

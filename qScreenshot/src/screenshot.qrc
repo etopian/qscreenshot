@@ -20,6 +20,7 @@
         <file>icons/rectangles.png</file>
         <file>icons/draw_ellipse.png</file>
         <file>icons/draw_rect.png</file>
+        <file>icons/blur.png</file>
     </qresource>
     <qresource prefix="/lang">
         <file>lang/ru.qm</file>

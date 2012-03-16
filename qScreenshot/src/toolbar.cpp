@@ -93,6 +93,7 @@ void ToolBar::init()
 	b = new Button(tr("Cut"), icoHost->getIcon("crop"), ToolBar::ButtonCut, false, this);
 	b->setShortcut(QKeySequence("Ctrl+x"));
 	addButton(b);
+	addButton( new Button(tr("Blur"), icoHost->getIcon("blur"), ToolBar::ButtonBlur, false, this) );
 
 	addSeparator();
 	b = new Button(tr("Copy"), icoHost->getIcon("copy"), ToolBar::ButtonCopy, false,this);
