@@ -312,11 +312,13 @@ void PixmapWidget::blur()
 		return;
 
 	saveUndoPixmap();
+	int radius = Options::instance()->getOption(constRadius, 5).toInt();
 	bool ok = false;
-	int radius = QInputDialog::getInteger(this, tr("Input radius"), tr("Radius"), 5, 1, 100, 1, &ok);
+	radius = QInputDialog::getInteger(this, tr("Input radius"), tr("Radius"), radius, 1, 100, 1, &ok);
 	if(!ok)
 		return;
 
+	Options::instance()->setOption(constRadius, radius);
 	QImage im = mainPixmap.toImage();
 	mainPixmap = QPixmap::fromImage(blurred(im, *selectionRect, radius));
 	update();

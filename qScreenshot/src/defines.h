@@ -47,6 +47,7 @@
 #define constProxyType "proxy.type"
 #define constCurLang "curlang"
 #define constDefaultAction "default-action"
+#define constRadius "radius"
 
 enum DefaultAction { Desktop, Area, Window };
 
