@@ -290,6 +290,18 @@
         <source>Copy</source>
         <translation type="unfinished">Копировать</translation>
     </message>
+    <message>
+        <source>Input radius</source>
+        <translation type="unfinished">Введите радиус</translation>
+    </message>
+    <message>
+        <source>Radius</source>
+        <translation type="unfinished">Радиус</translation>
+    </message>
+    <message>
+        <source>Blur</source>
+        <translation type="unfinished">Размытие</translation>
+    </message>
 </context>
 <context>
     <name>ProxySettingsDlg</name>
@@ -545,6 +557,10 @@
     <message>
         <source>Undo</source>
         <translation type="unfinished">Отмена</translation>
+    </message>
+    <message>
+        <source>Blur</source>
+        <translation type="unfinished">Размытие</translation>
     </message>
 </context>
 <context>
