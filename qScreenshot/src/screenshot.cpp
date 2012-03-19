@@ -243,7 +243,7 @@ Screenshot::Screenshot()
 	ui_->pb_save->setIcon(icoHost->getIcon("download"));
 	ui_->pb_print->setIcon(icoHost->getIcon("print"));
 	ui_->pb_new_screenshot->setIcon(icoHost->getIcon("screenshot"));
-	ui_->tb_copyUrl->setIcon(icoHost->getIcon(QStyle::SP_DialogSaveButton));
+	ui_->tb_copyUrl->setIcon(icoHost->getIcon("copy"));
 
 	ui_->pb_save->setShortcut(QKeySequence("Ctrl+s"));
 	ui_->pb_upload->setShortcut(QKeySequence("Ctrl+u"));
