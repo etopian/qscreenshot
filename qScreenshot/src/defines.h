@@ -48,6 +48,7 @@
 #define constCurLang "curlang"
 #define constDefaultAction "default-action"
 #define constRadius "radius"
+#define constState "state"
 
 enum DefaultAction { Desktop, Area, Window };
 

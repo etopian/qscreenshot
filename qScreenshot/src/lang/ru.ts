@@ -370,7 +370,7 @@
     </message>
     <message>
         <source>toolBar</source>
-        <translation type="unfinished">toolBar</translation>
+        <translation type="obsolete">toolBar</translation>
     </message>
     <message>
         <source>File</source>
@@ -475,6 +475,10 @@
     <message>
         <source>Size: %1x%2px; %3 bytes</source>
         <translation type="unfinished">Размер:%1х%2px; %3 байтов</translation>
+    </message>
+    <message>
+        <source>ToolBar</source>
+        <translation type="unfinished">ПанельИнструментов</translation>
     </message>
 </context>
 <context>

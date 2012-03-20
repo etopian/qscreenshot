@@ -254,6 +254,10 @@ Screenshot::Screenshot()
 	connectMenu();
 	setupStatusBar();
 
+	QByteArray state = Options::instance()->getOption(constState).toByteArray();
+	if(!state.isEmpty())
+		restoreState(state);
+
 	connect(ui_->pb_save, SIGNAL(clicked()), this, SLOT(saveScreenshot()));
 	connect(ui_->pb_upload, SIGNAL(clicked()), this, SLOT(uploadScreenshot()));
 	connect(ui_->pb_print, SIGNAL(clicked()), this, SLOT(printScreenshot()));
@@ -937,6 +941,7 @@ void Screenshot::saveGeometry()
 	o->setOption(constWindowY, y());
 	o->setOption(constWindowWidth, width());
 	o->setOption(constWindowHeight, height());
+	o->setOption(constState, saveState());
 }
 
 bool Screenshot::eventFilter(QObject *o, QEvent *e)
