@@ -1,13 +1,13 @@
 ; qscreenshot-install.nsi
 ; http://qscreenshot.googlecode.com/
-; qScreenshot installation script, v0.1.0
+; qScreenshot installation script, v0.2.0
 ; Written by zet <mailto:vladimir.shelukhin@gmail.com>
-; Date: 2011-11-12
+; Date: 2012-03-26
 
 ; -----------------------------------------------------------------------------
 ; Define your application information
 !define PRODUCT_NAME "qScreenshot"
-!define PRODUCT_VERSION "0.5"
+!define PRODUCT_VERSION "0.6"
 !define COMPANY_NAME "qScreenshot Project"
 !define PRODUCT_WEB_SITE "http://qscreenshot.googlecode.com/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\qscreenshot.exe"
@@ -22,22 +22,22 @@ InstallDir "$PROGRAMFILES\qScreenshot"
 ;Get installation folder from registry if available
 InstallDirRegKey HKLM "Software\${PRODUCT_NAME}" "InstallDir"
 
-OutFile "setup\qscreenshot-0.5-win32-setup.exe"
+OutFile "setup\qscreenshot-0.6-win32-setup.exe"
 
 ; Use compression
 SetCompressor /SOLID lzma
 
-BrandingText "Copyright © 2011 ${COMPANY_NAME}"
+BrandingText "Copyright © 2011-2012 ${COMPANY_NAME}"
 
 ; -----------------------------------------------------------------------------
 ; Version Information
 VIAddVersionKey  "CompanyName"     "${COMPANY_NAME}"
-VIAddVersionKey  "LegalCopyright"  "© 2011 ${COMPANY_NAME}"
+VIAddVersionKey  "LegalCopyright"  "© 2011-2012 ${COMPANY_NAME}"
 VIAddVersionKey  "ProductName"     "${PRODUCT_NAME}"
 VIAddVersionKey  "ProductVersion"  "${PRODUCT_VERSION}"
 VIAddVersionKey  "FileDescription" "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 VIAddVersionKey  "FileVersion"     "${PRODUCT_VERSION}"
-VIProductVersion "0.5.0.0"
+VIProductVersion "0.6.0.0"
 
 ; -----------------------------------------------------------------------------
 ; The installer will perform a CRC on itself before allowing an install
@@ -89,7 +89,7 @@ XPStyle on
 !define MUI_FINISHPAGE_RUN "$INSTDIR\qscreenshot.exe"
 ;!define MUI_FINISHPAGE_RUN_TEXT "&Run qScreenshot"
 !define MUI_FINISHPAGE_RUN_NOTCHECKED
-;!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\changelog_cp1251.txt"
+;!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\changelog.txt"
 ;!define MUI_FINISHPAGE_SHOWREADME_TEXT "&Show Changelog"
 ;!define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
 !define MUI_FINISHPAGE_LINK "qScreenshot Website"
@@ -138,6 +138,8 @@ InstType Full
 
 Section "!qScreenshot Core Components" SectionqScreenshotCoreComponents
 
+;	KillProcDLL::KillProc "qscreenshot.exe"
+
 	; Set Section properties
 	SectionIn 1 2 RO
 	SetOverwrite on
@@ -148,21 +150,24 @@ Section "!qScreenshot Core Components" SectionqScreenshotCoreComponents
 	File "setup\LICENSE.txt"
 	File "setup\mingwm10.dll"
 	File "setup\qscreenshot.exe"
+	File "setup\qt_ru.qm"
 	File "setup\QtCore4.dll"
 	File "setup\QtGui4.dll"
 	File "setup\QtNetwork4.dll"
 	File "setup\QtSvg4.dll"
 	File "setup\QtXml4.dll"
+	File "setup\ru.qm"
 	File "setup\screenshot.ico"
-	File "setup\version.txt"
-  SetOutPath "$INSTDIR\iconengines\"
-  File "setup\iconengines\qsvgicon4.dll"
-  SetOutPath "$INSTDIR\imageformats\"
+	Delete "$INSTDIR\version.txt"
+	Delete "$INSTDIR\iconengines\qsvgicon4.dll"
+	RMDir "$INSTDIR\iconengines\"
+	SetOutPath "$INSTDIR\imageformats\"
 	File "setup\imageformats\qgif4.dll"
 	File "setup\imageformats\qico4.dll"
 	File "setup\imageformats\qjpeg4.dll"
 	File "setup\imageformats\qmng4.dll"
 	File "setup\imageformats\qsvg4.dll"
+	File "setup\imageformats\qtga4.dll"
 	File "setup\imageformats\qtiff4.dll"
   WriteIniStr "$INSTDIR\qScreenshot Website.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
   DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "${PRODUCT_NAME}"
@@ -214,20 +219,19 @@ SectionEnd
 Section -FinishSection
 
 	SetOutPath "$INSTDIR\"
-  WriteUninstaller "$INSTDIR\uninstall.exe"
+	WriteUninstaller "$INSTDIR\uninstall.exe"
 	WriteRegExpandStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninstall.exe"
 	WriteRegExpandStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "InstallLocation" "$INSTDIR"
 	WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "Software\${PRODUCT_NAME}" "" "$INSTDIR"
-	DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "Software\Microsoft\Windows\CurrentVersion\App Paths\psi.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\qscreenshot.exe"
+	WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\qscreenshot.exe"
 	WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "${PRODUCT_NAME}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\qscreenshot.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "HelpLink" "${PRODUCT_WEB_SITE}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${COMPANY_NAME}"
-  WriteRegDWORD ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "NoModify" "1"
-  WriteRegDWORD ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "NoRepair" "1"
+	WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\qscreenshot.exe"
+	WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
+	WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
+	WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "HelpLink" "${PRODUCT_WEB_SITE}"
+	WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${COMPANY_NAME}"
+	WriteRegDWORD ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "NoModify" "1"
+	WriteRegDWORD ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "NoRepair" "1"
 
 SectionEnd
 
@@ -235,15 +239,17 @@ SectionEnd
 ;Component Section Descriptions
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 	!insertmacro MUI_DESCRIPTION_TEXT ${SectionqScreenshotCoreComponents} "qScreenshot core files (required)"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SectionStartMenuShortcuts} "qScreenshot Start Menu shortcuts"
+	!insertmacro MUI_DESCRIPTION_TEXT ${SectionStartMenuShortcuts} "qScreenshot Start Menu shortcuts"
 	!insertmacro MUI_DESCRIPTION_TEXT ${SectionDesktopShortcut} "qScreenshot Desktop shortcut"
 	!insertmacro MUI_DESCRIPTION_TEXT ${SectionQuickLaunchShortcut} "qScreenshot Quick Launch shortcut"
 	!insertmacro MUI_DESCRIPTION_TEXT ${SectionStartupRegistryString} "Starts the qScreenshot automatically when Windows starts up"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
-; =============================================================================
+; ==============================================================================================
 ;Uninstall section
 Section Uninstall
+
+;	KillProcDLL::KillProc "qscreenshot.exe"
 
 	;Remove qScreenshot items from registry...
 	DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "SOFTWARE\${PRODUCT_NAME}"
@@ -257,7 +263,7 @@ Section Uninstall
 	;Delete qScreenshot Shortcuts
 	SetShellVarContext all
 	Delete "$DESKTOP\qScreenshot.lnk"
-  Delete "$QUICKLAUNCH\qScreenshot.lnk"
+	Delete "$QUICKLAUNCH\qScreenshot.lnk"
 
   ;Cleanup qScreenshot Core Components
 	Delete "$INSTDIR\qScreenshot Website.url"
@@ -265,25 +271,25 @@ Section Uninstall
 	Delete "$INSTDIR\LICENSE.txt"
 	Delete "$INSTDIR\mingwm10.dll"
 	Delete "$INSTDIR\qscreenshot.exe"
+	Delete "$INSTDIR\qt_ru.qm"
 	Delete "$INSTDIR\QtCore4.dll"
 	Delete "$INSTDIR\QtGui4.dll"
 	Delete "$INSTDIR\QtNetwork4.dll"
 	Delete "$INSTDIR\QtSvg4.dll"
 	Delete "$INSTDIR\QtXml4.dll"
+	Delete "$INSTDIR\ru.qm"
 	Delete "$INSTDIR\screenshot.ico"
-	Delete "$INSTDIR\version.txt"
-	Delete "$INSTDIR\iconengines\qsvgicon4.dll"
 	Delete "$INSTDIR\imageformats\qgif4.dll"
 	Delete "$INSTDIR\imageformats\qico4.dll"
 	Delete "$INSTDIR\imageformats\qjpeg4.dll"
 	Delete "$INSTDIR\imageformats\qmng4.dll"
 	Delete "$INSTDIR\imageformats\qsvg4.dll"
+	Delete "$INSTDIR\imageformats\qtga4.dll"
 	Delete "$INSTDIR\imageformats\qtiff4.dll"
 
   ;Remove remaining directories
 	SetShellVarContext all
   RMDir /r "$SMPROGRAMS\qScreenshot"
-	RMDir "$INSTDIR\iconengines\"
 	RMDir "$INSTDIR\imageformats\"
 	RMDir "$INSTDIR\"
 
