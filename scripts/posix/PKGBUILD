@@ -1,0 +1,40 @@
+pkgname=qscreenshot-svn
+pkgver=110
+pkgrel=1
+pkgdesc="application for creating screenshots"
+arch=('i686' 'x86_64')
+license=('GPL2')
+url="http://code.google.com/p/qScreenshot"
+groups=()
+depends=('qt')
+makedepends=('subversion')
+conflicts=('')
+
+_svntrunk="http://qscreenshot.googlecode.com/svn/trunk/qScreenshot/"
+_svnmod="qscreenshot-svn"
+
+build() {
+msg "Downloading from ${_svntrunk} ..."
+	cd "${srcdir}"
+	if [ -d ${_svnmod}/.svn ]; then
+		(cd ${_svnmod} && svn up -r ${pkgver})
+	else
+		svn co $_svntrunk --config-dir ./ -r $pkgver $_svnmod
+	fi
+	msg2 "SVN checkout done or server timeout"
+
+msg "Creating temporary build directory..."
+	cp -r $_svnmod $_svnmod-build
+	cd $_svnmod-build
+
+  
+msg "Building and installing..."
+	qmake || return 1
+	 make  || return 1
+	  make INSTALL_ROOT="$pkgdir" install || return 1
+
+	cd ${srcdir}
+	
+msg "Removing temporary files..."
+	rm -Rf ${_svnmod}-build
+}
