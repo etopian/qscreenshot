@@ -1,13 +1,13 @@
 ; qscreenshot-install.nsi
 ; http://qscreenshot.googlecode.com/
-; qScreenshot installation script, v0.2.0
+; qScreenshot installation script, v0.2.1
 ; Written by zet <mailto:vladimir.shelukhin@gmail.com>
-; Date: 2012-03-26
+; Date: 2013-09-19
 
 ; -----------------------------------------------------------------------------
 ; Define your application information
 !define PRODUCT_NAME "qScreenshot"
-!define PRODUCT_VERSION "0.6"
+!define PRODUCT_VERSION "0.7"
 !define COMPANY_NAME "qScreenshot Project"
 !define PRODUCT_WEB_SITE "http://qscreenshot.googlecode.com/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\qscreenshot.exe"
@@ -22,22 +22,22 @@ InstallDir "$PROGRAMFILES\qScreenshot"
 ;Get installation folder from registry if available
 InstallDirRegKey HKLM "Software\${PRODUCT_NAME}" "InstallDir"
 
-OutFile "setup\qscreenshot-0.6-win32-setup.exe"
+OutFile "setup\qscreenshot-0.7-win32-setup.exe"
 
 ; Use compression
 SetCompressor /SOLID lzma
 
-BrandingText "Copyright © 2011-2012 ${COMPANY_NAME}"
+BrandingText "Copyright © 2011-2013 ${COMPANY_NAME}"
 
 ; -----------------------------------------------------------------------------
 ; Version Information
 VIAddVersionKey  "CompanyName"     "${COMPANY_NAME}"
-VIAddVersionKey  "LegalCopyright"  "© 2011-2012 ${COMPANY_NAME}"
+VIAddVersionKey  "LegalCopyright"  "© 2011-2013 ${COMPANY_NAME}"
 VIAddVersionKey  "ProductName"     "${PRODUCT_NAME}"
 VIAddVersionKey  "ProductVersion"  "${PRODUCT_VERSION}"
 VIAddVersionKey  "FileDescription" "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 VIAddVersionKey  "FileVersion"     "${PRODUCT_VERSION}"
-VIProductVersion "0.6.0.0"
+VIProductVersion "0.7.0.0"
 
 ; -----------------------------------------------------------------------------
 ; The installer will perform a CRC on itself before allowing an install
