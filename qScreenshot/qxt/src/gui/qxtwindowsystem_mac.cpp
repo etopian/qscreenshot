@@ -153,4 +153,3 @@ WId QxtWindowSystem::windowAt(const QPoint& pos)
 }
 
 #endif // QXTWINDOWSYSTEM_MAC_CPP
-

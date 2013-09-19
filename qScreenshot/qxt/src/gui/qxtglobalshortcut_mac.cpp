@@ -256,4 +256,3 @@ bool QxtGlobalShortcutPrivate::unregisterShortcut(quint32 nativeKey, quint32 nat
     keyIDs.remove(id);
     return !UnregisterEventHotKey(ref);
 }
-

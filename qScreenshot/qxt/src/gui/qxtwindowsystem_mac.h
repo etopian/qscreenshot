@@ -144,5 +144,7 @@ private:
     QString string;
 };
 
-#endif // QXTWINDOWSYSTEM_MAC_H
 
+
+
+#endif // QXTWINDOWSYSTEM_MAC_H

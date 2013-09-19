@@ -187,4 +187,3 @@ uint QxtWindowSystem::idleTime()
     }
     return idle;
 }
-

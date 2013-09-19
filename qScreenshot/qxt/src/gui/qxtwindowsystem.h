@@ -51,4 +51,3 @@ public:
 };
 
 #endif // QXTWINDOWSYSTEM_H
-

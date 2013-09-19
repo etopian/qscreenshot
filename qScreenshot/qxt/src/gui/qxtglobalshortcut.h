@@ -62,4 +62,3 @@ Q_SIGNALS:
 };
 
 #endif // QXTGLOBALSHORTCUT_H
-
