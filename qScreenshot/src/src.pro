@@ -7,16 +7,16 @@ DESTDIR = release/
 MOC_DIR = tmp/
 OBJECTS_DIR = tmp/
 UI_DIR = tmp/
-INCLUDEPATH += ../qxt/src/gui \
+INCLUDEPATH += . \
+    ../qxt/src/gui \
     ../qxt/src/core
-DEPENDPATH += ../qxt/release \
+DEPENDPATH += . \
+    ../qxt/release \
     ../qxt/src/core \
     ../qxt/src/gui
 include(../conf.pri)
 include(../qxt/qxt.pro)
 
-# LIBS += -L../qxt/release/ \
-# -lqxt
 HEADERS += $$PWD/screenshot.h \
     $$PWD/server.h \
     $$PWD/editserverdlg.h \
