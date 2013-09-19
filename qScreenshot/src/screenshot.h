@@ -57,6 +57,9 @@ public slots:
 	void doOptions();
 	void doProxySettings();
 
+signals:
+	void screenshotSaved(const QString&);
+
 private slots:
 	void saveScreenshot();
 	void uploadScreenshot();
@@ -106,6 +109,8 @@ private:
 	QString format;
 	QString fileNameFormat;
 	QString lastFolder;
+	bool autoSave;
+	QString autosaveFolder;
 	QList<Server*> servers;
 	QPointer<QNetworkAccessManager> manager;
 	QByteArray ba;

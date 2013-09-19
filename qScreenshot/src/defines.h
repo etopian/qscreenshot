@@ -49,6 +49,8 @@
 #define constDefaultAction "default-action"
 #define constRadius "radius"
 #define constState "state"
+#define constAutosaveFolder "autosaveFolder"
+#define constAutosave "autoSave"
 
 enum DefaultAction { Desktop, Area, Window };
 

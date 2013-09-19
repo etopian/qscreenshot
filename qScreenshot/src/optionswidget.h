@@ -43,11 +43,14 @@ private slots:
 	void addNewServer(const QString&);
 	void requstNewShortcut();
 	void onNewShortcut(const QKeySequence&);
+	void getAutosaveFolder();
 
 private:
 	QString shortCut;
 	QString format;
 	QString fileName;
+	bool autoSave;
+	QString autosaveFolder;
 	QStringList servers;
 	int defaultAction;
 	Ui::OptionsWidget *ui_;

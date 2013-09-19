@@ -515,11 +515,16 @@ void Screenshot::screenshotCanceled()
 
 void Screenshot::refreshWindow()
 {
-	ui_->pb_new_screenshot->setEnabled(true);
-	ui_->frame->setVisible(false);
-	updateScreenshotLabel();
-	bringToFront();
-	setModified(false);
+	if(autoSave) {
+		saveScreenshot();
+	}
+	else {
+		ui_->pb_new_screenshot->setEnabled(true);
+		ui_->frame->setVisible(false);
+		updateScreenshotLabel();
+		bringToFront();
+		setModified(false);
+	}
 }
 
 void Screenshot::captureArea(int delay)
@@ -585,19 +590,32 @@ void Screenshot::shoot(WId id)
 void Screenshot::saveScreenshot()
 {
 	ui_->pb_save->setEnabled(false);
-	originalPixmap = ui_->lb_pixmap->getPixmap();
-	QString initialPath = lastFolder + tr("/%1.").arg(QDateTime::currentDateTime().toString(fileNameFormat)) + format;
+	QString fileName;
+	QString initialFileName = tr("/%1.").arg(QDateTime::currentDateTime().toString(fileNameFormat)) + format;
+	if(autoSave) {
+		fileName = autosaveFolder + initialFileName;
+	}
+	else {
+		originalPixmap = ui_->lb_pixmap->getPixmap();
+		QString initialPath = lastFolder + initialFileName;
+		fileName = QFileDialog::getSaveFileName(this, tr("Save As"),
+								   initialPath,
+								   tr("%1 Files (*.%2);;All Files (*)")
+								   .arg(format.toUpper())
+								   .arg(format));
+	}
 
-	QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"),
-							   initialPath,
-							   tr("%1 Files (*.%2);;All Files (*)")
-							   .arg(format.toUpper())
-							   .arg(format));
 	if (!fileName.isEmpty()) {
-		originalPixmap.save(fileName, format.toAscii());
-		QFileInfo fi(fileName);
-		lastFolder = fi.absoluteDir().path();
-		settingsChanged(constLastFolder, lastFolder);
+		originalPixmap.save(fileName, format.toLatin1());
+
+		if(!autoSave) {
+			QFileInfo fi(fileName);
+			lastFolder = fi.absoluteDir().path();
+			settingsChanged(constLastFolder, lastFolder);
+		}
+		else {
+			emit screenshotSaved(fileName);
+		}
 	}
 	ui_->pb_save->setEnabled(true);
 	modified = false;
@@ -931,6 +949,8 @@ void Screenshot::refreshSettings()
 	fileNameFormat = o->getOption(constFileName, fileNameFormat).toString();
 	lastFolder = o->getOption(constLastFolder, lastFolder).toString();
 	setServersList(o->getOption(constServerList).toStringList());
+	autoSave = o->getOption(constAutosave, false).toBool();
+	autosaveFolder = o->getOption(constAutosaveFolder, QDir::homePath()).toString();
 }
 
 void Screenshot::saveGeometry()

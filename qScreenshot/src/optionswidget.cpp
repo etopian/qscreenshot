@@ -22,6 +22,7 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QDir>
+#include <QFileDialog>
 
 #include "optionswidget.h"
 #include "editserverdlg.h"
@@ -174,6 +175,8 @@ OptionsWidget::OptionsWidget(QWidget* p)
 	fileName = o->getOption(constFileName, QVariant(fileName)).toString();
 	servers = o->getOption(constServerList).toStringList();
 	defaultAction = o->getOption(constDefaultAction, QVariant(Desktop)).toInt();
+	autoSave = o->getOption(constAutosave, false).toBool();
+	autosaveFolder = o->getOption(constAutosaveFolder, QDir::homePath()).toString();
 
 #ifdef Q_WS_MAC
 	ui_->cb_autostart->hide();
@@ -184,6 +187,7 @@ OptionsWidget::OptionsWidget(QWidget* p)
 	connect(ui_->pb_edit, SIGNAL(clicked()), SLOT(editServer()));
 	connect(ui_->lw_servers, SIGNAL(doubleClicked(QModelIndex)), SLOT(editServer()));
 	connect(ui_->pb_modify, SIGNAL(clicked()), SLOT(requstNewShortcut()));
+	connect(ui_->tb_autosaveFolder, SIGNAL(clicked()), SLOT(getAutosaveFolder()));
 }
 
 OptionsWidget::~OptionsWidget()
@@ -257,6 +261,11 @@ void OptionsWidget::applyOptions()
 		defaultAction = Window;
 	o->setOption(constDefaultAction, defaultAction);
 
+	autosaveFolder = ui_->le_autosaveFolder->text();
+	autoSave = ui_->cb_autosave->isChecked();
+	o->setOption(constAutosave, autoSave);
+	o->setOption(constAutosaveFolder, autosaveFolder);
+
 
 #ifdef Q_WS_WIN
 	QSettings set(regString, QSettings::NativeFormat);
@@ -299,6 +308,11 @@ void OptionsWidget::restoreOptions()
 	ui_->rb_area->setChecked(defaultAction == Area);
 	ui_->rb_window->setChecked(defaultAction == Window);
 
+	ui_->le_autosaveFolder->setText(autosaveFolder);
+	ui_->cb_autosave->setChecked(autoSave);
+	ui_->le_autosaveFolder->setEnabled(autoSave);
+	ui_->tb_autosaveFolder->setEnabled(autoSave);
+
 #ifdef Q_WS_WIN
 	QSettings set(regString, QSettings::NativeFormat);
 	const QString path = set.value(APP_NAME).toString();
@@ -324,6 +338,14 @@ void OptionsWidget::requstNewShortcut()
 void OptionsWidget::onNewShortcut(const QKeySequence& ks)
 {
 	ui_->le_shortcut->setText(ks.toString(QKeySequence::NativeText));
+}
+
+void OptionsWidget::getAutosaveFolder()
+{
+	const QString dir = QFileDialog::getExistingDirectory(this, tr("Chose Folder"), autosaveFolder);
+	if(!dir.isEmpty()) {
+		ui_->le_autosaveFolder->setText(dir);
+	}
 }
 
 #include "optionswidget.moc"

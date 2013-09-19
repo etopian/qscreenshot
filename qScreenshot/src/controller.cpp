@@ -21,6 +21,9 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <QApplication>
+#include <QDir>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include "controller.h"
 #include "screenshot.h"
@@ -41,8 +44,8 @@ static const QString smages = "Smages.com&split&http://smages.com/&split&&split&
 static const QString ompldr = "Omploader.org&split&http://ompldr.org/upload&split&&split&&split&&split&file1&split&<div class=\"left\">File:</div><div class=\"right\"><a href=\"[^\"]+\">(http://ompldr.org/[^\"]+)</a></div>&split&true";
 static const QString ipicture = "Ipicture.ru&split&http://ipicture.ru/Upload/&split&&split&&split&method=file&split&userfile&split&value=\"(http://[^\"]+)\">&split&true";
 
-static const QStringList staticHostsList = QStringList() /*<< imageShack*/ << pixacadem << radikal
-					 << kachalka << flashtux << smages << ompldr << ipicture;
+static const QStringList staticHostsList = QStringList() /*<< imageShack*/ << pixacadem /*<< radikal*/
+					 << kachalka << flashtux << smages /*<< ompldr*/ << ipicture;
 
 
 static bool isListContainsServer(const QString& server, const QStringList& servers)
@@ -160,6 +163,8 @@ Controller::Controller()
 	}
 	
 	screenshot = new Screenshot();
+	connect(screenshot, SIGNAL(screenshotSaved(QString)), SLOT(screenshotSaved(QString)));
+
 	connect(ShortcutManager::instance(), SIGNAL(activated()), screenshot, SLOT(action()));
 
 	buildTray();
@@ -177,10 +182,10 @@ Controller::~Controller()
 
 void Controller::buildTray()
 {
-	QSystemTrayIcon *tray = new QSystemTrayIcon(this);
-	tray->setIcon(Iconset::instance()->getIcon("screenshot"));
-	tray->setToolTip(QString(APP_NAME) + " " + QString(APP_VERSION));
-	connect(tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayActivated(QSystemTrayIcon::ActivationReason)));
+	trayIcon_ = new QSystemTrayIcon(this);
+	trayIcon_->setIcon(Iconset::instance()->getIcon("screenshot"));
+	trayIcon_->setToolTip(QString(APP_NAME) + " " + QString(APP_VERSION));
+	connect(trayIcon_, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayActivated(QSystemTrayIcon::ActivationReason)));
 
 	trayMenu_ = new QMenu();
 	trayMenu_->addAction(tr("Grab screen"), screenshot, SLOT(shootScreen()));
@@ -202,8 +207,10 @@ void Controller::buildTray()
 	trayMenu_->addSeparator();
 	trayMenu_->addAction(tr("Exit"), qApp, SLOT(quit()));
 
-	tray->setContextMenu(trayMenu_);
-	tray->show();
+	trayIcon_->setContextMenu(trayMenu_);
+
+	connect(trayIcon_, SIGNAL(messageClicked()), SLOT(trayMessageClicked()));
+	trayIcon_->show();
     
 #ifdef Q_WS_MAC    
     extern void qt_mac_set_dock_menu(QMenu *);
@@ -221,12 +228,24 @@ void Controller::trayActivated(QSystemTrayIcon::ActivationReason reason)
 void Controller::doUpdate()
 {
 	// do some updates
+	Options::instance()->setOption(constAutosave, false);
+	Options::instance()->setOption(constAutosaveFolder, QDir::homePath());
 }
 
 void Controller::retranslate(const QString &trans)
 {
 	Translator::instance()->retranslate(trans);
 	QMessageBox::information(0, tr("Translate"), tr("Restart application!"), QMessageBox::Ok);
+}
+
+void Controller::screenshotSaved(const QString &name)
+{
+	trayIcon_->showMessage(tr("Screenshot saved."), name, QSystemTrayIcon::Information, 5000);
+}
+
+void Controller::trayMessageClicked()
+{
+	QDesktopServices::openUrl(QUrl::fromLocalFile(Options::instance()->getOption(constAutosaveFolder).toString()));
 }
 
 #include "controller.moc"

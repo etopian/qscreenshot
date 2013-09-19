@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>397</width>
-    <height>463</height>
+    <width>384</width>
+    <height>502</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -117,6 +117,31 @@
       </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="cb_autosave">
+     <property name="text">
+      <string>Automatically save screenshots to folder:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLineEdit" name="le_autosaveFolder"/>
+     </item>
+     <item>
+      <widget class="QToolButton" name="tb_autosaveFolder">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="screenshot.qrc">
+         <normaloff>:/icons/icons/browse.png</normaloff>:/icons/icons/browse.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -241,6 +266,41 @@
    </item>
   </layout>
  </widget>
- <resources/>
- <connections/>
+ <resources>
+  <include location="screenshot.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>cb_autosave</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>le_autosaveFolder</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>191</x>
+     <y>235</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>174</x>
+     <y>267</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cb_autosave</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>tb_autosaveFolder</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>191</x>
+     <y>235</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>359</x>
+     <y>267</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

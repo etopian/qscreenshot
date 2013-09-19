@@ -37,6 +37,8 @@ public:
 private slots:
 	void trayActivated(QSystemTrayIcon::ActivationReason);
 	void retranslate(const QString& trans);
+	void screenshotSaved(const QString& name);
+	void trayMessageClicked();
 
 private:
 	void doUpdate();
@@ -44,6 +46,7 @@ private:
 
 	Screenshot* screenshot;
 	QMenu* trayMenu_;
+	QSystemTrayIcon *trayIcon_;
 };
 
 #endif // CONTROLLER_H

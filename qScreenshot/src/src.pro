@@ -6,6 +6,7 @@ TARGET = qScreenshot
 DESTDIR = release/
 MOC_DIR = tmp/
 OBJECTS_DIR = tmp/
+UI_DIR = tmp/
 INCLUDEPATH += ../qxt/src/gui \
     ../qxt/src/core
 DEPENDPATH += ../qxt/release \
