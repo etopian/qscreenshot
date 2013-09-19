@@ -1,6 +1,6 @@
 #!/bin/bash
 home=/home/$USER
-progdir=${home}/build_qscreenshot
+progdir=${home}/build
 builddir=${progdir}/qScreenshot
 scripts=${progdir}/scripts/posix
 debfiles=${scripts}/debian
