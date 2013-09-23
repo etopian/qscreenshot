@@ -80,20 +80,21 @@ WId QxtWindowSystem::activeWindow()
 
 QString QxtWindowSystem::windowTitle(WId window)
 {
-    CGSValue windowTitle;
-    CGError err(noErr);
-    static CGSConnection connection = _CGSDefaultConnection();
+    return QString();
+   // CGSValue windowTitle;
+   // CGError err(noErr);
+   // static CGSConnection connection = _CGSDefaultConnection();
 
     // This code is so dirty I had to wash my hands after writing it.
 
     // most of CoreGraphics private definitions ask for CGSValue as key but since
     // converting strings to/from CGSValue was dropped in 10.5, I use CFString, which
     // apparently also works.
-    err = CGSGetWindowProperty(connection, window, (CGSValue)CFSTR("kCGSWindowTitle"), &windowTitle);
-    if (err != noErr) return QString();
+   // err = CGSGetWindowProperty(connection, window, (CGSValue)CFSTR("kCGSWindowTitle"), &windowTitle);
+   // if (err != noErr) return QString();
 
     // this is UTF8 encoded
-    return QCFString::toQString((CFStringRef)windowTitle);
+   // return QCFString::toQString((CFStringRef)windowTitle);
 }
 
 QRect QxtWindowSystem::windowGeometry(WId window)
