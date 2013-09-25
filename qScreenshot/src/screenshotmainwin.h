@@ -1,5 +1,5 @@
 /*
- * screenshot.h
+ * screenshotmainwin.h
  * Copyright (C) 2009-2011  Khryukin Evgeny
  *
  * This program is free software; you can redistribute it and/or
@@ -36,13 +36,13 @@ namespace Ui {
 	class Screenshot;
 }
 
-class Screenshot : public QMainWindow
+class ScreenshotMainWin : public QMainWindow
 {
     Q_OBJECT
 
 public:
-	Screenshot();
-	~Screenshot();
+	ScreenshotMainWin();
+	~ScreenshotMainWin();
 
 protected:
 	void closeEvent(QCloseEvent *);

@@ -17,7 +17,7 @@ DEPENDPATH += . \
 include(../conf.pri)
 include(../qxt/qxt.pro)
 
-HEADERS += $$PWD/screenshot.h \
+HEADERS += $$PWD/screenshotmainwin.h \
     $$PWD/server.h \
     $$PWD/editserverdlg.h \
     $$PWD/screenshotoptions.h \
@@ -33,8 +33,10 @@ HEADERS += $$PWD/screenshot.h \
     $$PWD/shortcutmanager.h \
     $$PWD/aboutdlg.h \
     $$PWD/translator.h \
-    updateschecker.h
-SOURCES += $$PWD/screenshot.cpp \
+    $$PWD/updateschecker.h \
+    $$PWD/historydlg.h \
+    $$PWD/grabareawidget.h
+SOURCES += $$PWD/screenshotmainwin.cpp \
     $$PWD/server.cpp \
     $$PWD/editserverdlg.cpp \
     $$PWD/screenshotoptions.cpp \
@@ -50,7 +52,9 @@ SOURCES += $$PWD/screenshot.cpp \
     $$PWD/shortcutmanager.cpp \
     $$PWD/aboutdlg.cpp \
     $$PWD/translator.cpp \
-    updateschecker.cpp
+    $$PWD/updateschecker.cpp \
+    $$PWD/historydlg.cpp \
+    $$PWD/grabareawidget.cpp
 FORMS += $$PWD/optionswidget.ui \
     $$PWD/editserverdlg.ui \
     $$PWD/screenshot.ui \

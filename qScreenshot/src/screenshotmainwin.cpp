@@ -1,6 +1,6 @@
 /*
- * screenshot.cpp
- * Copyright (C) 2009-2011  Khryukin Evgeny
+ * screenshotmainwin.cpp
+ * Copyright (C) 2009-2013  Khryukin Evgeny
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -35,7 +35,7 @@
 #include <QPushButton>
 
 
-#include "screenshot.h"
+#include "screenshotmainwin.h"
 #include "server.h"
 #include "screenshotoptions.h"
 #include "options.h"
@@ -45,6 +45,8 @@
 #include "aboutdlg.h"
 #include "proxysettingsdlg.h"
 #include "updateschecker.h"
+#include "historydlg.h"
+#include "grabareawidget.h"
 #include "ui_screenshot.h"
 
 #include "qxtwindowsystem.h"
@@ -55,167 +57,9 @@
 
 
 //----------------------------------------------
-//-----------HistoryDlg-------------------------
-//----------------------------------------------
-class HistoryDlg : public QDialog
-{
-	Q_OBJECT
-public:
-	HistoryDlg(const QStringList& list, QWidget* p = 0)
-		: QDialog(p, Qt::Window)
-	{
-		setAttribute(Qt::WA_DeleteOnClose);
-		setModal(false);
-		setWindowModality(Qt::NonModal);
-		setWindowTitle(tr("History"));
-		QVBoxLayout *l = new QVBoxLayout(this);
-		lw = new QListWidget(this);
-		lw->addItems(list);
-		l->addWidget(lw);
-
-		QHBoxLayout *bl = new QHBoxLayout();
-		QPushButton *copyButton = new QPushButton(tr("Copy"));
-		copyButton->setToolTip(tr("Copy link to the clipboard"));
-		copyButton->setIcon(Iconset::instance()->getIcon(QStyle::SP_DialogOpenButton));
-		QPushButton *openButton = new QPushButton(tr("Open"));
-		openButton->setToolTip(tr("Open link in browser"));
-		openButton->setIcon(Iconset::instance()->getIcon(QStyle::SP_BrowserReload));
-		QPushButton *closeButton = new QPushButton(tr("Close"));
-		closeButton->setToolTip(tr("Close history"));
-		closeButton->setIcon(Iconset::instance()->getIcon(QStyle::SP_DialogCloseButton));
-		bl->addWidget(copyButton);
-		bl->addWidget(openButton);
-		bl->addStretch();
-		bl->addWidget(closeButton);
-
-		l->addLayout(bl);
-
-		connect(closeButton, SIGNAL(clicked()), SLOT(close()));
-		connect(copyButton, SIGNAL(clicked()), SLOT(copy()));
-		connect(openButton, SIGNAL(clicked()), SLOT(itemActivated()));
-		connect(lw, SIGNAL(activated(QModelIndex)), SLOT(itemActivated()));
-
-		resize(500, 300);
-		show();
-	}
-
-private slots:
-	void itemActivated()
-	{
-		QListWidgetItem *lwi = lw->currentItem();
-		if(lwi) {
-			QDesktopServices::openUrl(QUrl(lwi->text()));
-		}
-	}
-
-	void copy()
-	{
-		QListWidgetItem *lwi = lw->currentItem();
-		if(lwi) {
-			qApp->clipboard()->setText(lwi->text());
-		}
-	}
-
-private:
-	QListWidget* lw;
-};
-
-
-//----------------------------------------------
-//-----------GrabAreaWidget-------------------------
-//----------------------------------------------
-class GrabAreaWidget : public QDialog
-{
-	Q_OBJECT
-public:
-	GrabAreaWidget()
-		: QDialog()
-		, startPoint(QPoint(-1, -1))
-		, endPoint(QPoint(-1, -1))
-	{
-		setAttribute(Qt::WA_TranslucentBackground, true);
-		setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-		setWindowTitle(tr("Select area"));
-		setWindowState(Qt::WindowFullScreen);
-		setCursor(Qt::CrossCursor);
-		resize(QApplication::desktop()->size());
-	}
-
-	~GrabAreaWidget()
-	{
-	}
-
-	QRect getRect() const
-	{
-		QRect r;
-		if(endPoint.x() != -1) {
-			r = QRect(qMin(startPoint.x(), endPoint.x()), qMin(startPoint.y(), endPoint.y()),
-				  qAbs(startPoint.x() - endPoint.x()), qAbs(startPoint.y() - endPoint.y()));
-		}
-		return r;
-	}
-
-protected:
-	void mousePressEvent(QMouseEvent *e)
-	{
-		if(e->button() == Qt::LeftButton) {
-			startPoint = e->pos();
-		}
-		else {
-			QDialog::reject();
-		}
-	}
-
-	void mouseMoveEvent(QMouseEvent *e)
-	{
-		if(e->buttons() & Qt::LeftButton) {
-			endPoint = e->pos();
-			update();
-		}
-
-	}
-
-	void mouseReleaseEvent(QMouseEvent *e)
-	{
-		if(!(e->buttons() & Qt::LeftButton)) {
-			endPoint = e->pos();
-			QDialog::accept();
-		}
-	}
-
-	void paintEvent(QPaintEvent *)
-	{
-		QPainter painter(this);
-		QColor c("#f0f0f0");
-		c.setAlpha(80);
-		QRect r = getRect();
-		if(r.isValid()) {
-			QPainterPath path;
-			path.addRect(0, 0, width(), r.top());
-			path.addRect(r.right(), r.top(), rect().width() - r.right(), r.height()-1);
-			path.addRect(0, r.bottom(), width(), height() - r.bottom());
-			path.addRect(0, r.top(), r.left(), r.height()-1);
-			painter.fillPath(path, c);
-
-			QPen pen(Qt::gray);
-			pen.setWidth(1);
-			painter.setPen(pen);
-			painter.drawRect(r);
-		}
-		else {
-			painter.fillRect(rect(), c);
-		}
-	}
-
-private:
-	QPoint startPoint, endPoint;
-};
-
-
-//----------------------------------------------
 //-----------Screenshot-------------------------
 //----------------------------------------------
-Screenshot::Screenshot()
+ScreenshotMainWin::ScreenshotMainWin()
 	: QMainWindow()
 	, modified(false)
 	, lastFolder(QDir::home().absolutePath())
@@ -274,7 +118,7 @@ Screenshot::Screenshot()
 	ui_->lb_pixmap->installEventFilter(this);
 }
 
-Screenshot::~Screenshot()
+ScreenshotMainWin::~ScreenshotMainWin()
 {
 	qDeleteAll(servers);
 	servers.clear();
@@ -285,7 +129,7 @@ Screenshot::~Screenshot()
 	delete so_;
 }
 
-void Screenshot::connectMenu()
+void ScreenshotMainWin::connectMenu()
 {
 	connect(ui_->actionAbout_Qt, SIGNAL(triggered()), SLOT(aboutQt()));
 	connect(ui_->actionHome_page, SIGNAL(triggered()), SLOT(doHomePage()));
@@ -302,7 +146,7 @@ void Screenshot::connectMenu()
 	connect(ui_->actionCheck_for_updates, SIGNAL(triggered()), SLOT(doCheckUpdates()));
 }
 
-void Screenshot::action()
+void ScreenshotMainWin::action()
 {
 	int action = Options::instance()->getOption(constDefaultAction, Desktop).toInt();
 	switch(action) {
@@ -319,7 +163,7 @@ void Screenshot::action()
 	}
 }
 
-void Screenshot::setupStatusBar()
+void ScreenshotMainWin::setupStatusBar()
 {
 	QStatusBar *sb = statusBar();
 	sbLbSize = new QLabel;
@@ -328,7 +172,7 @@ void Screenshot::setupStatusBar()
 	sb->addPermanentWidget(sbLbSize);
 }
 
-void Screenshot::updateStatusBar()
+void ScreenshotMainWin::updateStatusBar()
 {
 	const QSize s = ui_->lb_pixmap->getPixmap().size();
 	QBuffer buffer;
@@ -339,17 +183,17 @@ void Screenshot::updateStatusBar()
 //	sbLbSize->setMaximumWidth( QFontMetrics( sbLbSize->font() ).width( sbLbSize->text() ) + 10 );
 }
 
-void Screenshot::aboutQt()
+void ScreenshotMainWin::aboutQt()
 {
 	qApp->aboutQt();
 }
 
-void Screenshot::doHomePage()
+void ScreenshotMainWin::doHomePage()
 {
 	QDesktopServices::openUrl(QUrl("http://code.google.com/p/qscreenshot/"));
 }
 
-void Screenshot::updateWidgets(bool vis)
+void ScreenshotMainWin::updateWidgets(bool vis)
 {
 	ui_->progressBar->setVisible(vis);
 	ui_->pb_cancel->setVisible(vis);
@@ -357,7 +201,7 @@ void Screenshot::updateWidgets(bool vis)
 	ui_->pb_upload->setEnabled(!vis);
 }
 
-void Screenshot::setServersList(const QStringList& l)
+void ScreenshotMainWin::setServersList(const QStringList& l)
 {
 	ui_->cb_servers->clear();
 	qDeleteAll(servers);
@@ -379,7 +223,7 @@ void Screenshot::setServersList(const QStringList& l)
 	}
 }
 
-void Screenshot::setProxy()
+void ScreenshotMainWin::setProxy()
 {
 	Options *o = Options::instance();
 	proxy_->host = o->getOption(constProxyHost).toString();
@@ -389,7 +233,7 @@ void Screenshot::setProxy()
 	proxy_->type = o->getOption(constProxyType).toString();
 }
 
-void Screenshot::openImage()
+void ScreenshotMainWin::openImage()
 {
 	QString fileName = QFileDialog::getOpenFileName(0,tr("Open Image"), lastFolder,tr("Images (*.png *.gif *.jpg *.jpeg *.ico)"));
 	if(!fileName.isEmpty()) {
@@ -403,19 +247,19 @@ void Screenshot::openImage()
 	}
 }
 
-void Screenshot::setImagePath(const QString& path)
+void ScreenshotMainWin::setImagePath(const QString& path)
 {
 	originalPixmap = QPixmap(path);
 	updateScreenshotLabel();
 }
 
-void Screenshot::updateScreenshotLabel()
+void ScreenshotMainWin::updateScreenshotLabel()
 {
 	ui_->lb_pixmap->setPixmap(originalPixmap);
 	updateStatusBar();
 }
 
-void Screenshot::pixmapAdjusted()
+void ScreenshotMainWin::pixmapAdjusted()
 {
 	updateStatusBar();
 
@@ -433,17 +277,17 @@ void Screenshot::pixmapAdjusted()
 	}
 }
 
-void Screenshot::fixSizes()
+void ScreenshotMainWin::fixSizes()
 {
 	ui_->scrollArea->setMinimumSize(0,0);
 }
 
-void Screenshot::setModified(bool m)
+void ScreenshotMainWin::setModified(bool m)
 {
 	modified = m;
 }
 
-void Screenshot::printScreenshot()
+void ScreenshotMainWin::printScreenshot()
 {
 	QPrinter p;
 	QPrintDialog *pd = new QPrintDialog(&p, this);
@@ -461,7 +305,7 @@ void Screenshot::printScreenshot()
 	delete pd;
 }
 
-void Screenshot::cancelUpload()
+void ScreenshotMainWin::cancelUpload()
 {
 	if(manager) {
 		manager->disconnect();
@@ -470,7 +314,7 @@ void Screenshot::cancelUpload()
 	updateWidgets(false);
 }
 
-void Screenshot::bringToFront()
+void ScreenshotMainWin::bringToFront()
 {
 	Options* o = Options::instance();
 	int x = o->getOption(constWindowX, 0).toInt();
@@ -491,7 +335,7 @@ void Screenshot::bringToFront()
 	update();
 }
 
-void Screenshot::newScreenshot()
+void ScreenshotMainWin::newScreenshot()
 {
 	so_ = new ScreenshotOptions(Options::instance()->getOption(constDelay).toInt());
 	connect(so_, SIGNAL(captureArea(int)), SLOT(captureArea(int)));
@@ -506,14 +350,14 @@ void Screenshot::newScreenshot()
 	so_->activateWindow();
 }
 
-void Screenshot::screenshotCanceled()
+void ScreenshotMainWin::screenshotCanceled()
 {
 	ui_->pb_new_screenshot->setEnabled(true);
 	if(!isHidden())
 		bringToFront();
 }
 
-void Screenshot::refreshWindow()
+void ScreenshotMainWin::refreshWindow()
 {
 	if(autoSave) {
 		saveScreenshot();
@@ -527,7 +371,7 @@ void Screenshot::refreshWindow()
 	}
 }
 
-void Screenshot::captureArea(int delay)
+void ScreenshotMainWin::captureArea(int delay)
 {
 	grabAreaWidget_ = new GrabAreaWidget();
 	if(grabAreaWidget_->exec() == QDialog::Accepted) {
@@ -541,7 +385,7 @@ void Screenshot::captureArea(int delay)
 	}
 }
 
-void Screenshot::shootArea()
+void ScreenshotMainWin::shootArea()
 {
 	if(!grabAreaWidget_) {
 		return;
@@ -559,27 +403,27 @@ void Screenshot::shootArea()
 	refreshWindow();
 }
 
-void Screenshot::captureWindow(int delay)
+void ScreenshotMainWin::captureWindow(int delay)
 {
 	QTimer::singleShot(delay*1000, this, SLOT(shootWindow()));
 }
 
-void Screenshot::shootWindow()
+void ScreenshotMainWin::shootWindow()
 {	
 	shoot(QxtWindowSystem::activeWindow());
 }
 
-void Screenshot::captureDesktop(int delay)
+void ScreenshotMainWin::captureDesktop(int delay)
 {
 	QTimer::singleShot(delay*1000, this, SLOT(shootScreen()));
 }
 
-void Screenshot::shootScreen()
+void ScreenshotMainWin::shootScreen()
 {
 	shoot(QApplication::desktop()->winId());
 }
 
-void Screenshot::shoot(WId id)
+void ScreenshotMainWin::shoot(WId id)
 {
 	qApp->beep();
 	originalPixmap = QPixmap::grabWindow(id);
@@ -587,7 +431,7 @@ void Screenshot::shoot(WId id)
 	refreshWindow();
 }
 
-void Screenshot::saveScreenshot()
+void ScreenshotMainWin::saveScreenshot()
 {
 	ui_->pb_save->setEnabled(false);
 	QString fileName;
@@ -621,7 +465,7 @@ void Screenshot::saveScreenshot()
 	modified = false;
 }
 
-void Screenshot::copyUrl()
+void ScreenshotMainWin::copyUrl()
 {
 	QString url = ui_->lb_url->text();
 	if(!url.isEmpty()) {
@@ -633,13 +477,13 @@ void Screenshot::copyUrl()
 	}
 }
 
-void Screenshot::dataTransferProgress(qint64 done, qint64 total)
+void ScreenshotMainWin::dataTransferProgress(qint64 done, qint64 total)
 {
 	ui_->progressBar->setMaximum(total);
 	ui_->progressBar->setValue(done);
 }
 
-void Screenshot::uploadScreenshot()
+void ScreenshotMainWin::uploadScreenshot()
 {
 	if(!ui_->cb_servers->isEnabled())
 		return;
@@ -669,7 +513,7 @@ void Screenshot::uploadScreenshot()
 		cancelUpload();
 }
 
-void Screenshot::uploadFtp()
+void ScreenshotMainWin::uploadFtp()
 {
 	ba.clear();
 	QBuffer buffer( &ba );
@@ -721,7 +565,7 @@ void Screenshot::uploadFtp()
 	modified = false;
 }
 
-void Screenshot::uploadHttp()
+void ScreenshotMainWin::uploadHttp()
 {
 	ba.clear();
 	QUrl u;
@@ -792,7 +636,7 @@ void Screenshot::uploadHttp()
 	modified = false;
 }
 
-void Screenshot::ftpReplyFinished()
+void ScreenshotMainWin::ftpReplyFinished()
 {
 	QNetworkReply *reply = (QNetworkReply*)sender();
 	ui_->frame->setVisible(true);
@@ -813,7 +657,7 @@ void Screenshot::ftpReplyFinished()
 	updateWidgets(false);
 }
 
-void Screenshot::httpReplyFinished(QNetworkReply *reply)
+void ScreenshotMainWin::httpReplyFinished(QNetworkReply *reply)
 {
 	if(reply->error() != QNetworkReply::NoError) {
 		ui_->frame->setVisible(true);
@@ -869,7 +713,7 @@ void Screenshot::httpReplyFinished(QNetworkReply *reply)
 	reply->deleteLater();
 }
 
-void Screenshot::newRequest(const QNetworkReply *const old, const QString &link)
+void ScreenshotMainWin::newRequest(const QNetworkReply *const old, const QString &link)
 {
 	if(!manager || !old || link.isEmpty())
 		return;
@@ -884,7 +728,7 @@ void Screenshot::newRequest(const QNetworkReply *const old, const QString &link)
 	connect(reply, SIGNAL(uploadProgress(qint64 , qint64)), this, SLOT(dataTransferProgress(qint64 , qint64)));
 }
 
-void Screenshot::closeEvent(QCloseEvent *e)
+void ScreenshotMainWin::closeEvent(QCloseEvent *e)
 {
 	e->ignore();
 	if(modified) {
@@ -898,12 +742,12 @@ void Screenshot::closeEvent(QCloseEvent *e)
 	hide();
 }
 
-void Screenshot::settingsChanged(const QString &option, const QVariant &value)
+void ScreenshotMainWin::settingsChanged(const QString &option, const QVariant &value)
 {
 	Options::instance()->setOption(option, value);
 }
 
-void Screenshot::doOptions()
+void ScreenshotMainWin::doOptions()
 {
 	OptionsDlg od(this);
 	if(od.exec() == QDialog::Accepted) {
@@ -911,12 +755,12 @@ void Screenshot::doOptions()
 	}
 }
 
-void Screenshot::doHistory()
+void ScreenshotMainWin::doHistory()
 {
 	new HistoryDlg(history_, this);
 }
 
-void Screenshot::doProxySettings()
+void ScreenshotMainWin::doProxySettings()
 {
 	ProxySettingsDlg ps(this);
 	ps.setProxySettings(*proxy_);
@@ -932,17 +776,17 @@ void Screenshot::doProxySettings()
 	}
 }
 
-void Screenshot::doAbout()
+void ScreenshotMainWin::doAbout()
 {
 	new AboutDlg(this);
 }
 
-void Screenshot::doCheckUpdates()
+void ScreenshotMainWin::doCheckUpdates()
 {
 	new UpdatesChecker(this);
 }
 
-void Screenshot::refreshSettings()
+void ScreenshotMainWin::refreshSettings()
 {
 	Options* o = Options::instance();
 	format = o->getOption(constFormat, format).toString();
@@ -953,7 +797,7 @@ void Screenshot::refreshSettings()
 	autosaveFolder = o->getOption(constAutosaveFolder, QDir::homePath()).toString();
 }
 
-void Screenshot::saveGeometry()
+void ScreenshotMainWin::saveGeometry()
 {
 	Options* o = Options::instance();
 	o->setOption(constWindowState, QVariant(windowState() & Qt::WindowMaximized));
@@ -964,7 +808,7 @@ void Screenshot::saveGeometry()
 	o->setOption(constState, saveState());
 }
 
-bool Screenshot::eventFilter(QObject *o, QEvent *e)
+bool ScreenshotMainWin::eventFilter(QObject *o, QEvent *e)
 {
 	if(o == ui_->lb_pixmap && e->type() == QEvent::MouseMove) {
 		QMouseEvent *me = static_cast<QMouseEvent*>(e);
@@ -976,5 +820,3 @@ bool Screenshot::eventFilter(QObject *o, QEvent *e)
 
 	return QMainWindow::eventFilter(o, e);
 }
-
-#include "screenshot.moc"

@@ -26,7 +26,7 @@
 #include <QUrl>
 
 #include "controller.h"
-#include "screenshot.h"
+#include "screenshotmainwin.h"
 #include "server.h"
 #include "options.h"
 #include "iconset.h"
@@ -162,7 +162,7 @@ Controller::Controller()
 		QMessageBox::critical(0, tr("Error"), tr("Failed to register shortcut!"), QMessageBox::Ok);
 	}
 	
-	screenshot = new Screenshot();
+	screenshot = new ScreenshotMainWin();
 	connect(screenshot, SIGNAL(screenshotSaved(QString)), SLOT(screenshotSaved(QString)));
 
 	connect(ShortcutManager::instance(), SIGNAL(activated()), screenshot, SLOT(action()));

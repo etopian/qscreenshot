@@ -1,6 +1,5 @@
 /*
- * controller.h
- * Copyright (C) 2011  Khryukin Evgeny
+ * Copyright (C) 2009-2013  Khryukin Evgeny
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,35 +17,26 @@
  *
  */
 
+#ifndef HISTORYDLG_H
+#define HISTORYDLG_H
 
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
+#include <QDialog>
 
-#include <QSystemTrayIcon>
+class QListWidget;
 
-class ScreenshotMainWin;
-class QMenu;
-
-class Controller : public QObject
+class HistoryDlg : public QDialog
 {
 	Q_OBJECT
 public:
-	Controller();
-	~Controller();
+	explicit HistoryDlg(const QStringList& list, QWidget* p = 0);
 
 private slots:
-	void trayActivated(QSystemTrayIcon::ActivationReason);
-	void retranslate(const QString& trans);
-	void screenshotSaved(const QString& name);
-	void trayMessageClicked();
+	void copy();
+	void itemActivated();
 
 private:
-	void doUpdate();
-	void buildTray();
-
-	ScreenshotMainWin* screenshot;
-	QMenu* trayMenu_;
-	QSystemTrayIcon *trayIcon_;
+	QListWidget* lw;
+	
 };
 
-#endif // CONTROLLER_H
+#endif // HISTORYDLG_H

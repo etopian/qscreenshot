@@ -1,6 +1,5 @@
 /*
- * controller.h
- * Copyright (C) 2011  Khryukin Evgeny
+ * Copyright (C) 2009-2013  Khryukin Evgeny
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,35 +17,28 @@
  *
  */
 
+#ifndef GRABAREAWIDGET_H
+#define GRABAREAWIDGET_H
 
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
+#include <QDialog>
 
-#include <QSystemTrayIcon>
-
-class ScreenshotMainWin;
-class QMenu;
-
-class Controller : public QObject
+class GrabAreaWidget : public QDialog
 {
 	Q_OBJECT
 public:
-	Controller();
-	~Controller();
+	GrabAreaWidget();
+	~GrabAreaWidget();
 
-private slots:
-	void trayActivated(QSystemTrayIcon::ActivationReason);
-	void retranslate(const QString& trans);
-	void screenshotSaved(const QString& name);
-	void trayMessageClicked();
+	QRect getRect() const;
+
+protected:
+	void mousePressEvent(QMouseEvent *e);
+	void mouseMoveEvent(QMouseEvent *e);
+	void mouseReleaseEvent(QMouseEvent *e);
+	void paintEvent(QPaintEvent *);
 
 private:
-	void doUpdate();
-	void buildTray();
-
-	ScreenshotMainWin* screenshot;
-	QMenu* trayMenu_;
-	QSystemTrayIcon *trayIcon_;
+	QPoint startPoint, endPoint;
 };
 
-#endif // CONTROLLER_H
+#endif // GRABAREAWIDGET_H
