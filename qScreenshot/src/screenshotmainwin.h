@@ -26,11 +26,11 @@
 
 struct Proxy;
 class Server;
-class GrabAreaWidget;
 class ScreenshotOptions;
 class QNetworkAccessManager;
 class QNetworkReply;
 class QLabel;
+class Screenshoter;
 
 namespace Ui {
 	class Screenshot;
@@ -49,7 +49,7 @@ protected:
 	bool eventFilter(QObject *o, QEvent *e);
 
 public slots:
-	void shootScreen();
+	void captureDesktop();
 	void openImage();
 	void newScreenshot();
 	void action();
@@ -68,11 +68,6 @@ private slots:
 	void dataTransferProgress( qint64 done, qint64 total );
 	void ftpReplyFinished();
 	void httpReplyFinished(QNetworkReply*);
-	void captureDesktop(int);
-	void captureWindow(int);
-	void captureArea(int);	
-	void shootWindow();
-	void shootArea();
 	void screenshotCanceled();
 	void pixmapAdjusted();
 	void fixSizes();
@@ -83,11 +78,12 @@ private slots:
 	void doAbout();
 	void doCheckUpdates();
 	void settingsChanged(const QString& option, const QVariant& value);
-	void copyUrl();	
+	void copyUrl();
+	void refreshWindow();
+	void pixmapReady(const QPixmap& pix);
 
 private:
 	void updateScreenshotLabel();
-	void refreshWindow();
 	void uploadFtp();
 	void uploadHttp();
 	void bringToFront();
@@ -98,7 +94,6 @@ private:
 	void refreshSettings();
 	void saveGeometry();
 	void setProxy();
-	void shoot(WId id);
 	void newRequest(const QNetworkReply *const old, const QString& link);
 	void setupStatusBar();
 	void updateStatusBar();
@@ -116,9 +111,9 @@ private:
 	QByteArray ba;
 	Proxy *proxy_;
 	QStringList history_;
-	GrabAreaWidget* grabAreaWidget_;
 	QLabel *sbLbSize;
 	QPointer<ScreenshotOptions> so_;
+	Screenshoter* screenshoter;
 
 	Ui::Screenshot *ui_;
 };

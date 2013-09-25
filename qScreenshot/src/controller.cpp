@@ -188,7 +188,7 @@ void Controller::buildTray()
 	connect(trayIcon_, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayActivated(QSystemTrayIcon::ActivationReason)));
 
 	trayMenu_ = new QMenu();
-	trayMenu_->addAction(tr("Grab screen"), screenshot, SLOT(shootScreen()));
+	trayMenu_->addAction(tr("Grab screen"), screenshot, SLOT(captureDesktop()));
 	trayMenu_->addAction(tr("New Screenshot"), screenshot, SLOT(newScreenshot()));
 	trayMenu_->addAction(tr("Open Image"), screenshot, SLOT(openImage()));
 	trayMenu_->addSeparator();
@@ -221,7 +221,7 @@ void Controller::buildTray()
 void Controller::trayActivated(QSystemTrayIcon::ActivationReason reason)
 {
 	if(reason == QSystemTrayIcon::DoubleClick) {
-		screenshot->shootScreen();
+		screenshot->captureDesktop();
 	}
 }
 

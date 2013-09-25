@@ -35,7 +35,8 @@ HEADERS += $$PWD/screenshotmainwin.h \
     $$PWD/translator.h \
     $$PWD/updateschecker.h \
     $$PWD/historydlg.h \
-    $$PWD/grabareawidget.h
+    $$PWD/grabareawidget.h \
+    $$PWD/screenshoter.h
 SOURCES += $$PWD/screenshotmainwin.cpp \
     $$PWD/server.cpp \
     $$PWD/editserverdlg.cpp \
@@ -54,7 +55,8 @@ SOURCES += $$PWD/screenshotmainwin.cpp \
     $$PWD/translator.cpp \
     $$PWD/updateschecker.cpp \
     $$PWD/historydlg.cpp \
-    $$PWD/grabareawidget.cpp
+    $$PWD/grabareawidget.cpp \
+    $$PWD/screenshoter.cpp
 FORMS += $$PWD/optionswidget.ui \
     $$PWD/editserverdlg.ui \
     $$PWD/screenshot.ui \

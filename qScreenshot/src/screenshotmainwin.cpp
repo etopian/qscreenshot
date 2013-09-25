@@ -46,10 +46,8 @@
 #include "proxysettingsdlg.h"
 #include "updateschecker.h"
 #include "historydlg.h"
-#include "grabareawidget.h"
+#include "screenshoter.h"
 #include "ui_screenshot.h"
-
-#include "qxtwindowsystem.h"
 
 #define PROTOCOL_FTP "ftp"
 #define PROTOCOL_HTTP "http"
@@ -64,8 +62,8 @@ ScreenshotMainWin::ScreenshotMainWin()
 	, modified(false)
 	, lastFolder(QDir::home().absolutePath())
 	, proxy_(new Proxy())
-	, grabAreaWidget_(0)
 	, so_(0)
+	, screenshoter(new Screenshoter(this))
 	, ui_(new Ui::Screenshot)
 {
 	setAttribute(Qt::WA_DeleteOnClose);
@@ -116,6 +114,9 @@ ScreenshotMainWin::ScreenshotMainWin()
 	setWindowIcon(icoHost->getIcon("screenshot"));
 
 	ui_->lb_pixmap->installEventFilter(this);
+
+	connect(screenshoter, SIGNAL(refreshWindow()), SLOT(refreshWindow()));
+	connect(screenshoter, SIGNAL(pixmapReady(QPixmap)), SLOT(pixmapReady(QPixmap)));
 }
 
 ScreenshotMainWin::~ScreenshotMainWin()
@@ -125,7 +126,6 @@ ScreenshotMainWin::~ScreenshotMainWin()
 	saveGeometry();
 	delete ui_;
 	delete proxy_;
-	delete grabAreaWidget_;
 	delete so_;
 }
 
@@ -151,14 +151,14 @@ void ScreenshotMainWin::action()
 	int action = Options::instance()->getOption(constDefaultAction, Desktop).toInt();
 	switch(action) {
 	case Area:
-		captureArea(0);
+		screenshoter->captureArea();
 		break;
 	case Window:
-		shootWindow();
+		screenshoter->captureWindow();
 		break;
 	case Desktop:
 	default:
-		shootScreen();
+		screenshoter->captureDesktop();
 		break;
 	}
 }
@@ -338,9 +338,9 @@ void ScreenshotMainWin::bringToFront()
 void ScreenshotMainWin::newScreenshot()
 {
 	so_ = new ScreenshotOptions(Options::instance()->getOption(constDelay).toInt());
-	connect(so_, SIGNAL(captureArea(int)), SLOT(captureArea(int)));
-	connect(so_, SIGNAL(captureWindow(int)), this, SLOT(captureWindow(int)));
-	connect(so_, SIGNAL(captureDesktop(int)), SLOT(captureDesktop(int)));
+	connect(so_, SIGNAL(captureArea(int)), screenshoter, SLOT(captureArea(int)));
+	connect(so_, SIGNAL(captureWindow(int)), screenshoter, SLOT(captureWindow(int)));
+	connect(so_, SIGNAL(captureDesktop(int)), screenshoter, SLOT(captureDesktop(int)));
 	connect(so_, SIGNAL(screenshotCanceled()), SLOT(screenshotCanceled()));
 	saveGeometry();
 	setWindowState(Qt::WindowMinimized);
@@ -371,63 +371,9 @@ void ScreenshotMainWin::refreshWindow()
 	}
 }
 
-void ScreenshotMainWin::captureArea(int delay)
+void ScreenshotMainWin::pixmapReady(const QPixmap &pix)
 {
-	grabAreaWidget_ = new GrabAreaWidget();
-	if(grabAreaWidget_->exec() == QDialog::Accepted) {
-		QTimer::singleShot(delay*1000, this, SLOT(shootArea()));
-	}
-	else {
-		delete grabAreaWidget_;
-		grabAreaWidget_ = 0;
-		qApp->desktop()->repaint();
-		refreshWindow();
-	}
-}
-
-void ScreenshotMainWin::shootArea()
-{
-	if(!grabAreaWidget_) {
-		return;
-	}
-	const QRect rect = grabAreaWidget_->getRect();
-	if(rect.isValid()) {
-		qApp->desktop()->repaint();
-		qApp->beep();
-		originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId(), rect.x(), rect.y(), rect.width(), rect.height());
-	}
-
-	delete grabAreaWidget_;
-	grabAreaWidget_ = 0;
-
-	refreshWindow();
-}
-
-void ScreenshotMainWin::captureWindow(int delay)
-{
-	QTimer::singleShot(delay*1000, this, SLOT(shootWindow()));
-}
-
-void ScreenshotMainWin::shootWindow()
-{	
-	shoot(QxtWindowSystem::activeWindow());
-}
-
-void ScreenshotMainWin::captureDesktop(int delay)
-{
-	QTimer::singleShot(delay*1000, this, SLOT(shootScreen()));
-}
-
-void ScreenshotMainWin::shootScreen()
-{
-	shoot(QApplication::desktop()->winId());
-}
-
-void ScreenshotMainWin::shoot(WId id)
-{
-	qApp->beep();
-	originalPixmap = QPixmap::grabWindow(id);
-
+	originalPixmap = pix;
 	refreshWindow();
 }
 
@@ -819,4 +765,9 @@ bool ScreenshotMainWin::eventFilter(QObject *o, QEvent *e)
 	}
 
 	return QMainWindow::eventFilter(o, e);
+}
+
+void ScreenshotMainWin::captureDesktop()
+{
+	screenshoter->captureDesktop();
 }
