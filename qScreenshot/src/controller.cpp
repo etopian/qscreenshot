@@ -150,8 +150,6 @@ Controller::Controller()
 //			updateServer(&servers, host);
 //		}
 
-		updateServer(&servers, ompldr);
-
 		doUpdate();
 		o->setOption(constVersionOption, APP_VERSION);
 	}
