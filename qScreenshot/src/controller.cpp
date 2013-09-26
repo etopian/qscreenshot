@@ -129,14 +129,17 @@ Controller::Controller()
 {
 	Options* o = Options::instance();
 	QVariant vServers = o->getOption(constServerList);
+	QVariant vVer = o->getOption(constVersionOption);
 
-	if(!vServers.isValid()) { //приложение запущено впервые
+	if(!vVer.isValid()) { //приложение запущено впервые
 		o->setOption(constShortCut, QVariant("Ctrl+Shift+S"));
 		o->setOption(constFormat, QVariant("png"));
 		o->setOption(constFileName, QVariant("pic-yyyyMMdd-hhmmss"));
 		o->setOption(constDelay, QVariant(0));
 		o->setOption(constVersionOption, APP_VERSION);
 		o->setOption(constDefaultAction, QVariant(Desktop));
+		o->setOption(constAutosave, false);
+		o->setOption(constAutosaveFolder, QDir::homePath());
 	}
 
 	QStringList servers = vServers.toStringList();
@@ -145,11 +148,12 @@ Controller::Controller()
 			servers.append(host);
 	}
 
-	if(o->getOption(constVersionOption).toString() != APP_VERSION) {
+	if(vVer.toString() != APP_VERSION) {
 //		foreach(const QString& host, staticHostsList) {
 //			updateServer(&servers, host);
 //		}
 
+		updateServer(&servers, imageShack);
 		doUpdate();
 		o->setOption(constVersionOption, APP_VERSION);
 	}
@@ -226,8 +230,10 @@ void Controller::trayActivated(QSystemTrayIcon::ActivationReason reason)
 void Controller::doUpdate()
 {
 	// do some updates
-	Options::instance()->setOption(constAutosave, false);
-	Options::instance()->setOption(constAutosaveFolder, QDir::homePath());
+	if(Options::instance()->getOption(constAutosave) == QVariant::Invalid) {
+		Options::instance()->setOption(constAutosave, false);
+		Options::instance()->setOption(constAutosaveFolder, QDir::homePath());
+	}
 }
 
 void Controller::retranslate(const QString &trans)
