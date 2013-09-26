@@ -67,10 +67,6 @@
         <translation>Перезапустите приложение!</translation>
     </message>
     <message>
-        <source>Default</source>
-        <translation type="obsolete">По-умолчанию</translation>
-    </message>
-    <message>
         <source>Exit</source>
         <translation>Выход</translation>
     </message>
@@ -381,10 +377,6 @@
         <translation>Новый снимок</translation>
     </message>
     <message>
-        <source>toolBar</source>
-        <translation type="obsolete">toolBar</translation>
-    </message>
-    <message>
         <source>File</source>
         <translation>Файл</translation>
     </message>
@@ -445,16 +437,27 @@
         <translation>Поиск обновлений</translation>
     </message>
     <message>
+        <source>Copy to clipboard</source>
+        <translation>Копировать в буфер обмена</translation>
+    </message>
+    <message>
+        <source>ToolBar</source>
+        <translation>ПанельИнструментов</translation>
+    </message>
+</context>
+<context>
+    <name>ScreenshotMainWin</name>
+    <message>
+        <source>Size: %1x%2px; %3 bytes</source>
+        <translation>Размер:%1х%2px; %3 байтов</translation>
+    </message>
+    <message>
         <source>Open Image</source>
         <translation>Открыть изображение</translation>
     </message>
     <message>
         <source>Images (*.png *.gif *.jpg *.jpeg *.ico)</source>
         <translation>Изображения (*.png *.gif *.jpg *.jpeg *.ico)</translation>
-    </message>
-    <message>
-        <source>/%1.</source>
-        <translation>/%1.</translation>
     </message>
     <message>
         <source>Save As</source>
@@ -465,32 +468,12 @@
         <translation>%1 Файлы (*.%2);;Все Файлы (*)</translation>
     </message>
     <message>
-        <source>%1.</source>
-        <translation>%1.</translation>
-    </message>
-    <message>
-        <source>Can&apos;t parse URL (Reply URL: &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;)</source>
-        <translation>Невозможно разобрать URL (Reply URL: &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;)</translation>
-    </message>
-    <message>
         <source>Close Screenshot</source>
         <translation>Закрыть Скриншот</translation>
     </message>
     <message>
         <source>Are your sure?</source>
         <translation>Вы уверены?</translation>
-    </message>
-    <message>
-        <source>Copy to clipboard</source>
-        <translation>Копировать в буфер обмена</translation>
-    </message>
-    <message>
-        <source>Size: %1x%2px; %3 bytes</source>
-        <translation>Размер:%1х%2px; %3 байтов</translation>
-    </message>
-    <message>
-        <source>ToolBar</source>
-        <translation>ПанельИнструментов</translation>
     </message>
 </context>
 <context>
@@ -600,6 +583,13 @@
     <message>
         <source>Can&apos;t find information about version.</source>
         <translation>Невозможно получить информацию о доступной версии.</translation>
+    </message>
+</context>
+<context>
+    <name>Uploader</name>
+    <message>
+        <source>Can&apos;t parse URL (Reply URL: &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;)</source>
+        <translation>Невозможно разобрать URL (Reply URL: &lt;a href=&quot;%1&quot;&gt;%1&lt;/a&gt;)</translation>
     </message>
 </context>
 </TS>

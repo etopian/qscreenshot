@@ -1,12 +1,21 @@
 TEMPLATE = app
+
 CONFIG += qt \
     release
 QT += network
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += widgets
+    DEFINES += HAVE_QT5
+}
+unix:!mac:DEFINES += HAVE_X11
+
 TARGET = qScreenshot
 DESTDIR = release/
 MOC_DIR = tmp/
 OBJECTS_DIR = tmp/
 UI_DIR = tmp/
+
 INCLUDEPATH += . \
     ../qxt/src/gui \
     ../qxt/src/core
@@ -69,7 +78,20 @@ FORMS += $$PWD/optionswidget.ui \
     $$PWD/proxysettingsdlg.ui \
     $$PWD/aboutdlg.ui
 RESOURCES += screenshot.qrc
+
 win32:RC_FILE += screenshot.rc
+
+isEmpty(PREFIX) {
+        PREFIX = /usr/local
+}
+BINDIR = $$PREFIX/bin
+DATADIR = $$PREFIX/share/qscreenshot
+
+DEFINES += QSCREENSHOT_DATADIR='\\"$$DATADIR\\"'
+
+LANG_PATH = $$PWD/lang
+TRANSLATIONS = $$LANG_PATH/ru.ts
+
 unix { 
     target.path = $$BINDIR
     INSTALLS += target
@@ -85,6 +107,11 @@ unix {
     icon4.files = icons/logo/screenshot_32.png
     icon5.path = $$PREFIX/share/icons/hicolor/48x48/apps
     icon5.files = icons/screenshot.png
+
+    translations.path = $$DATADIR/translations
+    translations.extra = lrelease src.pro && cp -f $$LANG_PATH/*.qm  $(INSTALL_ROOT)$$translations.path
+    INSTALLS += translations
+
     INSTALLS += dt \
         icon1 \
         icon2 \

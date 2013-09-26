@@ -1,6 +1,6 @@
 /*
  * translator.cpp
- * Copyright (C) 2011  Khryukin Evgeny
+ * Copyright (C) 2011-2013  Khryukin Evgeny
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,12 +22,16 @@
 #include <QLocale>
 #include <QDir>
 #include <QStringList>
+#include <QLibraryInfo>
 
 #include "translator.h"
 #include "options.h"
 #include "defines.h"
 
-static const QStringList transDirs = QStringList() << ":/lang/lang/";
+
+#ifndef QSCREENSHOT_DATADIR
+#define QSCREENSHOT_DATADIR "/usr/local/share/qscreenshot"
+#endif
 
 Translator* Translator::instance_ = 0;
 
@@ -53,8 +57,6 @@ Translator::Translator()
 
 Translator::~Translator()
 {
-	qApp->removeTranslator(this);
-	qApp->removeTranslator(qtTrans_);
 	delete qtTrans_;
 	qtTrans_ = 0;
 }
@@ -68,13 +70,20 @@ void Translator::reset()
 void Translator::retranslate(const QString& fileName)
 {
 	bool foundFile = false;
-	foreach(const QString& dir, transDirs) {
+	foreach(const QString& dir, transDirs()) {
 		if(load(fileName, dir)) {
 			qApp->installTranslator(this);
 			foundFile = true;
-			if(qtTrans_->load("qt_"+fileName, dir)) {
-				qApp->installTranslator(qtTrans_);
+
+			QStringList dirs;
+			dirs << QLibraryInfo::location(QLibraryInfo::TranslationsPath) << dir;
+			foreach(const QString& d, dirs) {
+				if(qtTrans_->load("qt_"+fileName, d)) {
+					qApp->installTranslator(qtTrans_);
+					break;
+				}
 			}
+
 			break;
 		}
 	}
@@ -82,19 +91,21 @@ void Translator::retranslate(const QString& fileName)
 		qApp->removeTranslator(this);
 		qApp->removeTranslator(qtTrans_);
 	}
-	Options::instance()->setOption(constCurLang, fileName);
+
+	setCurrentTranslation(fileName);
 }
 
 QStringList Translator::availableTranslations()
 {
 	QStringList translations("en"); // add default translation
-	foreach(const QString& dir, transDirs) {
+	foreach(const QString& dir, transDirs()) {
 		foreach(QString file, QDir(dir).entryList(QDir::Files)) {
 			if(file.endsWith(".qm", Qt::CaseInsensitive)) {
 				if(file.startsWith("qt_", Qt::CaseInsensitive)) {
 					continue;
 				}
 				file.chop(3);
+				file = file.remove("qomp_");
 				translations.append(file);
 			}
 		}
@@ -105,5 +116,28 @@ QStringList Translator::availableTranslations()
 
 QString Translator::currentTranslation() const
 {
-	return Options::instance()->getOption(constCurLang).toString();
+	return Options::instance()->getOption(constCurLang, "en").toString();
+}
+
+void Translator::setCurrentTranslation(const QString &tr)
+{
+	Options::instance()->setOption(constCurLang, tr);
+}
+
+QStringList Translator::transDirs()
+{
+	static QStringList list;
+	if(list.isEmpty()) {
+#ifdef Q_OS_WIN
+		list.append(qApp->applicationDirPath()+"/translations");
+#elif defined (HAVE_X11)
+		list.append(QString(QSCREENSHOT_DATADIR) + "/translations");
+#elif defined (Q_OS_MAC)
+		QDir appDir = qApp->applicationDirPath();
+		appDir.cdUp();
+		appDir.cd("Translations");
+		list.append(appDir.absolutePath());
+#endif
+	}
+	return list;
 }

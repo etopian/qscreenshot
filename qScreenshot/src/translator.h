@@ -1,6 +1,6 @@
 /*
  * translator.h
- * Copyright (C) 2011  Khryukin Evgeny
+ * Copyright (C) 2011-2013  Khryukin Evgeny
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -34,6 +34,7 @@ public:
 	static QStringList availableTranslations();
 
 	QString currentTranslation() const;
+	void setCurrentTranslation(const QString& tr);
 
 public slots:
 	void retranslate(const QString& fileName);
@@ -41,6 +42,7 @@ public slots:
 private:
 	Translator();
 	static Translator* instance_;
+	static QStringList transDirs();
 
 	QTranslator* qtTrans_;
 };
