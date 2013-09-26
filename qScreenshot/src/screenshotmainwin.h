@@ -81,13 +81,14 @@ private slots:
 	void copyUrl();
 	void refreshWindow();
 	void pixmapReady(const QPixmap& pix);
+	void updateUrlLabel(const QString &text);
 
 private:
 	void updateScreenshotLabel();
-	void uploadFtp();
-	void uploadHttp();
+	void uploadFtp(Server *s);
+	void uploadHttp(Server *s);
 	void bringToFront();
-	void updateWidgets(bool vis);
+	void restoreWidgetsState();
 	void connectMenu();
 	void setServersList(const QStringList& servers);
 	void setImagePath(const QString& path);
@@ -97,6 +98,7 @@ private:
 	void newRequest(const QNetworkReply *const old, const QString& link);
 	void setupStatusBar();
 	void updateStatusBar();
+	void prepareWidgetsForUpload();
 
 private:
 	bool modified;

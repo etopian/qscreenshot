@@ -298,7 +298,7 @@ void OptionsWidget::restoreOptions()
 		ui_->cb_format->setCurrentIndex(index);
 	ui_->le_filename->setText(fileName);
 	ui_->le_shortcut->setText(shortCut);
-	foreach(QString settings, servers) {
+	foreach(const QString& settings, servers) {
 		Server *s = new Server(ui_->lw_servers);
 		s->setFromString(settings);
 		s->setText(s->displayName());

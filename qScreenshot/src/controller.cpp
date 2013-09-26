@@ -50,7 +50,7 @@ static const QStringList staticHostsList = QStringList() << imageShack << pixaca
 
 static bool isListContainsServer(const QString& server, const QStringList& servers)
 {
-	foreach(QString serv, servers) {
+	foreach(const QString& serv, servers) {
 		if(serv.split(Server::splitString()).first() == server.split(Server::splitString()).first())
 			return true;
 	}

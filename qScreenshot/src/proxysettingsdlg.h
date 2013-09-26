@@ -46,7 +46,7 @@ public:
 	~ProxySettingsDlg();
 
 	void setProxySettings(const Proxy& p);
-	Proxy getSettings() const { return proxy_; };
+	Proxy getSettings() const { return proxy_; }
 
 public slots:
 	void accept();

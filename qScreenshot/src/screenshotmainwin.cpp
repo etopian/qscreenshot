@@ -49,13 +49,14 @@
 #include "screenshoter.h"
 #include "ui_screenshot.h"
 
-#define PROTOCOL_FTP "ftp"
-#define PROTOCOL_HTTP "http"
 #define MAX_HISTORY_SIZE 10
+
+static const QString PROTOCOL_FTP = "ftp";
+static const QString PROTOCOL_HTTP = "http";
 
 
 //----------------------------------------------
-//-----------Screenshot-------------------------
+//-----------ScreenshotMainWin------------------
 //----------------------------------------------
 ScreenshotMainWin::ScreenshotMainWin()
 	: QMainWindow()
@@ -66,11 +67,10 @@ ScreenshotMainWin::ScreenshotMainWin()
 	, screenshoter(new Screenshoter(this))
 	, ui_(new Ui::Screenshot)
 {
-	setAttribute(Qt::WA_DeleteOnClose);
 	ui_->setupUi(this);
 
-	updateWidgets(false);
-	ui_->frame->setVisible(false);
+	restoreWidgetsState();
+	ui_->urlFrame->setVisible(false);
 
 	refreshSettings();
 	setProxy();
@@ -79,6 +79,8 @@ ScreenshotMainWin::ScreenshotMainWin()
 	ui_->lb_pixmap->setToolBar(ui_->tb_bar);
 
 	Iconset* icoHost = Iconset::instance();
+	setWindowIcon(icoHost->getIcon("screenshot"));
+
 	ui_->pb_upload->setIcon(icoHost->getIcon("upload"));
 	ui_->pb_cancel->setIcon(icoHost->getIcon("cancel"));
 	ui_->pb_open->setIcon(icoHost->getIcon("browse"));
@@ -110,8 +112,6 @@ ScreenshotMainWin::ScreenshotMainWin()
 	connect(ui_->lb_pixmap, SIGNAL(settingsChanged(QString,QVariant)), SLOT(settingsChanged(QString, QVariant)));
 	connect(ui_->lb_pixmap, SIGNAL(modified(bool)), this, SLOT(setModified(bool)));
 	connect(ui_->tb_copyUrl, SIGNAL(clicked()), this, SLOT(copyUrl()));
-
-	setWindowIcon(icoHost->getIcon("screenshot"));
 
 	ui_->lb_pixmap->installEventFilter(this);
 
@@ -193,14 +193,6 @@ void ScreenshotMainWin::doHomePage()
 	QDesktopServices::openUrl(QUrl("http://code.google.com/p/qscreenshot/"));
 }
 
-void ScreenshotMainWin::updateWidgets(bool vis)
-{
-	ui_->progressBar->setVisible(vis);
-	ui_->pb_cancel->setVisible(vis);
-	ui_->cb_servers->setEnabled(!vis);
-	ui_->pb_upload->setEnabled(!vis);
-}
-
 void ScreenshotMainWin::setServersList(const QStringList& l)
 {
 	ui_->cb_servers->clear();
@@ -208,7 +200,7 @@ void ScreenshotMainWin::setServersList(const QStringList& l)
 	servers.clear();
 	ui_->cb_servers->setEnabled(false);
 	ui_->pb_upload->setEnabled(false);
-	foreach(QString settings, l) {
+	foreach(const QString& settings, l) {
 		if(settings.isEmpty()) {
 			continue;
 		}
@@ -305,15 +297,6 @@ void ScreenshotMainWin::printScreenshot()
 	delete pd;
 }
 
-void ScreenshotMainWin::cancelUpload()
-{
-	if(manager) {
-		manager->disconnect();
-		manager->deleteLater();
-	}
-	updateWidgets(false);
-}
-
 void ScreenshotMainWin::bringToFront()
 {
 	Options* o = Options::instance();
@@ -364,7 +347,7 @@ void ScreenshotMainWin::refreshWindow()
 	}
 	else {
 		ui_->pb_new_screenshot->setEnabled(true);
-		ui_->frame->setVisible(false);
+		ui_->urlFrame->setVisible(false);
 		updateScreenshotLabel();
 		bringToFront();
 		setModified(false);
@@ -408,7 +391,7 @@ void ScreenshotMainWin::saveScreenshot()
 		}
 	}
 	ui_->pb_save->setEnabled(true);
-	modified = false;
+	setModified(false);
 }
 
 void ScreenshotMainWin::copyUrl()
@@ -440,26 +423,54 @@ void ScreenshotMainWin::uploadScreenshot()
 
 	Server *s = servers.at(index);
 	if(!s)
-		return;
-
-	QString scheme = QUrl(s->url()).scheme();
-	ui_->pb_upload->setEnabled(false);
-	ui_->pb_cancel->setVisible(true);
-	ui_->cb_servers->setEnabled(false);
+		return;	
 
 	originalPixmap = ui_->lb_pixmap->getPixmap();
 
-	if (scheme.toLower() == QLatin1String(PROTOCOL_FTP)) {
-		uploadFtp();
+	prepareWidgetsForUpload();
+
+	QString scheme = QUrl(s->url()).scheme();
+
+	if (scheme.toLower() == PROTOCOL_FTP) {
+		uploadFtp(s);
+		setModified(false);
 	}
-	else if (scheme.toLower() == QLatin1String(PROTOCOL_HTTP)) {
-		uploadHttp();
+	else if (scheme.toLower() == PROTOCOL_HTTP) {
+		uploadHttp(s);
+		setModified(false);
 	}
 	else
 		cancelUpload();
 }
 
-void ScreenshotMainWin::uploadFtp()
+void ScreenshotMainWin::prepareWidgetsForUpload()
+{
+	ui_->progressBar->setValue(0);
+	ui_->progressBar->show();
+	ui_->urlFrame->setVisible(false);
+	ui_->pb_upload->setEnabled(false);
+	ui_->pb_cancel->setVisible(true);
+	ui_->cb_servers->setEnabled(false);
+}
+
+void ScreenshotMainWin::cancelUpload()
+{
+	if(manager) {
+		manager->disconnect();
+		manager->deleteLater();
+	}
+	restoreWidgetsState();
+}
+
+void ScreenshotMainWin::restoreWidgetsState()
+{
+	ui_->progressBar->setVisible(false);
+	ui_->pb_cancel->setVisible(false);
+	ui_->cb_servers->setEnabled(true);
+	ui_->pb_upload->setEnabled(true);
+}
+
+void ScreenshotMainWin::uploadFtp(Server *s)
 {
 	ba.clear();
 	QBuffer buffer( &ba );
@@ -470,10 +481,6 @@ void ScreenshotMainWin::uploadFtp()
 
 	QFileInfo fi(fileName);
 	fileName = fi.fileName();
-
-	Server *s = servers.at(ui_->cb_servers->currentIndex());
-	if(!s)
-		cancelUpload();
 
 	QUrl u;
 	u.setPort(21);
@@ -498,33 +505,22 @@ void ScreenshotMainWin::uploadFtp()
 		path += "/";
 	u.setPath(path+fileName);
 
-	ui_->progressBar->setValue(0);
-	ui_->progressBar->show();
-	ui_->frame->setVisible(false);
-
 	QNetworkReply *reply = manager->put(QNetworkRequest(u), ba);
 
 	connect(reply, SIGNAL(uploadProgress(qint64 , qint64)), this, SLOT(dataTransferProgress(qint64 , qint64)));
 	//connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(replyError(QNetworkReply::NetworkError)));
 	connect(reply, SIGNAL(finished()), this, SLOT(ftpReplyFinished()));
-
-	modified = false;
 }
 
-void ScreenshotMainWin::uploadHttp()
+void ScreenshotMainWin::uploadHttp(Server *s)
 {
 	ba.clear();
-	QUrl u;
 
-	const QString boundary = "AaB03x";
+	static const QString boundary = "AaB03x";
 	const QString filename = tr("%1.").arg(QDateTime::currentDateTime().toString(fileNameFormat)) + format;
 
-	Server *s = servers.at(ui_->cb_servers->currentIndex());
-	if(!s)
-		cancelUpload();
-
 	if (s->servPostdata().length()>0) {
-		foreach (QString poststr, s->servPostdata().split("&")) {
+		foreach (const QString& poststr, s->servPostdata().split("&")) {
 			QStringList postpair = poststr.split("=");
 			if(postpair.count() < 2)
 				continue;
@@ -572,23 +568,17 @@ void ScreenshotMainWin::uploadHttp()
 	netreq.setRawHeader("Accept", "*/*");
 	netreq.setRawHeader("Content-Length", QString::number(ba.length()).toLatin1());
 
-	ui_->progressBar->setValue(0);
-	ui_->progressBar->show();
-	ui_->frame->setVisible(false);
-
 	QNetworkReply* reply = manager->post(netreq, ba);
 	connect(reply, SIGNAL(uploadProgress(qint64 , qint64)), this, SLOT(dataTransferProgress(qint64 , qint64)));
 	connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(httpReplyFinished(QNetworkReply*)));
-	modified = false;
 }
 
 void ScreenshotMainWin::ftpReplyFinished()
 {
 	QNetworkReply *reply = (QNetworkReply*)sender();
-	ui_->frame->setVisible(true);
 	if(reply->error() == QNetworkReply::NoError) {
 		const QString url = reply->url().toString(QUrl::RemoveUserInfo | QUrl::StripTrailingSlash);
-		ui_->lb_url->setText(QString("<a href=\"%1\">%1</a>").arg(url));
+		updateUrlLabel(QString("<a href=\"%1\">%1</a>").arg(url));
 		history_.push_front(url);
 		if(history_.size() > MAX_HISTORY_SIZE) {
 			history_.removeLast();
@@ -596,19 +586,24 @@ void ScreenshotMainWin::ftpReplyFinished()
 		settingsChanged(constHistory, history_);
 	}
 	else {
-		ui_->lb_url->setText(reply->errorString());
+		updateUrlLabel(reply->errorString());
 	}
 	reply->close();
 	reply->deleteLater();
-	updateWidgets(false);
+	restoreWidgetsState();
+}
+
+void ScreenshotMainWin::updateUrlLabel(const QString& text)
+{
+	ui_->urlFrame->setVisible(true);
+	ui_->lb_url->setText(text);
 }
 
 void ScreenshotMainWin::httpReplyFinished(QNetworkReply *reply)
 {
 	if(reply->error() != QNetworkReply::NoError) {
-		ui_->frame->setVisible(true);
-		ui_->lb_url->setText(reply->errorString());
-		updateWidgets(false);
+		updateUrlLabel(reply->errorString());
+		restoreWidgetsState();
 		reply->close();
 		reply->deleteLater();
 		return;
@@ -640,10 +635,9 @@ void ScreenshotMainWin::httpReplyFinished(QNetworkReply *reply)
 //
 
 		QRegExp rx(s->servRegexp());
-		ui_->frame->setVisible(true);
 		if (rx.indexIn(page) != -1) {
 			QString imageurl = rx.cap(1);
-			ui_->lb_url->setText(QString("<a href=\"%1\">%1</a>").arg(imageurl));
+			updateUrlLabel(QString("<a href=\"%1\">%1</a>").arg(imageurl));
 			history_.push_front(imageurl);
 			if(history_.size() > MAX_HISTORY_SIZE) {
 				history_.removeLast();
@@ -651,9 +645,9 @@ void ScreenshotMainWin::httpReplyFinished(QNetworkReply *reply)
 			settingsChanged(constHistory, history_);
 		}
 		else
-			ui_->lb_url->setText(tr("Can't parse URL (Reply URL: <a href=\"%1\">%1</a>)").arg(reply->url().toString()));
+			updateUrlLabel(tr("Can't parse URL (Reply URL: <a href=\"%1\">%1</a>)").arg(reply->url().toString()));
 
-		updateWidgets(false);	
+		restoreWidgetsState();
 	}
 	reply->close();
 	reply->deleteLater();
