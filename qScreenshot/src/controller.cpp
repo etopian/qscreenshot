@@ -35,7 +35,7 @@
 #include "translator.h"
 
 
-static const QString imageShack = "ImageShack.us&split&http://post.imageshack.us/&split&&split&&split&uploadtype=on&split&fileupload&split&readonly=\"readonly\" class=\"readonly\" value=\"(http://[^\"]+)\" /><span &split&true";
+static const QString imageShack = "ImageShack.us&split&http://www.imageshack.us/upload_api.php&split&&split&&split&a_username=...&a_password=...&split&fileupload&split&<image_link>(http://[^<]+)</image_link>&split&true";
 static const QString radikal = "Radikal.ru&split&http://www.radikal.ru/action.aspx&split&&split&&split&upload=yes&split&F&split&<input\\s+id=\"input_link_1\"\\s+value=\"([^\"]+)\"&split&true";
 static const QString pixacadem = "Pix.Academ.org&split&http://pix.academ.org/&split&&split&&split&action=upload_image&split&image&split&<div id='link'><a id=\"original\" href=\"(http[^\"]+)\"&split&true";
 static const QString kachalka = "Kachalka.com&split&http://www.kachalka.com/upload.php&split&&split&&split&&split&userfile[]&split&name=\"option\" value=\"(http://www.kachalka.com/[^\"]+)\" /></td>&split&true";
@@ -44,7 +44,7 @@ static const QString smages = "Smages.com&split&http://smages.com/&split&&split&
 static const QString ompldr = "Omploader.org&split&http://ompldr.org/upload&split&&split&&split&&split&file1&split&<div class=\"left\">File:</div><div class=\"right\"><a href=\"[^\"]+\">(http://ompldr.org/[^\"]+)</a></div>&split&true";
 static const QString ipicture = "Ipicture.ru&split&http://ipicture.ru/Upload/&split&&split&&split&method=file&split&userfile&split&value=\"(http://[^\"]+)\">&split&true";
 
-static const QStringList staticHostsList = QStringList() /*<< imageShack*/ << pixacadem /*<< radikal*/
+static const QStringList staticHostsList = QStringList() << imageShack << pixacadem /*<< radikal*/
 					 << kachalka << flashtux << smages /*<< ompldr*/ << ipicture;
 
 
