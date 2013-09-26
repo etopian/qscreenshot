@@ -68,7 +68,7 @@ private slots:
 	void dataTransferProgress( qint64 done, qint64 total );
 	void ftpReplyFinished();
 	void httpReplyFinished(QNetworkReply*);
-	void screenshotCanceled();
+	void newScreenshotCanceled();
 	void pixmapAdjusted();
 	void fixSizes();
 	void setModified(bool m);
@@ -80,18 +80,17 @@ private slots:
 	void settingsChanged(const QString& option, const QVariant& value);
 	void copyUrl();
 	void refreshWindow();
-	void pixmapReady(const QPixmap& pix);
+	void newPixmapCaptured(const QPixmap& pix);
 	void updateUrlLabel(const QString &text);
+	void addToHistory(const QString& imageurl);
 
 private:
-	void updateScreenshotLabel();
 	void uploadFtp(Server *s);
 	void uploadHttp(Server *s);
 	void bringToFront();
 	void restoreWidgetsState();
 	void connectMenu();
-	void setServersList(const QStringList& servers);
-	void setImagePath(const QString& path);
+	void setServersList(const QStringList& servers_);
 	void refreshSettings();
 	void saveGeometry();
 	void setProxy();
@@ -99,23 +98,25 @@ private:
 	void setupStatusBar();
 	void updateStatusBar();
 	void prepareWidgetsForUpload();
+	QString getFileName() const;
+	void autoSaveScreenshot();
 
 private:
-	bool modified;
-	QPixmap originalPixmap;
-	QString format;
-	QString fileNameFormat;
-	QString lastFolder;
-	bool autoSave;
-	QString autosaveFolder;
-	QList<Server*> servers;
-	QPointer<QNetworkAccessManager> manager;
-	QByteArray ba;
+	bool modified_;
+	QPixmap originalPixmap_;
+	QString format_;
+	QString fileNameFormat_;
+	QString lastFolder_;
+	bool autoSave_;
+	QString autosaveFolder_;
+	QList<Server*> servers_;
+	QPointer<QNetworkAccessManager> manager_;
+	QByteArray ba_;
 	Proxy *proxy_;
 	QStringList history_;
-	QLabel *sbLbSize;
+	QLabel *sbLbSize_;
 	QPointer<ScreenshotOptions> so_;
-	Screenshoter* screenshoter;
+	Screenshoter* screenshoter_;
 
 	Ui::Screenshot *ui_;
 };
