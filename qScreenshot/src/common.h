@@ -1,6 +1,5 @@
 /*
- * proxysettingsdlg.h
- * Copyright (C) 2011  Khryukin Evgeny
+ * Copyright (C) 2009-2013  Khryukin Evgeny
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,32 +17,11 @@
  *
  */
 
+#ifndef COMMON_H
+#define COMMON_H
 
-#ifndef PROXYSETTINGS_H
-#define PROXYSETTINGS_H
+#include <QString>
 
-#include <QDialog>
+QString getFileName();
 
-namespace Ui
-{
-	class ProxySettingsDlg;
-}
-
-class ProxySettingsDlg : public QDialog
-{
-	Q_OBJECT
-public:
-	ProxySettingsDlg(QWidget *parent = 0);
-	~ProxySettingsDlg();
-
-public slots:
-	void accept();
-
-private:
-	void setProxySettings();
-
-private:
-	Ui::ProxySettingsDlg *ui;
-};
-
-#endif // PROXYSETTINGS_H
+#endif // COMMON_H

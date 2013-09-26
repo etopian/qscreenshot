@@ -47,7 +47,7 @@ public:
 	~PixmapWidget();
 	void setToolBar(ToolBar *bar);
 	void setPixmap(const QPixmap& pix);
-	QPixmap getPixmap() const { return mainPixmap; }
+	const QPixmap& getPixmap() const { return mainPixmap; }
 
 private slots:	
 	void checkedButtonChanged(ToolBar::ButtonType type);

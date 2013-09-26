@@ -22,9 +22,6 @@
 #include <QBuffer>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QNetworkReply>
-#include <QNetworkProxy>
-#include <QDateTime>
 #include <QTimer>
 #include <QPrintDialog>
 #include <QPrinter>
@@ -32,7 +29,7 @@
 #include <QCloseEvent>
 #include <QDesktopServices>
 #include <QClipboard>
-#include <QPushButton>
+#include <QUrl>
 
 
 #include "screenshotmainwin.h"
@@ -47,6 +44,8 @@
 #include "updateschecker.h"
 #include "historydlg.h"
 #include "screenshoter.h"
+#include "uploader.h"
+#include "common.h"
 #include "ui_screenshot.h"
 
 #define MAX_HISTORY_SIZE 10
@@ -62,9 +61,9 @@ ScreenshotMainWin::ScreenshotMainWin()
 	: QMainWindow()
 	, modified_(false)
 	, lastFolder_(QDir::home().absolutePath())
-	, proxy_(new Proxy())
 	, so_(0)
 	, screenshoter_(new Screenshoter(this))
+	, uploader_(0)
 	, ui_(new Ui::Screenshot)
 {
 	ui_->setupUi(this);
@@ -73,7 +72,7 @@ ScreenshotMainWin::ScreenshotMainWin()
 	ui_->urlFrame->setVisible(false);
 
 	refreshSettings();
-	setProxy();
+
 	history_ = Options::instance()->getOption(constHistory).toStringList();
 
 	ui_->lb_pixmap->setToolBar(ui_->tb_bar);
@@ -110,7 +109,7 @@ ScreenshotMainWin::ScreenshotMainWin()
 	connect(ui_->pb_open, SIGNAL(clicked()), this, SLOT(openImage()));
 	connect(ui_->lb_pixmap, SIGNAL(adjusted()), this, SLOT(pixmapAdjusted()));
 	connect(ui_->lb_pixmap, SIGNAL(settingsChanged(QString,QVariant)), SLOT(settingsChanged(QString, QVariant)));
-	connect(ui_->lb_pixmap, SIGNAL(modified_(bool)), this, SLOT(setModified(bool)));
+	connect(ui_->lb_pixmap, SIGNAL(modified(bool)), this, SLOT(setModified(bool)));
 	connect(ui_->tb_copyUrl, SIGNAL(clicked()), this, SLOT(copyUrl()));
 
 	ui_->lb_pixmap->installEventFilter(this);
@@ -125,7 +124,6 @@ ScreenshotMainWin::~ScreenshotMainWin()
 	servers_.clear();
 	saveGeometry();
 	delete ui_;
-	delete proxy_;
 	delete so_;
 }
 
@@ -215,16 +213,6 @@ void ScreenshotMainWin::setServersList(const QStringList& l)
 	}
 }
 
-void ScreenshotMainWin::setProxy()
-{
-	Options *o = Options::instance();
-	proxy_->host = o->getOption(constProxyHost).toString();
-	proxy_->port = o->getOption(constProxyPort).toInt();
-	proxy_->user = o->getOption(constProxyUser).toString();
-	proxy_->pass = o->getOption(constProxyPass).toString();
-	proxy_->type = o->getOption(constProxyType).toString();
-}
-
 void ScreenshotMainWin::openImage()
 {
 	QString fileName = QFileDialog::getOpenFileName(0,tr("Open Image"), lastFolder_,tr("Images (*.png *.gif *.jpg *.jpeg *.ico)"));
@@ -233,8 +221,7 @@ void ScreenshotMainWin::openImage()
 		lastFolder_ = fi.absoluteDir().path();
 		settingsChanged(constLastFolder, lastFolder_);
 
-		originalPixmap_ = QPixmap(fileName);
-		ui_->lb_pixmap->setPixmap(originalPixmap_);
+		ui_->lb_pixmap->setPixmap(QPixmap(fileName));
 
 		updateStatusBar();
 		bringToFront();
@@ -335,7 +322,7 @@ void ScreenshotMainWin::refreshWindow()
 {
 	ui_->pb_new_screenshot->setEnabled(true);
 	ui_->urlFrame->setVisible(false);
-	ui_->lb_pixmap->setPixmap(originalPixmap_);
+
 	updateStatusBar();
 	bringToFront();
 	setModified(false);
@@ -343,7 +330,7 @@ void ScreenshotMainWin::refreshWindow()
 
 void ScreenshotMainWin::newPixmapCaptured(const QPixmap &pix)
 {
-	originalPixmap_ = pix;
+	ui_->lb_pixmap->setPixmap(pix);
 	refreshWindow();
 	if(autoSave_) {
 		autoSaveScreenshot();
@@ -354,7 +341,7 @@ void ScreenshotMainWin::autoSaveScreenshot()
 {
 	const QString initialFileName = "/"+getFileName();
 	const QString fileName = autosaveFolder_ + initialFileName;
-	originalPixmap_.save(fileName, format_.toLatin1());
+	ui_->lb_pixmap->getPixmap().save(fileName, format_.toLatin1());
 	emit screenshotSaved(fileName);
 }
 
@@ -362,7 +349,6 @@ void ScreenshotMainWin::saveScreenshot()
 {
 	ui_->pb_save->setEnabled(false);
 	const QString initialFileName = "/"+getFileName();
-	originalPixmap_ = ui_->lb_pixmap->getPixmap();
 	QString initialPath = lastFolder_ + initialFileName;
 	QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"),
 						initialPath,
@@ -371,7 +357,7 @@ void ScreenshotMainWin::saveScreenshot()
 						.arg(format_));
 
 	if (!fileName.isEmpty()) {
-		originalPixmap_.save(fileName, format_.toLatin1());
+		ui_->lb_pixmap->getPixmap().save(fileName, format_.toLatin1());
 
 		QFileInfo fi(fileName);
 		lastFolder_ = fi.absoluteDir().path();
@@ -412,18 +398,22 @@ void ScreenshotMainWin::uploadScreenshot()
 	if(!s)
 		return;	
 
-	originalPixmap_ = ui_->lb_pixmap->getPixmap();
-
 	prepareWidgetsForUpload();
 
 	QString scheme = QUrl(s->url()).scheme();
 
+	uploader_ = new Uploader(s, this);
+	connect(uploader_, SIGNAL(addToHistory(QString)), SLOT(addToHistory(QString)));
+	connect(uploader_, SIGNAL(newUrl(QString)), SLOT(updateUrlLabel(QString)));
+	connect(uploader_, SIGNAL(requestFinished()), SLOT(restoreWidgetsState()));
+	connect(uploader_, SIGNAL(uploadProgress(qint64,qint64)), SLOT(dataTransferProgress(qint64,qint64)));
+
 	if (scheme.toLower() == PROTOCOL_FTP) {
-		uploadFtp(s);
+		uploader_->uploadFtp(ui_->lb_pixmap->getPixmap());
 		setModified(false);
 	}
 	else if (scheme.toLower() == PROTOCOL_HTTP) {
-		uploadHttp(s);
+		uploader_->uploadHttp(ui_->lb_pixmap->getPixmap());
 		setModified(false);
 	}
 	else
@@ -442,9 +432,9 @@ void ScreenshotMainWin::prepareWidgetsForUpload()
 
 void ScreenshotMainWin::cancelUpload()
 {
-	if(manager_) {
-		manager_->disconnect();
-		manager_->deleteLater();
+	if(uploader_) {
+		uploader_->disconnect();
+		uploader_->deleteLater();
 	}
 	restoreWidgetsState();
 }
@@ -455,194 +445,6 @@ void ScreenshotMainWin::restoreWidgetsState()
 	ui_->pb_cancel->setVisible(false);
 	ui_->cb_servers->setEnabled(true);
 	ui_->pb_upload->setEnabled(true);
-}
-
-QString ScreenshotMainWin::getFileName() const
-{
-	QString fileName = QDateTime::currentDateTime().toString(fileNameFormat_) + "." + format_;
-
-	return fileName;
-}
-
-void ScreenshotMainWin::uploadFtp(Server *s)
-{
-	ba_.clear();
-	QBuffer buffer( &ba_ );
-	buffer.open( QBuffer::ReadWrite );
-	originalPixmap_.save( &buffer , format_.toLatin1() );
-
-	const QString fileName = getFileName();
-
-	QUrl u;
-	u.setPort(21);
-	u.setUrl(s->url(), QUrl::TolerantMode);
-	u.setUserName(s->userName());
-	u.setPassword(s->password());
-
-	if(manager_) {
-		delete manager_;
-	}
-
-	manager_ = new QNetworkAccessManager(this);
-	if(s->useProxy() && !proxy_->host.isEmpty()) {
-		QNetworkProxy p = QNetworkProxy(QNetworkProxy::HttpCachingProxy, proxy_->host, proxy_->port, proxy_->user, proxy_->pass);
-		if(proxy_->type == "socks")
-			p.setType(QNetworkProxy::Socks5Proxy);
-		manager_->setProxy(p);
-	}
-
-	QString path = u.path();
-	if(path.right(1) != "/")
-		path += "/";
-	u.setPath(path+fileName);
-
-	QNetworkReply *reply = manager_->put(QNetworkRequest(u), ba_);
-
-	connect(reply, SIGNAL(uploadProgress(qint64 , qint64)), this, SLOT(dataTransferProgress(qint64 , qint64)));
-	//connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(replyError(QNetworkReply::NetworkError)));
-	connect(reply, SIGNAL(finished()), this, SLOT(ftpReplyFinished()));
-}
-
-void ScreenshotMainWin::uploadHttp(Server *s)
-{
-	ba_.clear();
-
-	static const QString boundary = "AaB03x";
-	const QString filename = getFileName();
-
-	if (s->servPostdata().length()>0) {
-		foreach (const QString& poststr, s->servPostdata().split("&")) {
-			QStringList postpair = poststr.split("=");
-			if(postpair.count() < 2)
-				continue;
-			ba_.append("--" + boundary + "\r\n");
-			ba_.append("Content-Disposition: form-data; name=\"" + postpair[0] + "\"\r\n");
-			ba_.append("\r\n" + postpair[1] + "\r\n");
-		}
-	}
-
-	ba_.append("--" + boundary + "\r\n");
-	ba_.append("Content-Disposition: form-data; name=\"" + s->servFileinput() + "\"; filename=\"" + filename.toUtf8() + "\"\r\n");
-	ba_.append("Content-Transfer-Encoding: binary\r\n");
-	ba_.append(QString("Content-Type: image/%1\r\n")
-		  .arg(format_ == "jpg" ? "jpeg" : format_) // FIXME!!!!! жуткий костыль, но что поделаешь
-		  .toUtf8());
-	ba_.append("\r\n");
-
-	QByteArray a;
-	QBuffer buffer(&a);
-	buffer.open( QBuffer::ReadWrite );
-	originalPixmap_.save( &buffer , format_.toLatin1() );
-	ba_.append(a);
-
-	ba_.append("\r\n--" + boundary + "--\r\n");
-
-	if(manager_) {
-		delete manager_;
-	}
-
-	manager_ = new QNetworkAccessManager(this);
-
-	if(s->useProxy() && !proxy_->host.isEmpty()) {
-		QNetworkProxy p = QNetworkProxy(QNetworkProxy::HttpCachingProxy, proxy_->host, proxy_->port, proxy_->user, proxy_->pass);
-		if(proxy_->type == "socks")
-			p.setType(QNetworkProxy::Socks5Proxy);
-		manager_->setProxy(p);
-	}
-
-	QNetworkRequest netreq;
-	netreq.setUrl(QUrl(s->url()));
-
-	netreq.setRawHeader("User-Agent", "qScreenshot");
-	netreq.setRawHeader("Content-Type", "multipart/form-data, boundary=" + boundary.toLatin1());
-	netreq.setRawHeader("Cache-Control", "no-cache");
-	netreq.setRawHeader("Accept", "*/*");
-	netreq.setRawHeader("Content-Length", QString::number(ba_.length()).toLatin1());
-
-	QNetworkReply* reply = manager_->post(netreq, ba_);
-	connect(reply, SIGNAL(uploadProgress(qint64 , qint64)), this, SLOT(dataTransferProgress(qint64 , qint64)));
-	connect(manager_, SIGNAL(finished(QNetworkReply*)), this, SLOT(httpReplyFinished(QNetworkReply*)));
-}
-
-void ScreenshotMainWin::ftpReplyFinished()
-{
-	QNetworkReply *reply = static_cast<QNetworkReply*>(sender());
-	if(reply->error() == QNetworkReply::NoError) {
-		const QString url = reply->url().toString(QUrl::RemoveUserInfo | QUrl::StripTrailingSlash);
-		updateUrlLabel(QString("<a href=\"%1\">%1</a>").arg(url));
-		addToHistory(url);
-	}
-	else {
-		updateUrlLabel(reply->errorString());
-	}
-	reply->close();
-	reply->deleteLater();
-	restoreWidgetsState();
-}
-
-void ScreenshotMainWin::httpReplyFinished(QNetworkReply *reply)
-{
-	if(reply->error() != QNetworkReply::NoError) {
-		updateUrlLabel(reply->errorString());
-		restoreWidgetsState();
-		reply->close();
-		reply->deleteLater();
-		return;
-	}
-
-	const QString loc = reply->rawHeader("Location");
-	const QString refresh = reply->rawHeader("refresh");
-	if (!loc.isEmpty()) {
-		newRequest(reply, loc);
-	}
-	else if(!refresh.isEmpty() && refresh.contains("url=", Qt::CaseInsensitive)) {
-		QStringList tmp = refresh.split("=");
-		if(tmp.size() > 1) {
-			newRequest(reply, tmp.last());
-		}
-	}
-	else {
-		Server *s = servers_.at(ui_->cb_servers->currentIndex());
-		QString page = reply->readAll();
-
-//
-//		//Код нужен для анализа html и нахождения ссылки на картинку
-//		QFile f(QDir::home().absolutePath() + "/page.html");
-//		if(f.open(QIODevice::WriteOnly)) {
-//			QTextStream out(&f);
-//			out << page;
-//			f.close();
-//		}
-//
-
-		QRegExp rx(s->servRegexp());
-		if (rx.indexIn(page) != -1) {
-			QString imageurl = rx.cap(1);
-			updateUrlLabel(QString("<a href=\"%1\">%1</a>").arg(imageurl));
-			addToHistory(imageurl);
-		}
-		else
-			updateUrlLabel(tr("Can't parse URL (Reply URL: <a href=\"%1\">%1</a>)").arg(reply->url().toString()));
-
-		restoreWidgetsState();
-	}
-	reply->close();
-	reply->deleteLater();
-}
-
-void ScreenshotMainWin::newRequest(const QNetworkReply *const old, const QString &link)
-{
-	if(!manager_ || !old || link.isEmpty())
-		return;
-
-	QUrl netrequrl(link);
-	if (netrequrl.host().isEmpty())
-		netrequrl = QUrl("http://" + old->url().encodedHost() + link);
-	QNetworkRequest netreq(netrequrl);
-
-	ui_->progressBar->setValue(0);
-	QNetworkReply* reply = manager_->get(netreq);
-	connect(reply, SIGNAL(uploadProgress(qint64 , qint64)), this, SLOT(dataTransferProgress(qint64 , qint64)));
 }
 
 void ScreenshotMainWin::updateUrlLabel(const QString& text)
@@ -695,17 +497,7 @@ void ScreenshotMainWin::doHistory()
 void ScreenshotMainWin::doProxySettings()
 {
 	ProxySettingsDlg ps(this);
-	ps.setProxySettings(*proxy_);
-	if(ps.exec() == QDialog::Accepted) {
-		Options *o = Options::instance();
-		Proxy prox = ps.getSettings();
-		o->setOption(constProxyHost, prox.host);
-		o->setOption(constProxyPort, prox.port);
-		o->setOption(constProxyUser, prox.user);
-		o->setOption(constProxyPass, prox.pass);
-		o->setOption(constProxyType, prox.type);
-		setProxy();
-	}
+	ps.exec();
 }
 
 void ScreenshotMainWin::doAbout()

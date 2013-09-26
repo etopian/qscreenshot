@@ -1,6 +1,5 @@
 /*
- * proxysettingsdlg.h
- * Copyright (C) 2011  Khryukin Evgeny
+ * Copyright (C) 2009-2013  Khryukin Evgeny
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,32 +17,42 @@
  *
  */
 
+#ifndef UPLOADER_H
+#define UPLOADER_H
 
-#ifndef PROXYSETTINGS_H
-#define PROXYSETTINGS_H
+#include <QPixmap>
 
-#include <QDialog>
+class Server;
+class QNetworkAccessManager;
+class QNetworkReply;
 
-namespace Ui
-{
-	class ProxySettingsDlg;
-}
-
-class ProxySettingsDlg : public QDialog
+class Uploader : public QObject
 {
 	Q_OBJECT
 public:
-	ProxySettingsDlg(QWidget *parent = 0);
-	~ProxySettingsDlg();
+	explicit Uploader(Server* serv, QObject *parent = 0);
+	~Uploader();
 
-public slots:
-	void accept();
+	void uploadFtp(const QPixmap& pixmap);
+	void uploadHttp(const QPixmap& pixmap);
+
+signals:
+	void requestFinished();
+	void newUrl(const QString&);
+	void addToHistory(const QString&);
+	void uploadProgress(qint64 , qint64);
+	
+private slots:
+	void ftpReplyFinished();
+	void httpReplyFinished(QNetworkReply*);
 
 private:
-	void setProxySettings();
+	void newRequest(const QNetworkReply *const old, const QString& link);
 
 private:
-	Ui::ProxySettingsDlg *ui;
+	QNetworkAccessManager* manager_;
+	QByteArray ba_;
+	Server* server_;
 };
 
-#endif // PROXYSETTINGS_H
+#endif // UPLOADER_H

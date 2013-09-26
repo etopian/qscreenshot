@@ -1,6 +1,5 @@
 /*
- * proxysettingsdlg.h
- * Copyright (C) 2011  Khryukin Evgeny
+ * Copyright (C) 2009-2013  Khryukin Evgeny
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,32 +17,17 @@
  *
  */
 
+#include "common.h"
+#include "options.h"
+#include "defines.h"
 
-#ifndef PROXYSETTINGS_H
-#define PROXYSETTINGS_H
+#include <QDateTime>
 
-#include <QDialog>
-
-namespace Ui
+QString getFileName()
 {
-	class ProxySettingsDlg;
+	Options* o = Options::instance();
+	QString fileName = QDateTime::currentDateTime().toString(o->getOption(constFileName).toString())
+			+ "." + o->getOption(constFormat).toString();
+
+	return fileName;
 }
-
-class ProxySettingsDlg : public QDialog
-{
-	Q_OBJECT
-public:
-	ProxySettingsDlg(QWidget *parent = 0);
-	~ProxySettingsDlg();
-
-public slots:
-	void accept();
-
-private:
-	void setProxySettings();
-
-private:
-	Ui::ProxySettingsDlg *ui;
-};
-
-#endif // PROXYSETTINGS_H
