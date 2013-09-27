@@ -74,6 +74,14 @@
         <source>Screenshot saved.</source>
         <translation>Снимок экрана сохранён.</translation>
     </message>
+    <message>
+        <source>Grab active window</source>
+        <translation>Захватить активное окно</translation>
+    </message>
+    <message>
+        <source>Grab area</source>
+        <translation>Захватить область</translation>
+    </message>
 </context>
 <context>
     <name>EditServerDlg</name>

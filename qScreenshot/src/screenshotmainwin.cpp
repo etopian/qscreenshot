@@ -549,3 +549,13 @@ void ScreenshotMainWin::captureDesktop()
 {
 	screenshoter_->captureDesktop();
 }
+
+void ScreenshotMainWin::captureActiveWindow()
+{
+	screenshoter_->captureWindow();
+}
+
+void ScreenshotMainWin::captureArea()
+{
+	screenshoter_->captureArea();
+}

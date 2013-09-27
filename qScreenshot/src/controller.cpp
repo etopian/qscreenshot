@@ -191,6 +191,8 @@ void Controller::buildTray()
 
 	trayMenu_ = new QMenu();
 	trayMenu_->addAction(tr("Grab screen"), screenshot, SLOT(captureDesktop()));
+	trayMenu_->addAction(tr("Grab active window"), screenshot, SLOT(captureActiveWindow()));
+	trayMenu_->addAction(tr("Grab area"), screenshot, SLOT(captureArea()));
 	trayMenu_->addAction(tr("New Screenshot"), screenshot, SLOT(newScreenshot()));
 	trayMenu_->addAction(tr("Open Image"), screenshot, SLOT(openImage()));
 	trayMenu_->addSeparator();

@@ -48,6 +48,8 @@ protected:
 
 public slots:
 	void captureDesktop();
+	void captureActiveWindow();
+	void captureArea();
 	void openImage();
 	void newScreenshot();
 	void action();
