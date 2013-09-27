@@ -20,9 +20,9 @@ INCLUDEPATH += . \
     ../qxt/src/gui \
     ../qxt/src/core
 DEPENDPATH += . \
-    ../qxt/release \
     ../qxt/src/core \
     ../qxt/src/gui
+
 include(../conf.pri)
 include(../qxt/qxt.pro)
 
