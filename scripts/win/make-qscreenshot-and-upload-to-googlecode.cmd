@@ -12,10 +12,10 @@ move /Y src\release\qscreenshot.exe ..\..\qscreenshot.exe
 cd ..\..
 pause
 @echo Archiving qScreenshot Nightly Build
-call 7z a -mx9 "qscreenshot-r120-win32.7z" "qscreenshot.exe"
+call 7z a -mx9 "qscreenshot-r136-win32.7z" "qscreenshot.exe"
 @echo Completed
 pause
 @echo Uploading archived qScreenshot Nightly Build to Google Code
-call googlecode_upload.py -p "qscreenshot" -s "qScreenshot Nightly Build || Qt 4.8.5 || For test only!" -l "NightlyBuild,Windows,Archive" "qscreenshot-r110-win32.zip"
+call googlecode_upload.py -p "qscreenshot" -s "qScreenshot Nightly Build || Qt 4.8.5 || For test only!" -l "NightlyBuild,Windows,Archive" "qscreenshot-r136-win32.7z"
 @echo Completed
 pause & pause
