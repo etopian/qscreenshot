@@ -50,6 +50,7 @@ private:
 	QString format;
 	QString fileName;
 	bool autoSave;
+	bool autoCheck;
 	QString autosaveFolder;
 	QStringList servers;
 	int defaultAction;

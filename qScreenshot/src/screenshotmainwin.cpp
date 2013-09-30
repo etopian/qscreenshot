@@ -507,7 +507,7 @@ void ScreenshotMainWin::doAbout()
 
 void ScreenshotMainWin::doCheckUpdates()
 {
-	new UpdatesChecker(this);
+	new UpdatesChecker(false, this);
 }
 
 void ScreenshotMainWin::refreshSettings()

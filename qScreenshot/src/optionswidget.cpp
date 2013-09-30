@@ -177,6 +177,7 @@ OptionsWidget::OptionsWidget(QWidget* p)
 	defaultAction = o->getOption(constDefaultAction, QVariant(Desktop)).toInt();
 	autoSave = o->getOption(constAutosave, false).toBool();
 	autosaveFolder = o->getOption(constAutosaveFolder, QDir::homePath()).toString();
+	autoCheck = o->getOption(constAutocheckUpdates).toBool();
 
 #ifdef Q_WS_MAC
 	ui_->cb_autostart->hide();
@@ -266,6 +267,9 @@ void OptionsWidget::applyOptions()
 	o->setOption(constAutosave, autoSave);
 	o->setOption(constAutosaveFolder, autosaveFolder);
 
+	autoCheck = ui_->cb_updatesCheck->isChecked();
+	o->setOption(constAutocheckUpdates, autoCheck);
+
 
 #ifdef Q_WS_WIN
 	QSettings set(regString, QSettings::NativeFormat);
@@ -303,6 +307,8 @@ void OptionsWidget::restoreOptions()
 		s->setFromString(settings);
 		s->setText(s->displayName());
 	}
+
+	ui_->cb_updatesCheck->setChecked(autoCheck);
 
 	ui_->rb_desktop->setChecked(defaultAction == Desktop);
 	ui_->rb_area->setChecked(defaultAction == Area);

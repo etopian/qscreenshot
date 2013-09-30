@@ -35,10 +35,12 @@ static const QString url = "http://qscreenshot.googlecode.com/svn/trunk/qScreens
 static const QString downloadUrl = "http://code.google.com/p/qscreenshot/downloads/list";
 
 
-UpdatesChecker::UpdatesChecker(QObject *parent)
+UpdatesChecker::UpdatesChecker(bool autoCheck, QObject *parent)
 	: QObject(parent)
+	, manager_ (new QNetworkAccessManager(this))
+	, progressDialog_(0)
+	, autocheck_(autoCheck)
 {
-	manager_ = new QNetworkAccessManager(this);
 	Options *o = Options::instance();
 	const QString proxyHost = o->getOption(constProxyHost).toString();
 	if(!proxyHost.isEmpty()) {
@@ -54,14 +56,18 @@ UpdatesChecker::UpdatesChecker(QObject *parent)
 	QNetworkRequest request;
 	request.setUrl(QUrl(url));
 
-	QWidget *p = dynamic_cast<QWidget*>(parent);
-	progressDialog_ = new QProgressDialog(p);
-	progressDialog_->setWindowTitle(APP_NAME);
-	progressDialog_->setWindowModality(Qt::WindowModal);
-	progressDialog_->show();
 	QNetworkReply* reply = manager_->get(request);
-	connect(reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(updateProgress(qint64,qint64)));
+
+	if(!autocheck_) {
+		QWidget *p = dynamic_cast<QWidget*>(parent);
+		progressDialog_ = new QProgressDialog(p);
+		progressDialog_->setWindowTitle(APP_NAME);
+		progressDialog_->setWindowModality(Qt::WindowModal);
+		progressDialog_->show();
+		connect(reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(updateProgress(qint64,qint64)));
+	}
 }
+
 UpdatesChecker::~UpdatesChecker()
 {
 	delete progressDialog_;
@@ -76,7 +82,9 @@ void UpdatesChecker::updateProgress(qint64 bytesReceived, qint64 bytesTotal)
 
 void UpdatesChecker::replyFinished(QNetworkReply *reply)
 {
-	progressDialog_->hide();
+	if(progressDialog_)
+		progressDialog_->hide();
+
 	if(reply->error() != QNetworkReply::NoError) {
 		showError(tr("Error while checking for updates: %1").arg(reply->errorString()));
 	}
@@ -87,15 +95,18 @@ void UpdatesChecker::replyFinished(QNetworkReply *reply)
 			const QString ver = re.cap(1);
 			const QString curVer = Options::instance()->getOption(constVersionOption).toString();
 			if(ver != curVer) {
-				int rez = QMessageBox::question(0, tr("New version is available"),
-								tr("Do you want to go to the download page?"),
-								QMessageBox::Yes | QMessageBox::No);
+				int rez = QMessageBox::question(0, QString(APP_NAME),
+						tr("New version is available") + "\n" +
+						tr("Do you want to go to the download page?"),
+						QMessageBox::Yes | QMessageBox::No);
+
 				if(rez == QMessageBox::Yes) {
 					QDesktopServices::openUrl(QUrl(downloadUrl));
 				}
 			}
 			else {
-				QMessageBox::information(0, APP_NAME, tr("There is no updates found."), QMessageBox::Ok);
+				if(!autocheck_)
+					QMessageBox::information(0, APP_NAME, tr("There is no updates found."), QMessageBox::Ok);
 			}
 		}
 		else {
@@ -110,5 +121,6 @@ void UpdatesChecker::replyFinished(QNetworkReply *reply)
 
 void UpdatesChecker::showError(const QString &error)
 {
-	QMessageBox::warning(0, APP_NAME, error, QMessageBox::Ok);
+	if(!autocheck_)
+		QMessageBox::warning(0, APP_NAME, error, QMessageBox::Ok);
 }

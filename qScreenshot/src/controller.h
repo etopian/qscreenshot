@@ -39,6 +39,7 @@ private slots:
 	void retranslate(const QString& trans);
 	void screenshotSaved(const QString& name);
 	void trayMessageClicked();
+	void autocheckUpdates();
 
 private:
 	void doUpdate();

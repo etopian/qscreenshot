@@ -24,6 +24,7 @@
 #include <QDir>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QTimer>
 
 #include "controller.h"
 #include "screenshotmainwin.h"
@@ -33,6 +34,7 @@
 #include "defines.h"
 #include "shortcutmanager.h"
 #include "translator.h"
+#include "updateschecker.h"
 
 
 static const QString imageShack = "ImageShack.us&split&http://www.imageshack.us/upload_api.php&split&&split&&split&a_username=...&a_password=...&split&fileupload&split&<image_link>(http://[^<]+)</image_link>&split&true";
@@ -127,20 +129,10 @@ Controller::Controller()
 	, screenshot(0)
 	, trayMenu_(0)
 {
+	qApp->setWindowIcon(Iconset::instance()->getIcon("screenshot"));
 	Options* o = Options::instance();
 	QVariant vServers = o->getOption(constServerList);
 	QVariant vVer = o->getOption(constVersionOption);
-
-	if(!vVer.isValid()) { //приложение запущено впервые
-		o->setOption(constShortCut, QVariant("Ctrl+Shift+S"));
-		o->setOption(constFormat, QVariant("png"));
-		o->setOption(constFileName, QVariant("pic-yyyyMMdd-hhmmss"));
-		o->setOption(constDelay, QVariant(0));
-		o->setOption(constVersionOption, APP_VERSION);
-		o->setOption(constDefaultAction, QVariant(Desktop));
-		o->setOption(constAutosave, false);
-		o->setOption(constAutosaveFolder, QDir::homePath());
-	}
 
 	QStringList servers = vServers.toStringList();
 	foreach(const QString& host, staticHostsList) {
@@ -148,13 +140,14 @@ Controller::Controller()
 			servers.append(host);
 	}
 
-	if(vVer.toString() != APP_VERSION) {
+	if(!vVer.isValid() || vVer.toString() != APP_VERSION) {
 //		foreach(const QString& host, staticHostsList) {
 //			updateServer(&servers, host);
 //		}
 
 		updateServer(&servers, imageShack);
 		doUpdate();
+
 		o->setOption(constVersionOption, APP_VERSION);
 	}
 
@@ -170,6 +163,10 @@ Controller::Controller()
 	connect(ShortcutManager::instance(), SIGNAL(activated()), screenshot, SLOT(action()));
 
 	buildTray();
+
+	if(o->getOption(constAutocheckUpdates).toBool()) {
+		QTimer::singleShot(5000, this, SLOT(autocheckUpdates()));
+	}
 }
 
 Controller::~Controller()
@@ -232,10 +229,38 @@ void Controller::trayActivated(QSystemTrayIcon::ActivationReason reason)
 void Controller::doUpdate()
 {
 	// do some updates
-	if(Options::instance()->getOption(constAutosave) == QVariant::Invalid) {
-		Options::instance()->setOption(constAutosave, false);
-		Options::instance()->setOption(constAutosaveFolder, QDir::homePath());
-	}
+	Options* o = Options::instance();
+
+
+	if(o->getOption(constVersionOption) == QVariant::Invalid)
+		o->setOption(constVersionOption, APP_VERSION);
+
+	if(o->getOption(constAutosave) == QVariant::Invalid)
+		o->setOption(constAutosave, false);
+
+	if(o->getOption(constAutosaveFolder) == QVariant::Invalid)
+		o->setOption(constAutosaveFolder, QDir::homePath());
+
+	if(o->getOption(constAutocheckUpdates) == QVariant::Invalid)
+		o->setOption(constAutocheckUpdates, true);
+
+	if(o->getOption(constShortCut) == QVariant::Invalid)
+		o->setOption(constShortCut, QVariant("Ctrl+Shift+S"));
+
+	if(o->getOption(constFormat) == QVariant::Invalid)
+		o->setOption(constFormat, QVariant("png"));
+
+	if(o->getOption(constFileName) == QVariant::Invalid)
+		o->setOption(constFileName, QVariant("pic-yyyyMMdd-hhmmss"));
+
+	if(o->getOption(constDelay) == QVariant::Invalid)
+		o->setOption(constDelay, QVariant(0));
+
+	if(o->getOption(constDefaultAction) == QVariant::Invalid)
+		o->setOption(constDefaultAction, QVariant(Desktop));
+
+	if(o->getOption(constAutocheckUpdates) == QVariant::Invalid)
+		o->setOption(constAutocheckUpdates, true);
 }
 
 void Controller::retranslate(const QString &trans)
@@ -252,6 +277,11 @@ void Controller::screenshotSaved(const QString &name)
 void Controller::trayMessageClicked()
 {
 	QDesktopServices::openUrl(QUrl::fromLocalFile(Options::instance()->getOption(constAutosaveFolder).toString()));
+}
+
+void Controller::autocheckUpdates()
+{
+	new UpdatesChecker(true);
 }
 
 #include "controller.moc"

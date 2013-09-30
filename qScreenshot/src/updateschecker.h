@@ -31,7 +31,7 @@ class UpdatesChecker : public QObject
 {
 	Q_OBJECT
 public:
-	explicit UpdatesChecker(QObject *parent = 0);
+	explicit UpdatesChecker(bool autoCheck = false, QObject *parent = 0);
 	~UpdatesChecker();
 
 private:
@@ -44,6 +44,7 @@ private slots:
 private:
 	QNetworkAccessManager* manager_;
 	QProgressDialog* progressDialog_;
+	bool autocheck_;
 };
 
 #endif // UPDATESCHECKER_H

@@ -51,6 +51,7 @@
 #define constState "state"
 #define constAutosaveFolder "autosaveFolder"
 #define constAutosave "autoSave"
+#define constAutocheckUpdates "autoCheckForUpdates"
 
 enum DefaultAction { Desktop, Area, Window };
 
