@@ -66,6 +66,8 @@ usr/lib
 usr/share/icons/hicolor/16x16/apps
 usr/share/icons/hicolor/32x32/apps
 usr/share/icons/hicolor/48x48/apps
+usr/share/qscreenshot
+usr/share/qscreenshot/translations
 usr/share/applications'
 #
 compat='7'

@@ -73,6 +73,8 @@ mkdir -p %{buildroot}/usr/share/icons/hicolor/22x22/apps
 mkdir -p %{buildroot}/usr/share/icons/hicolor/24x24/apps
 mkdir -p %{buildroot}/usr/share/icons/hicolor/32x32/apps
 mkdir -p %{buildroot}/usr/share/icons/hicolor/48x48/apps
+mkdir -p %{buildroot}/usr/share/qscreenshot
+mkdir -p %{buildroot}/usr/share/qscreenshot/translations
 
 %clean
 [ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
@@ -86,6 +88,8 @@ mkdir -p %{buildroot}/usr/share/icons/hicolor/48x48/apps
 %{_datadir}/icons/hicolor/24x24/apps/
 %{_datadir}/icons/hicolor/32x32/apps/
 %{_datadir}/icons/hicolor/48x48/apps/
+%{_datadir}/qscreenshot
+%{_datadir}/qscreenshot/translations
 END
 cp -f ${package_name} ${srcpath}
 cd ${homedir}/rpmbuild/SPECS
