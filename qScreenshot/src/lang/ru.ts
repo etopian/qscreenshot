@@ -295,6 +295,10 @@
         <source>Chose Folder</source>
         <translation>Выберете каталог</translation>
     </message>
+    <message>
+        <source>Automatically check for updates on startup</source>
+        <translation type="unfinished">Автоматическая проверка обновлений при запуске </translation>
+    </message>
 </context>
 <context>
     <name>PixmapWidget</name>
