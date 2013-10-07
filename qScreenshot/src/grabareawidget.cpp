@@ -25,18 +25,35 @@
 #include <QPainter>
 #include <QPen>
 
+#ifdef HAVE_X11
+#include <QX11Info>
+#endif
+
 
 GrabAreaWidget::GrabAreaWidget()
 	: QDialog()
 	, startPoint(QPoint(-1, -1))
 	, endPoint(QPoint(-1, -1))
 {
-	setAttribute(Qt::WA_TranslucentBackground, true);
+	bool composite = true;
+
+#ifdef HAVE_X11
+	composite = QX11Info::isCompositingManagerRunning();
+#endif
+	if(composite)
+		setAttribute(Qt::WA_TranslucentBackground, true);
+
 	setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 	setWindowTitle(tr("Select area"));
 	setWindowState(Qt::WindowFullScreen);
 	setCursor(Qt::CrossCursor);
 	resize(QApplication::desktop()->size());
+	if(!composite) {
+		QPixmap pixmap = QPixmap::grabWindow( QApplication::desktop()->winId() );
+		QPalette p = palette();
+		p.setBrush( backgroundRole(), QBrush( pixmap ) );
+		setPalette( p );
+	}
 }
 
 GrabAreaWidget::~GrabAreaWidget()
