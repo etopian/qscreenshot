@@ -1,0 +1,57 @@
+current
+ - restore ImageShack
+ - fix "blur" icon
+ - some code refactoring
+ - improve translations system
+ - add grab window and area actions to tray menu
+ - add "auto check for updates" option
+ - fix "grab area" when compositing disabled (Linux only)
+
+version 0.7
+19.09.2013
+  - add "autosave screenshot" option (save screenshot into specified folder
+    without showing editor)
+  - update qxt
+  - drop Omploader.org and Radikal.ru
+
+version 0.6
+26.03.2012
+ - fix regexp for omploader
+ - fix qxt pro file - now compiles on mac
+ - add bild for Mac OS X
+ - add "blur" action
+ - add saving toolbars state
+ - drop imageShack
+ - some improvements and fixes
+
+version 0.5
+11.11.2011
+ - add statusbar
+ - add "default action" option
+ - add "cope url" button
+ - some other fixes
+
+version 0.4
+26.05.2011
+ - add img.flashtux.org, Smages.com, Ompldr.org, Ipicture.ru hostings
+ - add updater
+ - add ability to draw ellipses and rectangles
+
+version 0.3
+29.04.2011
+ - add ability capture active window
+ - add "insert from clipboard" action
+ - add "autostart application" option
+ - different fixes and improvements
+
+version 0.2
+22.04.2011
+ - add russion translation
+ - add dialog "About qScreenshot"
+ - improve icons
+ - fixes for menus
+
+version 0.1
+20.04.2011
+ - initial release
+
