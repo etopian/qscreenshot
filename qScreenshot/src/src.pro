@@ -109,7 +109,10 @@ unix {
     icon5.files = icons/screenshot.png
 
     translations.path = $$DATADIR/translations
-    translations.extra = lrelease src.pro && cp -f $$LANG_PATH/*.qm  $(INSTALL_ROOT)$$translations.path
+    LRELEASE = "lrelease"
+    !exists($$LRELEASE)
+        LRELEASE = "lrelease-qt4"
+    translations.extra = $$LRELEASE src.pro && cp -f $$LANG_PATH/*.qm  $(INSTALL_ROOT)$$translations.path
     INSTALLS += translations
 
     INSTALLS += dt \
