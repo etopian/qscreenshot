@@ -1,8 +1,8 @@
 ; qscreenshot-install.nsi
 ; http://qscreenshot.googlecode.com/
-; qScreenshot installation script, v0.2.1
+; qScreenshot installation script, v0.2.2
 ; Written by zet <mailto:vladimir.shelukhin@gmail.com>
-; Date: 2013-09-19
+; Date: 2013-10-12
 
 ; -----------------------------------------------------------------------------
 ; Define your application information
@@ -146,17 +146,18 @@ Section "!qScreenshot Core Components" SectionqScreenshotCoreComponents
 
 	; Set Section Files and Shortcuts
 	SetOutPath "$INSTDIR\"
+	File "setup\Changelog.txt"
 	File "setup\libgcc_s_dw2-1.dll"
 	File "setup\LICENSE.txt"
 	File "setup\mingwm10.dll"
 	File "setup\qscreenshot.exe"
-	File "setup\qt_ru.qm"
+	Delete "$INSTDIR\qt_ru.qm"
 	File "setup\QtCore4.dll"
 	File "setup\QtGui4.dll"
 	File "setup\QtNetwork4.dll"
 	File "setup\QtSvg4.dll"
 	File "setup\QtXml4.dll"
-	File "setup\ru.qm"
+	Delete "$INSTDIR\ru.qm"
 	File "setup\screenshot.ico"
 	Delete "$INSTDIR\version.txt"
 	Delete "$INSTDIR\iconengines\qsvgicon4.dll"
@@ -169,6 +170,9 @@ Section "!qScreenshot Core Components" SectionqScreenshotCoreComponents
 	File "setup\imageformats\qsvg4.dll"
 	File "setup\imageformats\qtga4.dll"
 	File "setup\imageformats\qtiff4.dll"
+	SetOutPath "$INSTDIR\translations\"
+	File "setup\translations\qt_ru.qm"
+	File "setup\translations\ru.qm"
   WriteIniStr "$INSTDIR\qScreenshot Website.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
   DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "${PRODUCT_NAME}"
 
@@ -267,17 +271,16 @@ Section Uninstall
 
   ;Cleanup qScreenshot Core Components
 	Delete "$INSTDIR\qScreenshot Website.url"
+	Delete "$INSTDIR\Changelog.txt"
 	Delete "$INSTDIR\libgcc_s_dw2-1.dll"
 	Delete "$INSTDIR\LICENSE.txt"
 	Delete "$INSTDIR\mingwm10.dll"
 	Delete "$INSTDIR\qscreenshot.exe"
-	Delete "$INSTDIR\qt_ru.qm"
 	Delete "$INSTDIR\QtCore4.dll"
 	Delete "$INSTDIR\QtGui4.dll"
 	Delete "$INSTDIR\QtNetwork4.dll"
 	Delete "$INSTDIR\QtSvg4.dll"
 	Delete "$INSTDIR\QtXml4.dll"
-	Delete "$INSTDIR\ru.qm"
 	Delete "$INSTDIR\screenshot.ico"
 	Delete "$INSTDIR\imageformats\qgif4.dll"
 	Delete "$INSTDIR\imageformats\qico4.dll"
@@ -286,11 +289,14 @@ Section Uninstall
 	Delete "$INSTDIR\imageformats\qsvg4.dll"
 	Delete "$INSTDIR\imageformats\qtga4.dll"
 	Delete "$INSTDIR\imageformats\qtiff4.dll"
+	Delete "$INSTDIR\translations\qt_ru.qm"
+	Delete "$INSTDIR\translations\ru.qm"
 
   ;Remove remaining directories
 	SetShellVarContext all
   RMDir /r "$SMPROGRAMS\qScreenshot"
 	RMDir "$INSTDIR\imageformats\"
+	RMDir "$INSTDIR\translations\"
 	RMDir "$INSTDIR\"
 
 SectionEnd
