@@ -38,9 +38,11 @@ Screenshoter::~Screenshoter()
 
 void Screenshoter::captureArea(int delay)
 {
+	//Give some time for desktop repainting in case delay=0
+	delay = (delay == 0) ? 200 : delay*1000;
 	grabAreaWidget_ = new GrabAreaWidget();
 	if(grabAreaWidget_->exec() == QDialog::Accepted) {
-		QTimer::singleShot(delay*1000, this, SLOT(shootArea()));
+		QTimer::singleShot(delay, this, SLOT(shootArea()));
 	}
 	else {
 		delete grabAreaWidget_;
@@ -57,14 +59,14 @@ void Screenshoter::shootArea()
 	}
 	QPixmap pix;
 	const QRect rect = grabAreaWidget_->getRect();
+	delete grabAreaWidget_;
+	grabAreaWidget_ = 0;
+
 	if(rect.isValid()) {
 		qApp->desktop()->repaint();
 		qApp->beep();
 		pix = QPixmap::grabWindow(QApplication::desktop()->winId(), rect.x(), rect.y(), rect.width(), rect.height());
 	}
-
-	delete grabAreaWidget_;
-	grabAreaWidget_ = 0;
 
 	if(!pix.isNull())
 		emit pixmapReady(pix);
