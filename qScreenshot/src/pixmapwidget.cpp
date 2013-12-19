@@ -18,7 +18,11 @@
  *
  */
 
+#ifdef HAVE_QT5
+#include <QtWidgets>
+#else
 #include <QtGui>
+#endif
 
 #include "pixmapwidget.h"
 #include "options.h"
@@ -314,7 +318,11 @@ void PixmapWidget::blur()
 	saveUndoPixmap();
 	int radius = Options::instance()->getOption(constRadius, 5).toInt();
 	bool ok = false;
+#ifndef HAVE_QT5
 	radius = QInputDialog::getInteger(this, tr("Input radius"), tr("Radius"), radius, 1, 100, 1, &ok);
+#else
+	radius = QInputDialog::getInt(this, tr("Input radius"), tr("Radius"), radius, 1, 100, 1, &ok);
+#endif
 	if(!ok)
 		return;
 

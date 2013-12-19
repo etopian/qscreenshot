@@ -194,8 +194,13 @@ void Uploader::newRequest(const QNetworkReply *const old, const QString &link)
 		return;
 
 	QUrl netrequrl(link);
-	if (netrequrl.host().isEmpty())
+	if (netrequrl.host().isEmpty()) {
+#ifndef HAVE_QT5
 		netrequrl = QUrl("http://" + old->url().encodedHost() + link);
+#else
+		netrequrl = QUrl("http://" + old->url().host(QUrl::EncodeUnicode) + link);
+#endif
+	}
 	QNetworkRequest netreq(netrequrl);
 
 	QNetworkReply* reply = manager_->get(netreq);

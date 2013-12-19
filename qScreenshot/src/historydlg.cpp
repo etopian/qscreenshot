@@ -20,7 +20,11 @@
 #include "historydlg.h"
 #include "iconset.h"
 
+#ifdef HAVE_QT5
+#include <QtWidgets>
+#else
 #include <QtGui>
+#endif
 
 HistoryDlg::HistoryDlg(const QStringList& list, QWidget* p)
 	: QDialog(p, Qt::Window)
