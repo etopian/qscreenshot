@@ -6,6 +6,8 @@ current
  - add grab window and area actions to tray menu
  - add "auto check for updates" option
  - fix "grab area" when compositing disabled (Linux only)
+ - add Qt 5 support
+ - add Rghost.ru server
 
 version 0.7
 19.09.2013
