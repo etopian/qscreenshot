@@ -45,9 +45,11 @@ static const QString flashtux = "Img.Flashtux.org&split&http://img.flashtux.org/
 static const QString smages = "Smages.com&split&http://smages.com/&split&&split&&split&&split&fileup&split&<div class=\"codex\"><a href=\"(http://smages.com/[^\"]+)\" target=\"_blank\">URL:</a></div>&split&true";
 static const QString ompldr = "Omploader.org&split&http://ompldr.org/upload&split&&split&&split&&split&file1&split&<div class=\"left\">File:</div><div class=\"right\"><a href=\"[^\"]+\">(http://ompldr.org/[^\"]+)</a></div>&split&true";
 static const QString ipicture = "Ipicture.ru&split&http://ipicture.ru/Upload/&split&&split&&split&method=file&split&userfile&split&value=\"(http://[^\"]+)\">&split&true";
+static const QString rghost = "Rghost.ru&split&http://pion.rghost.ru/files&split&&split&&split&&split&file&split&value=\"(http://[^\"]+image.[^\"]+)\"&split&true";
 
 static const QStringList staticHostsList = QStringList() << imageShack << pixacadem /*<< radikal*/
-					 << kachalka << flashtux << smages /*<< ompldr*/ << ipicture;
+					 << kachalka << flashtux << smages /*<< ompldr*/ << ipicture
+					 << rghost;
 
 
 static bool isListContainsServer(const QString& server, const QStringList& servers)

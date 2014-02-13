@@ -33,6 +33,8 @@
 #define QSCREENSHOT_DATADIR "/usr/local/share/qscreenshot"
 #endif
 
+static const QString PREFIX = "qscreenshot_";
+
 Translator* Translator::instance_ = 0;
 
 Translator* Translator::instance()
@@ -71,7 +73,7 @@ void Translator::retranslate(const QString& fileName)
 {
 	bool foundFile = false;
 	foreach(const QString& dir, transDirs()) {
-		if(load(fileName, dir)) {
+		if(load(PREFIX+fileName, dir)) {
 			qApp->installTranslator(this);
 			foundFile = true;
 
@@ -100,12 +102,9 @@ QStringList Translator::availableTranslations()
 	QStringList translations("en"); // add default translation
 	foreach(const QString& dir, transDirs()) {
 		foreach(QString file, QDir(dir).entryList(QDir::Files)) {
-			if(file.endsWith(".qm", Qt::CaseInsensitive)) {
-				if(file.startsWith("qt_", Qt::CaseInsensitive)) {
-					continue;
-				}
+			if(file.startsWith(PREFIX, Qt::CaseInsensitive)) {
 				file.chop(3);
-				file = file.remove("qomp_");
+				file.remove(PREFIX);
 				translations.append(file);
 			}
 		}
