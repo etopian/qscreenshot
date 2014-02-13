@@ -27,6 +27,7 @@
 
 #include "toolbar.h"
 
+class QTimer;
 
 class SelectionRect : public QRect
 {
@@ -59,6 +60,7 @@ private slots:
 	void selectFont();
 	void insert();
 	void blur();
+	void scale();
 
 protected:
 	void mousePressEvent(QMouseEvent *e);
@@ -66,6 +68,7 @@ protected:
 	void mouseReleaseEvent(QMouseEvent *e);
 	void mouseMoveEvent(QMouseEvent *e);
 	void paintEvent(QPaintEvent *);
+	void wheelEvent(QWheelEvent* e);
 
 private:
 	void saveUndoPixmap();
@@ -96,6 +99,9 @@ private:
 
 	enum SmoothLineType { None, Horizontal, Vertical };
 	SmoothLineType smoothLineType_;
+
+	int delta_;
+	QTimer* wheelTimer_;
 };
 
 #endif // PIXMAPWIDGET_H

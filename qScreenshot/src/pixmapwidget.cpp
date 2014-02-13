@@ -24,6 +24,8 @@
 #include <QtGui>
 #endif
 
+#include <QTimer>
+
 #include "pixmapwidget.h"
 #include "options.h"
 #include "defines.h"
@@ -146,12 +148,18 @@ PixmapWidget::PixmapWidget(QWidget *parent)
 	, currentCursor(QCursor(Qt::CrossCursor))
 	, cornerType(SelectionRect::NoCorner)
 	, smoothLineType_(None)
+	, delta_(0)
+	, wheelTimer_(new QTimer(this))
 {
 	draftPen.setColor(Qt::red);
 	draftPen.setStyle(Qt::DashLine);
 	draftPen.setWidth(1);
 
 	setMouseTracking(true);
+
+	wheelTimer_->setSingleShot(true);
+	wheelTimer_->setInterval(500);
+	connect(wheelTimer_, SIGNAL(timeout()), SLOT(scale()));
 }
 
 PixmapWidget::~PixmapWidget()
@@ -389,6 +397,32 @@ void PixmapWidget::paintEvent(QPaintEvent *)
 		p.setPen(draftPen);
 		p.drawRect(selectionRect->x(), selectionRect->y(), selectionRect->width(), selectionRect->height());
 	}
+}
+
+void PixmapWidget::wheelEvent(QWheelEvent *e)
+{
+	if(e->modifiers() == Qt::ControlModifier) {
+		wheelTimer_->start();
+		delta_ += e->delta();
+		e->accept();
+		return;
+	}
+	QWidget::wheelEvent(e);
+}
+
+void PixmapWidget::scale()
+{
+	static const qreal factor = 200;
+	saveUndoPixmap();
+	QTransform t;
+	qreal d;
+	if(delta_ > 0)
+		d = (1.0 + qreal(delta_)/factor);
+	else
+		d = 1/(1.0 - qreal(delta_)/factor);
+	setPixmap(mainPixmap.transformed(t.scale(d, d), Qt::SmoothTransformation));
+	delta_ = 0;
+	emit adjusted();
 }
 
 void PixmapWidget::mousePressEvent(QMouseEvent *e)
