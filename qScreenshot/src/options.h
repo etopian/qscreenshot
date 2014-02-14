@@ -35,11 +35,18 @@ public:
 	QVariant getOption(const QString& name, const QVariant& defValue = QVariant::Invalid);
 	void setOption(const QString& name, const QVariant& value);
 
+public slots:
+	void defaults();
+
+private:
+	void setResetState();
+
 private:
 	Options();
 	static Options* instance_;
 
 	QSettings *set_;
+	bool resetState_;
 };
 
 #endif // OPTIONS_H

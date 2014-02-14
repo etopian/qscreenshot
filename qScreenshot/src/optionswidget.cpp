@@ -23,6 +23,7 @@
 #include <QMessageBox>
 #include <QDir>
 #include <QFileDialog>
+#include <QProcess>
 
 #include "optionswidget.h"
 #include "editserverdlg.h"
@@ -189,6 +190,7 @@ OptionsWidget::OptionsWidget(QWidget* p)
 	connect(ui_->lw_servers, SIGNAL(doubleClicked(QModelIndex)), SLOT(editServer()));
 	connect(ui_->pb_modify, SIGNAL(clicked()), SLOT(requstNewShortcut()));
 	connect(ui_->tb_autosaveFolder, SIGNAL(clicked()), SLOT(getAutosaveFolder()));
+	connect(ui_->pb_defaults, SIGNAL(clicked()), SLOT(defaults()));
 }
 
 OptionsWidget::~OptionsWidget()
@@ -351,6 +353,20 @@ void OptionsWidget::getAutosaveFolder()
 	const QString dir = QFileDialog::getExistingDirectory(this, tr("Chose Folder"), autosaveFolder);
 	if(!dir.isEmpty()) {
 		ui_->le_autosaveFolder->setText(dir);
+	}
+}
+
+void OptionsWidget::defaults()
+{
+	int res = QMessageBox::warning(this, tr("Reset Settings"),
+				       tr("Are you sure you want to completely\n"
+					  "reset settings to the default values?\n"
+					  "Application will be restarted."),
+				       QMessageBox::Ok, QMessageBox::Cancel);
+	if(res == QMessageBox::Ok) {
+		connect(qApp, SIGNAL(aboutToQuit()), Options::instance(), SLOT(defaults()));
+		qApp->exit(0);
+		QProcess::startDetached(QApplication::applicationFilePath());
 	}
 }
 

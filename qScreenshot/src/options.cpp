@@ -38,12 +38,16 @@ Options* Options::instance()
 Options::Options()
 	: QObject(0)
 	, set_(0)
+	, resetState_(false)
 {
 	set_ = new QSettings(qApp->organizationName(), qApp->applicationName(), this);
 }
 
 Options::~Options()
 {
+	if(resetState_)
+		set_->clear();
+
 	set_->sync();
 }
 
@@ -62,4 +66,14 @@ QVariant Options::getOption(const QString& name, const QVariant& defValue)
 void Options::setOption(const QString& name, const QVariant& value)
 {
 	set_->setValue(name, value);
+}
+
+void Options::defaults()
+{
+	setResetState();
+}
+
+void Options::setResetState()
+{
+	resetState_ = true;
 }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>384</width>
-    <height>502</height>
+    <width>370</width>
+    <height>443</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -253,6 +253,23 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <widget class="Line" name="line">
+         <property name="lineWidth">
+          <number>2</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pb_defaults">
+         <property name="text">
+          <string>Defaults</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>

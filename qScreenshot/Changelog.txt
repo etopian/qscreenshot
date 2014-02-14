@@ -8,6 +8,8 @@ current
  - fix "grab area" when compositing disabled (Linux only)
  - add Qt 5 support
  - add Rghost.ru server
+ - add ability scale image (ctrl + mouse wheel)
+ - add ability reset settings
 
 version 0.7
 19.09.2013

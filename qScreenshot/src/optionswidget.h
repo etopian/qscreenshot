@@ -44,6 +44,7 @@ private slots:
 	void requstNewShortcut();
 	void onNewShortcut(const QKeySequence&);
 	void getAutosaveFolder();
+	void defaults();
 
 private:
 	QString shortCut;

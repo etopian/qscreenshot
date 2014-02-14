@@ -299,6 +299,22 @@
         <source>Automatically check for updates on startup</source>
         <translation>Автоматическая проверка обновлений при запуске </translation>
     </message>
+    <message>
+        <source>Defaults</source>
+        <translation>Сброс Настроек</translation>
+    </message>
+    <message>
+        <source>Reset Settings</source>
+        <translation>Сбросить настройки</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to completely
+reset settings to the default values?
+Application will be restarted.</source>
+        <translation>Вы уверены, что хотите полностью
+сбросить настройки на значения по умолчанию?
+Приложение будет перезапущено.</translation>
+    </message>
 </context>
 <context>
     <name>PixmapWidget</name>
