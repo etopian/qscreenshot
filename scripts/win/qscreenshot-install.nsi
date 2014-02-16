@@ -1,13 +1,13 @@
 ; qscreenshot-install.nsi
 ; http://qscreenshot.googlecode.com/
-; qScreenshot installation script, v0.2.2
+; qScreenshot installation script, v0.2.3
 ; Written by zet <mailto:vladimir.shelukhin@gmail.com>
-; Date: 2013-10-12
+; Date: 2014-02-16
 
 ; -----------------------------------------------------------------------------
 ; Define your application information
 !define PRODUCT_NAME "qScreenshot"
-!define PRODUCT_VERSION "0.7"
+!define PRODUCT_VERSION "0.8"
 !define COMPANY_NAME "qScreenshot Project"
 !define PRODUCT_WEB_SITE "http://qscreenshot.googlecode.com/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\qscreenshot.exe"
@@ -22,12 +22,12 @@ InstallDir "$PROGRAMFILES\qScreenshot"
 ;Get installation folder from registry if available
 InstallDirRegKey HKLM "Software\${PRODUCT_NAME}" "InstallDir"
 
-OutFile "setup\qscreenshot-0.7-win32-setup.exe"
+OutFile "setup\qscreenshot-0.8-win32-setup.exe"
 
 ; Use compression
 SetCompressor /SOLID lzma
 
-BrandingText "Copyright © 2011-2013 ${COMPANY_NAME}"
+BrandingText "Copyright © 2011-2014 ${COMPANY_NAME}"
 
 ; -----------------------------------------------------------------------------
 ; Version Information
@@ -37,7 +37,7 @@ VIAddVersionKey  "ProductName"     "${PRODUCT_NAME}"
 VIAddVersionKey  "ProductVersion"  "${PRODUCT_VERSION}"
 VIAddVersionKey  "FileDescription" "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 VIAddVersionKey  "FileVersion"     "${PRODUCT_VERSION}"
-VIProductVersion "0.7.0.0"
+VIProductVersion "0.8.0.0"
 
 ; -----------------------------------------------------------------------------
 ; The installer will perform a CRC on itself before allowing an install
@@ -171,8 +171,9 @@ Section "!qScreenshot Core Components" SectionqScreenshotCoreComponents
 	File "setup\imageformats\qtga4.dll"
 	File "setup\imageformats\qtiff4.dll"
 	SetOutPath "$INSTDIR\translations\"
+	File "setup\translations\qscreenshot_ru.qm"
 	File "setup\translations\qt_ru.qm"
-	File "setup\translations\ru.qm"
+	Delete "$INSTDIR\translations\ru.qm"
   WriteIniStr "$INSTDIR\qScreenshot Website.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
   DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "${PRODUCT_NAME}"
 
@@ -290,7 +291,7 @@ Section Uninstall
 	Delete "$INSTDIR\imageformats\qtga4.dll"
 	Delete "$INSTDIR\imageformats\qtiff4.dll"
 	Delete "$INSTDIR\translations\qt_ru.qm"
-	Delete "$INSTDIR\translations\ru.qm"
+	Delete "$INSTDIR\translations\qscreenshot_ru.qm"
 
   ;Remove remaining directories
 	SetShellVarContext all
