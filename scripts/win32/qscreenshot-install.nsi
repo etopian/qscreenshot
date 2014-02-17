@@ -1,13 +1,13 @@
 ; qscreenshot-install.nsi
 ; http://qscreenshot.googlecode.com/
-; qScreenshot installation script, v0.2.3
+; qScreenshot installation script, v0.2.4
 ; Written by zet <mailto:vladimir.shelukhin@gmail.com>
-; Date: 2014-02-16
+; Date: 2014-02-17
 
 ; -----------------------------------------------------------------------------
 ; Define your application information
 !define PRODUCT_NAME "qScreenshot"
-!define PRODUCT_VERSION "0.8"
+!define PRODUCT_VERSION "1.0"
 !define COMPANY_NAME "qScreenshot Project"
 !define PRODUCT_WEB_SITE "http://qscreenshot.googlecode.com/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\qscreenshot.exe"
@@ -22,7 +22,7 @@ InstallDir "$PROGRAMFILES\qScreenshot"
 ;Get installation folder from registry if available
 InstallDirRegKey HKLM "Software\${PRODUCT_NAME}" "InstallDir"
 
-OutFile "setup\qscreenshot-0.8-win32-setup.exe"
+OutFile "setup\qscreenshot-1.0-win32-setup.exe"
 
 ; Use compression
 SetCompressor /SOLID lzma
@@ -32,12 +32,12 @@ BrandingText "Copyright © 2011-2014 ${COMPANY_NAME}"
 ; -----------------------------------------------------------------------------
 ; Version Information
 VIAddVersionKey  "CompanyName"     "${COMPANY_NAME}"
-VIAddVersionKey  "LegalCopyright"  "© 2011-2013 ${COMPANY_NAME}"
+VIAddVersionKey  "LegalCopyright"  "© 2011-2014 ${COMPANY_NAME}"
 VIAddVersionKey  "ProductName"     "${PRODUCT_NAME}"
 VIAddVersionKey  "ProductVersion"  "${PRODUCT_VERSION}"
 VIAddVersionKey  "FileDescription" "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 VIAddVersionKey  "FileVersion"     "${PRODUCT_VERSION}"
-VIProductVersion "0.8.0.0"
+VIProductVersion "1.0.0.0"
 
 ; -----------------------------------------------------------------------------
 ; The installer will perform a CRC on itself before allowing an install
@@ -89,9 +89,9 @@ XPStyle on
 !define MUI_FINISHPAGE_RUN "$INSTDIR\qscreenshot.exe"
 ;!define MUI_FINISHPAGE_RUN_TEXT "&Run qScreenshot"
 !define MUI_FINISHPAGE_RUN_NOTCHECKED
-;!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\changelog.txt"
-;!define MUI_FINISHPAGE_SHOWREADME_TEXT "&Show Changelog"
-;!define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
+!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\Changelog.txt"
+!define MUI_FINISHPAGE_SHOWREADME_TEXT "&Show Changelog"
+!define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
 !define MUI_FINISHPAGE_LINK "qScreenshot Website"
 !define MUI_FINISHPAGE_LINK_LOCATION "http://qscreenshot.googlecode.com/"
 !insertmacro MUI_PAGE_FINISH
@@ -138,7 +138,7 @@ InstType Full
 
 Section "!qScreenshot Core Components" SectionqScreenshotCoreComponents
 
-;	KillProcDLL::KillProc "qscreenshot.exe"
+	KillProcDLL::KillProc "qscreenshot.exe"
 
 	; Set Section properties
 	SectionIn 1 2 RO
@@ -187,6 +187,7 @@ Section "Start Menu Shortcuts" SectionStartMenuShortcuts
 	SetOutPath "$INSTDIR\"
 	SetShellVarContext all
 	CreateDirectory "$SMPROGRAMS\qScreenshot"
+	CreateShortCut "$SMPROGRAMS\qScreenshot\Changelog.lnk" "$INSTDIR\Changelog.txt"
 	CreateShortCut "$SMPROGRAMS\qScreenshot\qScreenshot.lnk" "$INSTDIR\qscreenshot.exe"
   CreateShortCut "$SMPROGRAMS\qScreenshot\Uninstall.lnk" "$INSTDIR\uninstall.exe"
   CreateShortCut "$SMPROGRAMS\qScreenshot\Website.lnk" "$INSTDIR\${PRODUCT_NAME} Website.url"
@@ -254,7 +255,7 @@ SectionEnd
 ;Uninstall section
 Section Uninstall
 
-;	KillProcDLL::KillProc "qscreenshot.exe"
+	KillProcDLL::KillProc "qscreenshot.exe"
 
 	;Remove qScreenshot items from registry...
 	DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "SOFTWARE\${PRODUCT_NAME}"
