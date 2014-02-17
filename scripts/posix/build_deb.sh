@@ -9,9 +9,9 @@ echo "checking for installed packages needed to build qscreenshot package"
 sudo apt-get install build-essential fakeroot dpkg-dev autotools-dev cdbs
 #
 changelog_template='qscreenshot (VER-1) unstable; urgency=low
-
-  * NEWCHANGES
-
+'
+#
+changelog_endline='
  -- USERNAME <WHOCHANGE>  DDD, NN MMM YYYY HH:MM:SS +ZZZZ'
 #
 package_sh='#!/bin/bash
@@ -164,25 +164,21 @@ echo "${copyright}" > ${copyrightfile}
 #modifying changelog
 sed "s/VER-1/$ver-1/" -i "${changefile}"
 cd ${progdir}
-svnlog=`svn log -r ${svnver}`
-changes=`eval echo $(echo "$svnlog" | grep -e "[^-|]*" -x)`
-wholine=`echo "$svnlog" | grep -G "[^-]*.*\n-*"`
-whochange=`eval echo $(echo $wholine | cut -d '|' -f 2)`
-forma=`eval echo $(echo $whochange | grep -G "@")`
-if [ -z $forma ]
-then
-sed "s/WHOCHANGE/$whochange@gmail\.com/" -i "${changefile}"
-else
-sed "s/WHOCHANGE/$whochange/" -i "${changefile}"
-fi
-sed "s/NEWCHANGES/${changes}/" -i "${changefile}"
-sed "s/USERNAME/$user/" -i "${changefile}"
+startlog=`cat ${builddeb}/Changelog.txt | sed -n '/[0-9]\{4\}$/{n;p;q;}'`
+endlog=`cat ${builddeb}/Changelog.txt | sed -n '/^$/{g;1!p;q;};h'`
+middlelog=`cat ${builddeb}/Changelog.txt | sed -n '/'"${startlog}"'/,/'"${endlog}"'/p'`
+changes=`echo "$middlelog" | sed -n "s/\s*-\s*/  \* /p"`
+echo "$changes" >> ${changefile}
+echo "${changelog_endline}" >> ${changefile}
+sed 's/WHOCHANGE/thetvg@gmail\.com/' -i "${changefile}"
+
+sed 's/USERNAME/'"$user"'/' -i "${changefile}"
 
 sed "s/DDD, NN MMM YYYY HH:MM:SS +ZZZZ/${data}/" -i "${changefile}"
 #
-sed "s/X.X/$ver/" -i "${package_sh_file}"
+sed 's/X.X/'"$ver"'/' -i "${package_sh_file}"
 #
-sed "s/USER/$user/" -i "${copyrightfile}"
+sed 's/USER/'"$user"'/' -i "${copyrightfile}"
 sed "s/USER@MAIL/$user@$host/" -i "${copyrightfile}"
 sed "s/DOW, DD MMM YYYY HH:MM:SS +ZZZZ/${data}/" -i "${copyrightfile}"
 sed "s/YYYY/$year/" -i "${copyrightfile}"
