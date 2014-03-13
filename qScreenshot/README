@@ -5,7 +5,14 @@ Build:
 	linux:
 
 	./configure && make && make install
-
+	
+	using cmake and Qt4:
+	
+	mkdir build && cd build
+	cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+	make && make install
+	#or if you want to install to another directory (build/install for example)
+	#try: cmake -DCMAKE_INSTALL_PREFIX=./install .. 
 	
 	windows:
 
