@@ -61,15 +61,15 @@
 #    define QXT_CORE_EXPORT
 #endif // BUILD_QXT_CORE
  
-#if !defined(QXT_STATIC) && !defined(QXT_DOXYGEN_RUN)
-#    if defined(BUILD_QXT_GUI)
-#        define QXT_GUI_EXPORT Q_DECL_EXPORT
-#    else
-#        define QXT_GUI_EXPORT Q_DECL_IMPORT
-#    endif
-#else
+//#if !defined(QXT_STATIC) && !defined(QXT_DOXYGEN_RUN)
+//#    if defined(BUILD_QXT_GUI)
+//#        define QXT_GUI_EXPORT Q_DECL_EXPORT
+//#    else
+//#        define QXT_GUI_EXPORT Q_DECL_IMPORT
+//#    endif
+//#else
 #    define QXT_GUI_EXPORT
-#endif // BUILD_QXT_GUI
+//#endif // BUILD_QXT_GUI
  
 #if !defined(QXT_STATIC) && !defined(QXT_DOXYGEN_RUN)
 #    if defined(BUILD_QXT_NETWORK)
