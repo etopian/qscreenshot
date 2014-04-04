@@ -1,9 +1,9 @@
 #!/bin/bash
-home=/home/$USER
-progdir=${home}/build
+home=${HOME:-/home/$USER}
+reponame=qscreenshot
+progdir=${home}/build/${reponame}
 builddir=${progdir}/qScreenshot
 scripts=${progdir}/scripts/posix
-debfiles=${scripts}/debian
 PREFIX=/usr
 echo "checking for installed packages needed to build qscreenshot package"
 sudo apt-get install build-essential fakeroot dpkg-dev autotools-dev cdbs
@@ -125,22 +125,31 @@ the Free Software Foundation; either version 2 of the License, or
 # Please also look if there are files or directories which have a
 # different copyright/license attached and list them here.'
 #
-cd ${home}
-echo "Downloading qscreenshot sources"
-svn co http://qscreenshot.googlecode.com/svn/trunk/ ${progdir}
+if [ ! -d "${home}/build" ]; then
+  mkdir -p ${home}/build
+fi
+cd ${home}/build
+if [ ! -d "${progdir}" ]; then
+  mkdir -p ${progdir}
+  echo "Downloading qscreenshot sources" 
+  git clone https://code.google.com/p/qscreenshot/ ${progdir}
+else
+  cd ${progdir}
+  git reset --hard
+  git pull
+fi
 cd ${progdir}
-svnver=`svnversion`
+
 defines=${builddir}/src/defines.h
-ver_s=`grep APP_VERSION $defines`
-ver=`eval echo $(echo $ver_s | cut -d ' ' -f 3)`
-data=`LANG=en date +'%a, %d %b %Y %T %z'`
-year=`date +'%Y'`
-user=`echo $USERNAME`
-host=`echo $HOSTNAME`
+ver_s=$(grep APP_VERSION $defines)
+ver=$(eval echo $(echo $ver_s | cut -d ' ' -f 3))
+data=$(LANG=en date +'%a, %d %b %Y %T %z')
+year=$(date +'%Y')
+user=$(echo $USERNAME)
+host=$(echo $HOSTNAME)
 builddeb=${progdir}/qscreenshot-${ver}
-if [ -d ${builddeb} ]
-then
-rm -r -f ${builddeb}
+if [ -d ${builddeb} ]; then
+  rm -r -f ${builddeb}
 fi
 mkdir ${builddeb}
 cp -r ${builddir}/* ${builddeb}
@@ -164,10 +173,10 @@ echo "${copyright}" > ${copyrightfile}
 #modifying changelog
 sed "s/VER-1/$ver-1/" -i "${changefile}"
 cd ${progdir}
-startlog=`cat ${builddeb}/Changelog.txt | sed -n '/[0-9]\{4\}$/{n;p;q;}'`
-endlog=`cat ${builddeb}/Changelog.txt | sed -n '/^$/{g;1!p;q;};h'`
-middlelog=`cat ${builddeb}/Changelog.txt | sed -n '/'"${startlog}"'/,/'"${endlog}"'/p'`
-changes=`echo "$middlelog" | sed -n "s/\s*-\s*/  \* /p"`
+startlog=$(cat ${builddeb}/Changelog.txt | sed -n '/[0-9]\{4\}$/{n;p;q;}')
+endlog=$(cat ${builddeb}/Changelog.txt | sed -n '/^$/{g;1!p;q;};h')
+middlelog=$(cat ${builddeb}/Changelog.txt | sed -n '/'"${startlog}"'/,/'"${endlog}"'/p')
+changes=$(echo "$middlelog" | sed -n "s/\s*-\s*/  \* /p")
 echo "$changes" >> ${changefile}
 echo "${changelog_endline}" >> ${changefile}
 sed 's/WHOCHANGE/thetvg@gmail\.com/' -i "${changefile}"
