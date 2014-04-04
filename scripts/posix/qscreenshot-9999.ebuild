@@ -1,8 +1,9 @@
-EAPI="5"
+EAPI=5
 
-inherit cmake-utils subversion
+inherit cmake-utils git-r3
 
-ESVN_REPO_URI="https://qscreenshot.googlecode.com/svn/trunk/qScreenshot/"
+EGIT_REPO_URI="https://code.google.com/p/qscreenshot/"
+EGIT_MIN_CLONE_TYPE="shallow"
 DESCRIPTION="Create and modify screenshots"
 HOMEPAGE="http://code.google.com/p/qscreenshot/"
 LICENSE="GPL-2"

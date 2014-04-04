@@ -3,41 +3,35 @@ progname=qscreenshot
 homedir=$HOME
 builddir=${homedir}/build
 rpmbuild_dir=${builddir}/${progname}
+gitdir=${homedir}/github/${progname}
+srcpath=${homedir}/rpmbuild/SOURCES
+specpath=${homedir}/rpmbuild/SPECS
 
-if [ -d "${rpmbuild_dir}" ]
-then
+if [ -d "${rpmbuild_dir}" ]; then
 	rm -r -f ${rpmbuild_dir}
 fi
 mkdir -p ${rpmbuild_dir}
-svndir=${homedir}/github/${progname}
-if [ ! -d ${homedir}/rpmbuild ]
-then
-	cd ${homedir}
-	mkdir rpmbuild
-	cd ${homedir}/rpmbuild
-	mkdir SOURCES
-	mkdir SPECS
-fi
-srcpath=${homedir}/rpmbuild/SOURCES
+mkdir -p ${srcpath}
+mkdir -p ${specpath}
 
-cd $homedir
-svn checkout http://qscreenshot.googlecode.com/svn/trunk/qScreenshot ${svndir}
+cd ${homedir}/github
+git clone https://code.google.com/p/qscreenshot/ ${gitdir}
 
-cp -r -f ${svndir}/trunk/qScreenshot/* ${rpmbuild_dir}/
+cp -rf ${gitdir}/qScreenshot/* ${rpmbuild_dir}/
 defines=${rpmbuild_dir}/src/defines.h
-ver_s=`grep APP_VERSION $defines`
-ver=`eval echo $(echo $ver_s | cut -d ' ' -f 3)`
+ver_s=$(grep APP_VERSION $defines)
+ver=$(eval echo $(echo $ver_s | cut -d ' ' -f 3))
 package_name=${progname}-${ver}.tar.gz
 srctmp=${builddir}/${progname}-${ver}
 if [ -d "${srctmp}" ]
 then
-rm -r -f ${srctmp}
+	rm -r -f ${srctmp}
 fi
 mkdir -p ${srctmp}
-cp -r -f ${svndir}/trunk/qScreenshot/* ${srctmp}/
+cp -r -f ${gitdir}/qScreenshot/* ${srctmp}/
 cd ${builddir}
 tar -pczf ${package_name} ${progname}-${ver}
-cat <<END >${homedir}/rpmbuild/SPECS/${progname}.spec
+cat <<END >${specpath}/${progname}.spec
 Summary: Simple Screenshot Maker
 Name: $progname
 Version: $ver
@@ -91,8 +85,8 @@ mkdir -p %{buildroot}/usr/share/qscreenshot/translations
 %{_datadir}/qscreenshot
 %{_datadir}/qscreenshot/translations
 END
-cp -f ${package_name} ${srcpath}
-cd ${homedir}/rpmbuild/SPECS
+cp -f ${package_name} ${srcpath}/
+cd ${specpath}
 rpmbuild -ba --clean --rmspec --rmsource ${progname}.spec
 echo "Cleaning..."
-rm -r -f ${rpmbuild_dir} ${srctmp}
+rm -rf ${rpmbuild_dir} ${srctmp}
