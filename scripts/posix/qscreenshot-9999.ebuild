@@ -16,3 +16,6 @@ DEPEND="
 "
 RDEPEND="$DEPEND"
 
+src_prepare() {
+	S=${WORKDIR}/${P}/qScreenshot
+}
