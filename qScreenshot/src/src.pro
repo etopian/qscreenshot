@@ -90,7 +90,8 @@ DATADIR = $$PREFIX/share/qscreenshot
 DEFINES += QSCREENSHOT_DATADIR='\\"$$DATADIR\\"'
 
 LANG_PATH = $$PWD/lang
-TRANSLATIONS = $$LANG_PATH/qscreenshot_ru.ts
+TRANSLATIONS = $$LANG_PATH/qscreenshot_ru.ts \
+              $$LANG_PATH/qscreenshot_zh_TW.ts
 
 unix { 
     target.path = $$BINDIR
