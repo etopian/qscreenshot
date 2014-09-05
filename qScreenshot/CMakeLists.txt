@@ -2,7 +2,6 @@ project( qScreenshot )
 cmake_minimum_required( VERSION 2.8.11 )
 set( CMAKE_AUTOMOC ON )
 set( USE_QT5 OFF CACHE BOOL "Use Qt5" )
-add_definitions( -Wall )
 include_directories(
 	${CMAKE_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -59,7 +58,7 @@ set( qScreenshot_TRS
 if( UNIX AND NOT( APPLE OR CYGWIN ) )
 	set( DATADIR_PATH ${CMAKE_INSTALL_PREFIX}/share )
 	set( APP_DATA_DIR ${DATADIR_PATH}/qscreenshot )
-	add_definitions( -DHAVE_X11 -DQSCREENSHOT_DATADIR="${APP_DATA_DIR}" )
+	add_definitions( -Wall -DHAVE_X11 -DQSCREENSHOT_DATADIR="${APP_DATA_DIR}" )
 	find_package( X11 REQUIRED )
 	set( qxt_SRCS
 		${qxt_all_SRCS}
@@ -181,7 +180,7 @@ if( ${WIN32} )
 		${QT_DEPLIBS}
 	)
 	INSTALL( TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX} )
-	INSTALL( FILES ${TRS} DESTINATION ${CMAKE_INSTALL_PREFIX} )
+	INSTALL( FILES ${TRS} DESTINATION ${CMAKE_INSTALL_PREFIX}/translations )
 	INSTALL( FILES LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX} )
 endif( ${WIN32} )
 
